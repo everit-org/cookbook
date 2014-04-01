@@ -1,0 +1,181 @@
+<!DOCTYPE HTML>
+<!-- Copyright (c) 2011, Everit Kft.
+
+    All rights reserved.
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 3 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301  USA -->
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../common/css/base.css"></link>
+</head>
+<body>
+
+  <h1>Task howto collection</h1>
+  <p>This section describes the common tasks carried out within the steps of the cookbook. Since many of these tasks
+    are repeated many times throughout the book, it is better to have a section dedicated to describe these specific
+    tasks so that its relevant paragraphs can be linked, whenever it is necessary.</p>
+  <h2 id="open_system_file_with_eclipse">Open special files in Eclipse</h2>
+  <p>Not all files are shown within the "Project Explorer" view. For example, the following files are not shown:</p>
+  <ul>
+    <li><p>Eclipse configuration files within the project, like .project, .classpath and the .settings folder</p></li>
+    <li><p>Generated files in the target folder</p></li>
+  </ul>
+  <p>To open these files, we have the following options:</p>
+  <ul>
+    <li><p>
+        <a href="#open_views_in_eclipse">Open the Navigator view</a>, and search for the required file in it. The
+        navigator shows every file, even the generated ones.
+      </p></li>
+    <li><p>Press ctrl+shift+R. With this shortcut, you can search for every file in the workspace. You are also
+        allowed to use wildcards for your search.</p></li>
+  </ul>
+
+  <h2 id="open_views_in_eclipse">Open a view in Eclipse</h2>
+  <p>Views are sub-windows in Eclipse. Views can be resized, or placed into any area of the workspace. To open a
+    view that is not yet on the screen, select the "Window -&gt; Show View" menu item. There are some views by default
+    in the list, but if you cannot find the view you are looking for there, you can search for other views by selecting
+    the "Other..." menu item.</p>
+
+  <h2 id="git_ignore_for_eclipse_java_project">Setting .gitignore for Eclipse based java project</h2>
+  <p>
+    One of the great things you get with maven is that you do not have to commit the settings of your IDE with the
+    sources into your version control system. It is also a common mistake if a developer commits the compiled binaries,
+    thereby making the size of the repository irreversibly large. In case of Eclipse based Java projects, many issues
+    can be solved by <a href="#open_system_file_with_eclipse">creating/appending</a> a .gitignore file into the root of
+    every maven project (also to the root of sub-modules) with at least the following content:
+  </p>
+  <div class="source-code source-xml">
+    <pre>
+/.settings
+/target
+/.classpath
+/.project
+/.checkstyle
+</pre>
+  </div>
+  <p>Based on the plugins you use in your IDE, other files should also be included in .gitignore.</p>
+
+  <h2 id="checking_out_from_github_in_eclipse">Checking out a repository from Github in Eclipse</h2>
+  <ol>
+    <li><p>Start Eclipse.</p></li>
+    <li><p>Switch to the "Git Repository Exploring" perspective in Eclipse. (Window -&gt; Open perspective
+        -&gt; Other..., Select the perspective from the list)</p></li>
+    <li><p>On the left side, you see the "Git Repositories" window. Click on the "Clone button".</p> <img
+      class="screenshot" src="clone_git_repository.gif" /></li>
+    <li><p>In the "Clone Git Repository" window, enter the URL of the Git repository as you see below.</p> <img
+      class="screenshot" src="source_git_repository.gif" /></li>
+    <li><p>
+        Click Next, Next and Finish. The repository should be checked out to the "<span style="font-style: italic;">USER_HOME</span>/git/<span
+          style="font-style: italic;">REPO_NAME</span>" directory.
+      </p></li>
+  </ol>
+
+  <h2 id="ds_and_metatype_in_pom">Adding Declarative Services and Metatype code generation to the pom.xml</h2>
+  <p>
+    <a href="http://wiki.osgi.org/wiki/Declarative_Services">Declarative Services</a> allows the programmers to define
+    components that are instantiated based on configuration. <a href="http://blog.osgi.org/2011/03/metatypes.html">Metatype</a>
+    allows us to define the configuration possibilities of a Component in a way that it can appear on the OSGi Web
+    Console as well. Component structures and their configuration possibilities can be defined via XML files. However,
+    it is also possible to put these definitions as annotations into the Java source. There are several annotation sets
+    and code generators for Declarative Services and Metatype. Since the Felix implementation has the best support for
+    maven-eclipse, it is presented in the following example. To use the Felix implementation, put the following snippet
+    into the pom.xml file of the project:
+  </p>
+  <div class="source-code source-xml">
+    <pre>
+  &lt;build&gt;
+    ...
+    &lt;plugins&gt;
+      ...
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+        &lt;artifactId&gt;maven-scr-plugin&lt;/artifactId&gt;
+        &lt;version&gt;1.15.0&lt;/version&gt;
+        &lt;executions&gt;
+          &lt;execution&gt;
+            &lt;id&gt;generate-scr-scrdescriptor&lt;/id&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;scr&lt;/goal&gt;
+            &lt;/goals&gt;
+          &lt;/execution&gt;
+        &lt;/executions&gt;
+      &lt;/plugin&gt;
+      ...
+    &lt;/plugins&gt;
+    ...  
+  &lt;/build&gt;
+ 
+  &lt;dependencies&gt;
+    ...
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+      &lt;artifactId&gt;org.apache.felix.scr.annotations&lt;/artifactId&gt;
+      &lt;version&gt;1.9.6&lt;/version&gt;
+    &lt;/dependency&gt;
+    ...
+  &lt;/dependencies&gt;</pre>
+  </div>
+  <p>This code generator (as all the others) checks the classes for annotations, extends the MANIFEST headers and
+    generates the standard Declarative Services and Metatype XMLs in the target/classes folder of the project. This
+    means that during runtime, the DS and Metatype technologies do not use the annotations, but only the XML and
+    MANIFEST header entries.</p>
+  <p>As soon as m2e-lifecycle is available for the standard org.osgi.* annotations, this part of the tutorial will
+    be replaced with the description of that annotation set.</p>
+
+  <h2 id="creating_a_property">Creating a class property in Eclipse</h2>
+  <p>Java properties are member variables with getter and setter methods. In the most cases, these member variables
+    are private. There are several ways to create properties. Here is an example of creating a property "private long
+    fooId":</p>
+  <ol>
+    <li><p>Create the member variable in the class by typing it:</p>
+      <div class="source-code source-xml">
+        <pre>
+public class Foo {
+
+  <b>private long fooId;</b>
+}</pre>
+      </div></li>
+    <li><p>Generate getters and setters. You have several options:</p>
+      <ul>
+        <li><p>
+            <b>Option 1:</b> start typing "set" in the source of the class and press CTRL+SPACE. The content assist will
+            appear and let you select the setter method. If you select that, the setter will be generated right there.
+            You can generate the getter in the same way.
+          </p></li>
+        <li><p>
+            <b>Option 2:</b> Press ALT+SHIFT+S in the source of the class and select "Generate getters and setters" from
+            the context menu. In the dialog, you can select, which getters and setters you would like to generate.
+          </p></li>
+      </ul></li>
+    <li><p>The final code should look like this:</p>
+      <div class="source-code source-xml">
+        <pre>
+public class Foo {
+
+	private long fooId;
+	
+	public long getFooId() {
+		return fooId;
+	}
+	
+	public void setFooId(long fooId) {
+		this.fooId = fooId;
+	}
+}</pre>
+      </div></li>
+  </ol>
+</body>
+</html>

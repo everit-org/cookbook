@@ -1,0 +1,31 @@
+p { text-align: justify; }
+
+.screenshot {
+	margin: auto;
+	border: gray solid 1px;
+	border-radius: 4px;
+}
+
+div.source-code {
+	width: 100%; float: left;
+}
+
+pre {
+	box-sizing:border-box;
+	-moz-box-sizing: border-box;
+	border: gray solid 1px;
+	border-radius: 4px;
+	max-width: 100%;
+	padding: 1em;
+	float: left;
+	background-color: #D0D0D0;
+	overflow: auto;
+}
+
+img {
+	max-width: 100%;
+}
+
+.todo {
+	color: red;
+}
