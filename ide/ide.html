@@ -22,93 +22,117 @@
 <link rel="stylesheet" type="text/css" href="../common/css/base.css"></link>
 </head>
 <body>
-  <h1>Development tools (installation and usage)</h1>
+	<h1>Development tools (installation and usage)</h1>
 
-  <h2>Content of the tutorial</h2>
-  <p>The aim of this tutorial is to describe how to get started with the development tools we use at Everit. Please
-    follow each step carefully! Do not worry if you do not know any of the technologies, they will be introduced in 
-    later chapters. When reading this chapter, please focus on the IDE, its settings and its usage only.</p>
+	<h2>Content of the tutorial</h2>
+	<p>The aim of this tutorial is to describe how to get started with
+		the development tools we use at Everit. Please follow each step
+		carefully! Do not worry if you do not know any of the technologies,
+		they will be introduced in later chapters. When reading this section,
+		please focus on the IDE, its settings and its usage only.</p>
 
-  <h2>Step 1: Installing Java</h2>
-  <p>
-    Download <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle Java SDK 7</a>. In 
-    case you prefer id, you can download OpenJDK as well. Note that as soon as a stable version of Java 8 is 
-    available, we will migrate all our components to it. The reason is that Java 8 will introduce <a
-      href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Lambda expressions</a> that will
-    allow us to replace all our anonymous classes in our codes.
-  </p>
+	<h2>Step 1: Installing Java</h2>
+	<p>
+		Download <a
+			href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle
+			Java SDK 7</a>. In case you prefer id, you can download OpenJDK as well.
+		Note that as soon as a stable version of Java 8 is available, we will
+		migrate all our components to it. The reason is that Java 8 will
+		introduce <a
+			href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Lambda
+			expressions</a> that will allow us to replace all our anonymous classes
+		in our codes.
+	</p>
 
-  <h3>Installing Java on Linux</h3>
+	<h3>Installing Java on Linux</h3>
 
-  <p>On Linux, the newest OpenJDK package has to be downloaded and installed from the repository of the given Linux
-    distribution.</p>
+	<p>On Linux, the newest OpenJDK package has to be downloaded and
+		installed from the repository of the given Linux distribution.</p>
 
-  <h3>Installing Java on Windows</h3>
-  <ol>
-    <li><p>
-        Download the latest Java SDK from <a href="http://www.oracle.com">http://www.oracle.com</a>. In case your 
-        system is 64bit compatible, it is recommended to download the x64 version.
-      </p></li>
-    <li><p>Install Java by running the exe file you downloaded. Normally, you have to push "next", "next" and
-        "finish". The default installation path of java is "c:/Program Files/java".</p></li>
-    <li><p>
-        Add the <a href="http://en.wikipedia.org/wiki/Environment_variable#Microsoft_Windows">environment variable</a>
-        "JAVA_HOME" with the value of the location of your Java instance. Do not put the slash on the end of the
-        pathname!
-      </p></li>
-    <li><p>Extend the PATH environment variable with "%JAVA_HOME%\bin;". You should put this before all the
-        other values of PATH. The reason is that a java.exe is created in the directory c:\Windows\System32 after
-        installation. In case a JRE is installed with a newer version, this java.exe will be replaced. If the
-        c:\Windows\System32 folder is before the %JAVA_HOME%\bin value in the PATH environment variable, it may happen
-        that the first java.exe in the PATH is different from the one located in JAVA_HOME. This would cause a lot of
-        inconveniences.</p></li>
-  </ol>
+	<h3>Installing Java on Windows</h3>
+	<ol>
+		<li><p>
+				Download the latest Java SDK from <a href="http://www.oracle.com">http://www.oracle.com</a>.
+				In case your system is 64bit compatible, it is recommended to
+				download the x64 version.
+			</p></li>
+		<li><p>Install Java by running the exe file you downloaded.
+				Normally, you have to press "next", "next" and "finish". The default
+				installation path of java is "c:/Program Files/java".</p></li>
+		<li><p>
+				Add the <a
+					href="http://en.wikipedia.org/wiki/Environment_variable#Microsoft_Windows">environment
+					variable</a> "JAVA_HOME" with the value of the location of your Java
+				instance. Do not put the slash on the end of the pathname!
+			</p></li>
+		<li><p>Extend the PATH environment variable with
+				"%JAVA_HOME%\bin;". You should put this before all the other values
+				of PATH. The reason is that a java.exe is created in the directory
+				c:\Windows\System32 after installation. In case a JRE is installed
+				with a newer version, this java.exe will be replaced. If the
+				c:\Windows\System32 folder is before the %JAVA_HOME%\bin value in
+				the PATH environment variable, it may happen that the first java.exe
+				in the PATH is different from the one located in JAVA_HOME. This
+				would cause a lot of inconveniences.</p></li>
+	</ol>
 
-  <h2>Step 3: Installing Maven</h2>
+	<h2>Step 2: Installing Maven</h2>
 
-  <p>Maven is the build tool Everit projects are compiled with. It can be installed with the following steps:</p>
-  <ol>
-    <li><p>
-        Download the latest stable build of Maven from <a href="http://maven.apache.org">http://maven.apache.org</a>
-      </p></li>
-    <li><p>Unzip maven into a directory of your choice</p></li>
-    <li><p>In windows:</p>
-      <ul>
-        <li><p>Add M2_HOME to the environment variables where the value is the path of the folder of your Maven
-            installation, without a slash in the end. Do not worry if you use Maven3, the name of the environment
-            variable is still M2_HOME.</p></li>
-        <li><p>Append the value of PATH environment variable with "%M2_HOME%\bin"</p></li>
-      </ul>
-      <p>In Linux: Create a symbolic link that points to the mvn script file at /usr/local/bin</p></li>
-  </ol>
+	<p>Maven is the build tool Everit projects are compiled with. It
+		can be installed with the following steps:</p>
+	<ol>
+		<li><p>
+				Download the latest stable build of Maven from <a
+					href="http://maven.apache.org">http://maven.apache.org</a>
+			</p></li>
+		<li><p>Unzip maven into a directory of your choice</p></li>
+		<li><p>In windows:</p>
+			<ul>
+				<li><p>Add M2_HOME to the environment variables where the
+						value is the path of the folder of your Maven installation,
+						without a slash in the end. Do not worry if you use Maven3, the
+						name of the environment variable is still M2_HOME.</p></li>
+				<li><p>Append the value of PATH environment variable with
+						"%M2_HOME%\bin"</p></li>
+			</ul>
+			<p>In Linux: Create a symbolic link that points to the mvn script
+				file at /usr/local/bin</p></li>
+	</ol>
 
-  <h2>Step 2: Installing Eclipse</h2>
-  <p>
-    Download the latest stable version of <a href="http://www.eclipse.org/downloads/">Eclipse</a>. You will need the
-    "Eclipse IDE for Java EE developers" version. It is a platform dependent ZIP file that you can uncompress into any
-    folder. You can start Eclipse with the binary file located in the root directory of Eclipse (eclipse.exe in Windows
-    or eclipse in Linux).
-  </p>
+	<h2>Step 3: Installing Eclipse</h2>
+	<p>
+		Download the latest stable version of <a
+			href="http://www.eclipse.org/downloads/">Eclipse</a>. You will need
+		the "Eclipse IDE for Java EE developers" version. It is a platform
+		dependent ZIP file that you can uncompress into any folder. You can
+		start Eclipse with the binary file located in the root directory of
+		Eclipse (eclipse.exe in Windows or eclipse in Linux).
+	</p>
 
-  <p>The above version of Eclipse should already contain the Git and the M2E plugins, which are necessary to go
-    continue this tutorial.</p>
+	<p>The above version of Eclipse should already contain the Git and
+		the M2E plugins, which are necessary to continue this tutorial.</p>
 
-  <h3>Customize the Java editor</h3>
-  <p class="todo">TODO Show 120 column line, show line numbers, mention ctrl+r
-  
-  
-  </p>
+	<h3>Customize the Java editor</h3>
+	<p>Based on the practice of the past years, it is best to set up
+		the Java editor in the following manner:</p>
+	<ol>
+		<li><p>Click </p></li>
+		<li><p>Show 120 column line</p></li>
+		<li><p>Show line numbers</p></li>
+		<li><p>ctrl+f - format code</p></li>
+	</ol>
 
-  <h3>Configuring Java formatter</h3>
-  <p class="todo">TODO Get the formatter from the conventions project</p>
 
-  <h3>Configuring "Clean up and Save Actions"</h3>
-  <p class="todo">TODO</p>
+	<h3>Configuring Java formatter</h3>
+	<p class="todo">TODO Get the formatter from the conventions project</p>
 
-  <h3>Configuring the XML/HTML formatter</h3>
-  <p class="todo">TODO Line width 120, indent 2 spaces</p>
+	<h3>Configuring "Clean up and Save Actions"</h3>
+	<p class="todo">TODO</p>
 
-  <h3>Setting up Checkstyle</h3>
-  <p class="todo">TODO Setting it in Eclipse</p>
+	<h3>Configuring the XML/HTML formatter</h3>
+	<p class="todo">TODO Line width 120, indent 2 spaces</p>
+
+	<h3>Setting up Checkstyle</h3>
+	<p class="todo">TODO Setting it in Eclipse</p>
 </body>
 </html>
