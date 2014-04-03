@@ -84,7 +84,7 @@
 				Add the <a
 					href="http://en.wikipedia.org/wiki/Environment_variable#Microsoft_Windows">environment
 					variable</a> "JAVA_HOME" with the value of the location of your Java
-				instance. Do not put the slash on the end of the pathname!
+				instance. Do not put slash after the last character of the file path!
 			</p></li>
 		<li><p>Extend the PATH environment variable with
 				"%JAVA_HOME%\bin;". You should put this before all the other values
@@ -100,7 +100,7 @@
 	<h2><a name="Step 2: Installing Maven">Step 2: Installing Maven</a></h2>
 
 	<p>Maven is the build tool Everit projects are compiled with. It
-		can be installed with the following steps:</p>
+		can be installed as described below:</p>
 	<ol>
 		<li><p>
 				Download the latest stable build of Maven from <a
@@ -111,9 +111,10 @@
 			<ul>
 				<li><p>Add M2_HOME to the environment variables where the
 						value is the path of the folder of your Maven installation,
-						without a slash in the end. Do not worry if you use Maven3, the
-						name of the environment variable is still M2_HOME.</p></li>
-				<li><p>Append the value of PATH environment variable with
+						without a slash after the last character of the file path. 
+						Do not worry if you use Maven3, the name of the environment 
+						variable is still M2_HOME.</p></li>
+				<li><p>Append the value of the PATH environment variable with
 						"%M2_HOME%\bin"</p></li>
 			</ul>
 			<p>In Linux: Create a symbolic link that points to the mvn script
@@ -148,7 +149,7 @@
 
 	<h3><a name="Configuring Java formatter">Configuring Java formatter</a></h3>
 	<ol>
-		<li><p>Download the following file containing the required formatter settings:</p>
+		<li><p>Use "Save link as.." to download the following file containing the required formatter settings:</p>
 		<a href="https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources/everit-eclipseformatter.xml">
 			everit-eclipseformatter.xml</a></li>	
 		<li><p>Click the Window/Preferences menu item in the Eclipse menu bar.</p></li>
@@ -159,10 +160,18 @@
 	</ol>		
 
 	<h3><a name="Configuring 'Clean up and Save Actions'">Configuring "Clean up and Save Actions"</a></h3>
-	<p class="todo">TODO 
-	<a href=
-	 "https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources/everit-clean-up-and-save-actions.xml">
-	 everit-clean-up-and-save-actions.xml</a></p>
+	<ol>
+		<li><p>Use "Save link as.." to download the following file containing the required clean up and save 
+				actions settings:</p>
+		<a href="https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources
+		/everit-clean-up-and-save-actions.xml">everit-clean-up-and-save-actions.xml</a></li>	
+		<li><p>Click the Window/Preferences menu item in the Eclipse menu bar.</p></li>
+		<li><p>Type "clean up" in the "type filter text" field and select the "Java/Code Style/Clean Up" menu item.</p></li>
+		<li><p>Click the "Import" button and select the previously downloaded file.</p></li>
+		<li><p>Click "OK" to make the above file the default code cleaner.</p>
+					<img class="screenshot" src="clean-up-and-save.png" /></li>
+		<li><p>To clean up a code when in a java file, click "Source/Clean Up...".</p></li>					
+	</ol>	 
 
 	<h3><a name="Configuring the XML/HTML formatter">Configuring the XML/HTML formatter</a></h3>
 	<ol>
