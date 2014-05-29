@@ -1,0 +1,104 @@
+html {
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
+}
+.logo {
+    width: 180px;
+    height: 180px;
+    margin-top: 37px;
+    margin-left: 21px;
+}
+.everit-header {
+    background-color: rgb(90, 183, 14);
+    background-image: -webkit-linear-gradient(top, #4FA10D 0, rgb(90, 183, 14) 100%);
+    background-image: linear-gradient(to bottom, #4FA10D 0, rgb(90, 183, 14) 100%);
+}
+.bs-docs-nav .navbar-brand,
+.bs-docs-nav .navbar-nav>li>a {
+    color: rgb(90, 183, 14);
+    font-weight: 500;
+}
+.bs-docs-nav .navbar-nav>li>a:hover,
+.bs-docs-nav .navbar-nav>.active>a,
+.bs-docs-nav .navbar-nav>.active>a:hover {
+    color: rgb(90, 183, 14);
+    background-color: #f9f9f9;
+}
+.bs-docs-nav .navbar-toggle .icon-bar {
+    background-color: rgb(90, 183, 14);
+}
+.bs-docs-featurette {
+    border-bottom: none;
+}
+.bs-docs-featurette-title {
+    margin-bottom: 30px;
+}
+.bs-docs-booticon-outline {
+    background-color: transparent;
+    border: 1px solid #aad99d;
+    border-radius: 50%;
+}
+.btn-outline {
+    color: rgb(90, 183, 14);
+    background-color: transparent;
+    border-color: rgb(90, 183, 14);
+}
+.btn-outline:hover,
+.btn-outline:focus,
+.btn-outline:active {
+    color: #fff;
+    background-color: rgb(90, 183, 14);
+    border-color: rgb(90, 183, 14);
+}
+.nav-pills>li.active>a,
+.nav-pills>li.active>a:hover,
+.nav-pills>li.active>a:focus {
+    background-color: rgb(90, 183, 14);
+}
+a {
+    color: rgb(90, 183, 14);
+    text-decoration: none;
+}
+a:hover,
+a:focus {
+    color: rgb(90, 183, 14);
+    text-decoration: underline;
+}
+.everit-affix {
+    margin-left: 30px;
+    margin-top: 60px;
+    width: 152px;
+}
+.affix,
+.affix-top {
+    margin-left: 30px;
+    position: static;
+    margin-top: 60px;
+}
+@media (min-width: 979px) {
+    .affix-top {
+        position: static;
+        margin-top: 60px;
+        width: 152px;
+    }
+    .affix {
+        margin-left: 30px;
+        top: 0px;
+        width: auto;
+        position: fixed;
+    }
+}
+.affix-top {
+    position: static;
+    margin-top: 60px;
+    width: 152px;
+}
+.affix-bottom {
+    position: absolute;
+    width: 152px;
+}
+.featurette-divider {
+    border-top: 1px solid #e5e5e5;
+    margin: 0;
+    padding: 0;
+}
