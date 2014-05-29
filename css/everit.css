@@ -33,6 +33,27 @@ html {
 .bs-docs-featurette-title {
     margin-bottom: 30px;
 }
+.bs-docs-featurette>.container>h2 {
+    margin-bottom: 25px;
+}
+.bs-docs-featurette>h2 {
+    margin-bottom: 25px;
+}
+.bs-docs-featurette>h3 {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    color: #555;
+}
+.bs-docs-featurette>ol {
+    margin-left: 50px;
+    margin-right: 50px;
+}
+.bs-docs-featurette>ol>li {
+    text-align: justify;
+}
+.bs-docs-featurette>ol>li>p {
+    color: #555;
+}
 .bs-docs-booticon-outline {
     background-color: transparent;
     border: 1px solid #aad99d;
@@ -67,7 +88,7 @@ a:focus {
 .everit-affix {
     margin-left: 30px;
     margin-top: 60px;
-    width: 152px;
+    width: 284px;
 }
 .affix,
 .affix-top {
@@ -79,7 +100,7 @@ a:focus {
     .affix-top {
         position: static;
         margin-top: 60px;
-        width: 152px;
+        width: 284px;
     }
     .affix {
         margin-left: 30px;
@@ -88,14 +109,9 @@ a:focus {
         position: fixed;
     }
 }
-.affix-top {
-    position: static;
-    margin-top: 60px;
-    width: 152px;
-}
 .affix-bottom {
     position: absolute;
-    width: 152px;
+    width: auto;
 }
 .featurette-divider {
     border-top: 1px solid #e5e5e5;

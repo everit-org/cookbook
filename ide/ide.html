@@ -18,206 +18,351 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
     MA 02110-1301  USA -->
 <html>
+
 <head>
-<link rel="stylesheet" type="text/css" href="../common/css/base.css"></link>
+    <meta charset="utf-8">
+    <title>
+        Everit Cookbook
+    </title>
+    <link rel="icon" type="image/ico" href="../fonts/favicon.ico">
+
+    <!--    <link rel="stylesheet" type="text/css" href="../common/css/base.css">-->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/docs.min.css" rel="stylesheet">
+    <link href="../css/everit.css" rel="stylesheet">
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-15041869-4']);
+        _gaq.push(['_setDomainName', 'everit.org']);
+        _gaq.push(['_trackPageview']);
+    </script>
 </head>
 
-<body>
-	<h1><a name="Development tools (installation and usage)">Development tools (installation and usage)</a></h1>
-	
-	<h2><a name="Table of Contents">Table of Contents</a></h2>
-	<ul>
-			<li><a href="#Table of Contents">Table of Contents</a></li>
-			<li><a href="#Content of the tutorial">Content of the tutorial</a></li>
-			<li><a href="#Step 1: Installing Java">Step 1: Installing Java</a>
-					<ul>
-							<li><a href="#Installing Java on Linux">Installing Java on Linux</a></li>
-							<li><a href="#Installing Java on Windows">Installing Java on Windows</a></li>
-					</ul></li>
-			<li><a href="#Step 2: Installing Maven">Step 2: Installing Maven</a></li>
-			<li><a href="#Step 3: Installing Eclipse">Step 3: Installing Eclipse</a>
-					<ul>
-							<li><a href="#Customize the Java editor">Customize the Java editor</a></li>					
-							<li><a href="#Configuring Java formatter">Configuring Java formatter</a></li>
-							<li><a href="#Configuring 'Clean up and Save Actions'">Configuring 'Clean up and Save Actions'</a></li>					
-							<li><a href="#Configuring the XML/HTML formatter">Configuring the XML/HTML formatter</a></li>					
-							<li><a href="#Setting up Checkstyle">Setting up Checkstyle</a></li>																					
-					</ul></li>			
-	</ul>
-	
-	<h2><a name="Content of the tutorial">Content of the tutorial</a></h2>
-	<p>The aim of this tutorial is to describe how to get started with
-		the development tools we use at Everit. Please follow each step
-		carefully! Do not worry if you do not know any of the technologies,
-		they will be introduced in later chapters. When reading this section,
-		please focus on the IDE, its settings and its usage only.</p>
+<body class="bs-docs-home" data-spy="scroll" data-target="#affix-nav">
+    <a class="sr-only" href="#content">Skip to main content</a>
+    <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="../index.html" class="navbar-brand">Index</a>
+            </div>
+            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="https://github.com/everit-org">Sources</a>
+                    </li>
+                    <li>
+                        <a href="http://www.everit.org/">Community</a>
+                    </li>
 
-	<h2><a name="Step 1: Installing Java">Step 1: Installing Java</a></h2>
-	<p>
-		Download <a
-			href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle
-			Java SDK 7</a>. In case you prefer id, you can download OpenJDK as well.
-		Note that as soon as a stable version of Java 8 is available, we will
-		migrate all our components to it. The reason is that Java 8 will
-		introduce <a
-			href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Lambda
-			expressions</a> that will allow us to replace all our anonymous classes
-		in our codes.
-	</p>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="http://www.everit.biz" target="_blank">Enterprise</a>
+                    </li>
+                    <li><a href="http://everitorg.wordpress.com/" target="_blank">Blog</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-	<h3><a name="Installing Java on Linux">Installing Java on Linux</a></h3>
+    <div class="bs-docs-masthead everit-header" id="content" role="main">
+        <div class="container">
+            <span class="bs-docs-booticon bs-docs-booticon-lg bs-docs-booticon-outline">
+                <img class="logo" src="../fonts/sbz_e.svg" alt="E"> 
+            </span>
+            <p class="lead">Development tools (installation and usage)</p>
+        </div>
+    </div>
 
-	<p>On Linux, the newest OpenJDK package has to be downloaded and
-		installed from the repository of the given Linux distribution.</p>
+    <div class="container">
+        <div class="col-md-10">
+            <div class="bs-docs-featurette" id="content_of_tutorial">
+                <h2>Content of the tutorial</h2>
+                <p>The aim of this tutorial is to describe how to get started with the development tools we use at Everit. Please follow each step carefully! Do not worry if you do not know any of the technologies, they will be introduced in later chapters. When reading this section, please focus on the IDE, its settings and its usage only.</p>
+            </div>
+            <hr class="featurette-divider">
+            <div class="bs-docs-featurette" id="installing_java">
+                <h2>Step 1: Installing Java</h2>
+                <p>
+                    Download <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle
+			Java SDK 7</a>. In case you prefer id, you can download OpenJDK as well. Note that as soon as a stable version of Java 8 is available, we will migrate all our components to it. The reason is that Java 8 will introduce <a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Lambda
+			expressions</a> that will allow us to replace all our anonymous classes in our codes.
+                </p>
 
-	<h3><a name="Installing Java on Windows">Installing Java on Windows</a></h3>
-	<ol>
-		<li><p>
-				Download the latest Java SDK from <a href="http://www.oracle.com">http://www.oracle.com</a>.
-				In case your system is 64bit compatible, it is recommended to
-				download the x64 version.
-			</p></li>
-		<li><p>Install Java by running the exe file you downloaded.
-				Normally, you have to press "next", "next" and "finish". The default
-				installation path of java is "c:/Program Files/java".</p></li>
-		<li><p>
-				Add the <a
-					href="http://en.wikipedia.org/wiki/Environment_variable#Microsoft_Windows">environment
-					variable</a> "JAVA_HOME" with the value of the location of your Java
-				instance. Do not put slash after the last character of the file path!
-			</p></li>
-		<li><p>Extend the PATH environment variable with
-				"%JAVA_HOME%\bin;". You should put this before all the other values
-				of PATH. The reason is that a java.exe is created in the directory
-				c:\Windows\System32 after installation. In case a JRE is installed
-				with a newer version, this java.exe will be replaced. If the
-				c:\Windows\System32 folder is before the %JAVA_HOME%\bin value in
-				the PATH environment variable, it may happen that the first java.exe
-				in the PATH is different from the one located in JAVA_HOME. This
-				would cause a lot of inconveniences.</p></li>
-	</ol>
+                <h3 id="java_on_linux">Installing Java on Linux</h3>
 
-	<h2><a name="Step 2: Installing Maven">Step 2: Installing Maven</a></h2>
+                <p>On Linux, the newest OpenJDK package has to be downloaded and installed from the repository of the given Linux distribution.</p>
 
-	<p>Maven is the build tool Everit projects are compiled with. It
-		can be installed as described below:</p>
-	<ol>
-		<li><p>
-				Download the latest stable build of Maven from <a
-					href="http://maven.apache.org">http://maven.apache.org</a>
-			</p></li>
-		<li><p>Unzip maven into a directory of your choice</p></li>
-		<li><p>In windows:</p>
-			<ul>
-				<li><p>Add M2_HOME to the environment variables where the
-						value is the path of the folder of your Maven installation,
-						without a slash after the last character of the file path. 
-						Do not worry if you use Maven3, the name of the environment 
-						variable is still M2_HOME.</p></li>
-				<li><p>Append the value of the PATH environment variable with
-						"%M2_HOME%\bin"</p></li>
-			</ul>
-			<p>In Linux: Create a symbolic link that points to the mvn script
-				file at /usr/local/bin</p></li>
-	</ol>
+                <h3 id=java_on_windows>Installing Java on Windows</h3>
+                <ol>
+                    <li>
+                        <p>
+                            Download the latest Java SDK from <a href="http://www.oracle.com">http://www.oracle.com</a>. In case your system is 64bit compatible, it is recommended to download the x64 version.
+                        </p>
+                    </li>
+                    <li>
+                        <p>Install Java by running the exe file you downloaded. Normally, you have to press "next", "next" and "finish". The default installation path of java is "c:/Program Files/java".</p>
+                    </li>
+                    <li>
+                        <p>
+                            Add the <a href="http://en.wikipedia.org/wiki/Environment_variable#Microsoft_Windows">environment
+					variable</a> "JAVA_HOME" with the value of the location of your Java instance. Do not put slash after the last character of the file path!
+                        </p>
+                    </li>
+                    <li>
+                        <p>Extend the PATH environment variable with "%JAVA_HOME%\bin;". You should put this before all the other values of PATH. The reason is that a java.exe is created in the directory c:\Windows\System32 after installation. In case a JRE is installed with a newer version, this java.exe will be replaced. If the c:\Windows\System32 folder is before the %JAVA_HOME%\bin value in the PATH environment variable, it may happen that the first java.exe in the PATH is different from the one located in JAVA_HOME. This would cause a lot of inconveniences.</p>
+                    </li>
+                </ol>
+            </div>
+            <hr class="featurette-divider">
+            <div class="bs-docs-featurette" id="installing_maven">
+                <h2>Step 2: Installing Maven</h2>
 
-	<h2><a name="Step 3: Installing Eclipse">Step 3: Installing Eclipse</a></h2>
-	<p>
-		Download the latest stable version of <a
-			href="http://www.eclipse.org/downloads/">Eclipse</a>. You will need
-		the "Eclipse IDE for Java EE developers" version. It is a platform
-		dependent ZIP file that you can uncompress into any folder. You can
-		start Eclipse with the binary file located in the root directory of
-		Eclipse (eclipse.exe in Windows or eclipse in Linux).
-	</p>
+                <p>Maven is the build tool Everit projects are compiled with. It can be installed as described below:</p>
+                <ol>
+                    <li>
+                        <p>
+                            Download the latest stable build of Maven from <a href="http://maven.apache.org">http://maven.apache.org</a>
+                        </p>
+                    </li>
+                    <li>
+                        <p>Unzip maven into a directory of your choice</p>
+                    </li>
+                    <li>
+                        <p>In windows:</p>
+                        <ul>
+                            <li>
+                                <p>Add M2_HOME to the environment variables where the value is the path of the folder of your Maven installation, without a slash after the last character of the file path. Do not worry if you use Maven3, the name of the environment variable is still M2_HOME.</p>
+                            </li>
+                            <li>
+                                <p>Append the value of the PATH environment variable with "%M2_HOME%\bin"
+                                </p>
+                            </li>
+                        </ul>
+                        <p>In Linux: Create a symbolic link that points to the mvn script file at /usr/local/bin</p>
+                    </li>
+                </ol>
+            </div>
+            <hr class="featurette-divider">
+            <div class="bs-docs-featurette" id="installing_eclipse">
+                <h2>Step 3: Installing Eclipse</h2>
+                <p>Download the latest stable version of <a href="http://www.eclipse.org/downloads/">Eclipse</a>. You will need the "Eclipse IDE for Java EE developers" version. It is a platform dependent ZIP file that you can uncompress into any folder. You can start Eclipse with the binary file located in the root directory of Eclipse (eclipse.exe in Windows or eclipse in Linux).
+                </p>
 
-	<p>The above version of Eclipse should already contain the Git and
-		the M2E Eclipse plugins, which are necessary to continue this tutorial.</p>
+                <p>The above version of Eclipse should already contain the Git and the M2E Eclipse plugins, which are necessary to continue this tutorial.</p>
 
-	<h3><a name="Customize the Java editor">Customize the Java editor</a></h3>
-	<p>To set up the following preferences is strongly recommended, but it is not required only if one wishes to 
-		contribute to the codes written by Everit.</p>
-	<ol>
-		<li><p>Click the Window/Preferences menu item in the Eclipse menu bar.</p></li>
-		<li><p>Type "Text Editors" in the "type filter text" field and click "Text Editors".</p></li>
-		<li><p>Tick "Show print margin" in the "Text Editors" menu and set the value of "Print margin column" to 120.</p></li>
-		<li><p>Tick "Show line numbers".</p></li>
-		<li><p>Click "Apply" and then "OK".</p><img class="screenshot" src="java-editor.png" /></li>
-		<li><p>You may use the "ctrl+shift+f" keyboard shortcut to format codes automatically.</p></li>
-	</ol>
+                <h3 id="cust_java_editor">Customize the Java editor</h3>
+                <p>To set up the following preferences is strongly recommended, but it is not required only if one wishes to contribute to the codes written by Everit.</p>
+                <ol>
+                    <li>
+                        <p>Click the Window/Preferences menu item in the Eclipse menu bar.</p>
+                    </li>
+                    <li>
+                        <p>Type "Text Editors" in the "type filter text" field and click "Text Editors".</p>
+                    </li>
+                    <li>
+                        <p>Tick "Show print margin" in the "Text Editors" menu and set the value of "Print margin column" to 120.</p>
+                    </li>
+                    <li>
+                        <p>Tick "Show line numbers".</p>
+                    </li>
+                    <li>
+                        <p>Click "Apply" and then "OK".</p>
+                        <img class="img-responsive" src="java-editor.png" />
+                    </li>
+                    <li>
+                        <p>You may use the "ctrl+shift+f" keyboard shortcut to format codes automatically.</p>
+                    </li>
+                </ol>
 
 
-	<h3><a name="Configuring Java formatter">Configuring Java formatter</a></h3>
-	<p>To set up the following preferences is strongly recommended, but it is not required only if one wishes to 
-		contribute to the codes written by Everit.</p>
-	<ol>
-		<li><p>Use "Save link as.." to download the following file containing the required formatter settings:</p>
-		<a href="https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources/everit-eclipseformatter.xml">
-			everit-eclipseformatter.xml</a></li>	
-		<li><p>Click the Window/Preferences menu item in the Eclipse menu bar.</p></li>
-		<li><p>Type "formatter" in the "type filter text" field and select "Java/Code Style/Formatter" menu item.</p></li>
-		<li><p>Click the "Import" button and select the previously downloaded file.</p></li>
-		<li><p>Click "OK" to make the above file the default formatter.</p>
-					<img class="screenshot" src="formatter.png" /></li>
-	</ol>		
+                <h3 id="conf_java_formatter">Configuring Java formatter</h3>
+                <p>To set up the following preferences is strongly recommended, but it is not required only if one wishes to contribute to the codes written by Everit.</p>
+                <ol>
+                    <li>
+                        <p>Use "Save link as.." to download the following file containing the required formatter settings:</p>
+                        <a href="https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources/everit-eclipseformatter.xml">
+			everit-eclipseformatter.xml</a>
+                    </li>
+                    <li>
+                        <p>Click the Window/Preferences menu item in the Eclipse menu bar.</p>
+                    </li>
+                    <li>
+                        <p>Type "formatter" in the "type filter text" field and select "Java/Code Style/Formatter" menu item.</p>
+                    </li>
+                    <li>
+                        <p>Click the "Import" button and select the previously downloaded file.</p>
+                    </li>
+                    <li>
+                        <p>Click "OK" to make the above file the default formatter.</p>
+                        <img class="img-responsive" src="formatter.png" />
+                    </li>
+                </ol>
 
-	<h3><a name="Configuring 'Clean up and Save Actions'">Configuring "Clean up and Save Actions"</a></h3>
-	<p>To set up the following preferences is strongly recommended, but it is not required only if one wishes to 
-		contribute to the codes written by Everit.</p>	
-	<ol>
-		<li><p>Use "Save link as.." to download the following file containing the required clean up and save 
-				actions settings:</p>
-		<a href="https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources
-		/everit-clean-up-and-save-actions.xml">everit-clean-up-and-save-actions.xml</a></li>	
-		<li><p>Click the Window/Preferences menu item in the Eclipse menu bar.</p></li>
-		<li><p>Type "clean up" in the "type filter text" field and select the "Java/Code Style/Clean Up" menu item.</p></li>
-		<li><p>Click the "Import" button and select the previously downloaded file.</p></li>
-		<li><p>Click "OK" to make the above file the default code cleaner.</p>
-					<img class="screenshot" src="clean-up-and-save.png" /></li>
-		<li><p>To clean up a code, click "Source/Clean Up..." when in a java file.</p></li>					
-	</ol>	 
+                <h3 id="conf_clean_save_actions">Configuring "Clean up and Save Actions"</h3>
+                <p>To set up the following preferences is strongly recommended, but it is not required only if one wishes to contribute to the codes written by Everit.</p>
+                <ol>
+                    <li>
+                        <p>Use "Save link as.." to download the following file containing the required clean up and save actions settings:</p>
+                        <a href="https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources/everit-clean-up-and-save-actions.xml">everit-clean-up-and-save-actions.xml</a>
+                    </li>
+                    <li>
+                        <p>Click the Window/Preferences menu item in the Eclipse menu bar.</p>
+                    </li>
+                    <li>
+                        <p>Type "clean up" in the "type filter text" field and select the "Java/Code Style/Clean Up" menu item.</p>
+                    </li>
+                    <li>
+                        <p>Click the "Import" button and select the previously downloaded file.</p>
+                    </li>
+                    <li>
+                        <p>Click "OK" to make the above file the default code cleaner.</p>
+                        <img class="img-responsive" src="clean-up-and-save.png" />
+                    </li>
+                    <li>
+                        <p>To clean up a code, click "Source/Clean Up..." when in a java file.</p>
+                    </li>
+                </ol>
 
-	<h3><a name="Configuring the XML/HTML formatter">Configuring the XML/HTML formatter</a></h3>
-	<p>To set up the following preferences is strongly recommended, but it is not required only if one wishes to 
-		contribute to the codes written by Everit.</p>	
-	<ol>
-		<li><p>Click the Window/Preferences menu item in the Eclipse menu bar.</p></li>
-		<li><p>Type "XML Editor" in the "type filter text" field and click "Editor".</p></li>
-		<li><p>Set "Line width" to 120.</p></li>
-		<li><p>Tick "Indent using spaces" and set its value to 2.</p></li>
-		<li><p>Click "Apply" and then "OK".</p><img class="screenshot" src="xml-editor.png" /></li>
-	</ol>
+                <h3 id="conf_xml_html_formatter">Configuring the XML/HTML formatter</h3>
+                <p>To set up the following preferences is strongly recommended, but it is not required only if one wishes to contribute to the codes written by Everit.</p>
+                <ol>
+                    <li>
+                        <p>Click the Window/Preferences menu item in the Eclipse menu bar.</p>
+                    </li>
+                    <li>
+                        <p>Type "XML Editor" in the "type filter text" field and click "Editor".</p>
+                    </li>
+                    <li>
+                        <p>Set "Line width" to 120.</p>
+                    </li>
+                    <li>
+                        <p>Tick "Indent using spaces" and set its value to 2.</p>
+                    </li>
+                    <li>
+                        <p>Click "Apply" and then "OK".</p>
+                        <img class="img-responsive" src="xml-editor.png" />
+                    </li>
+                </ol>
 
-	<h3><a name="Setting up Checkstyle">Setting up Checkstyle</a></h3>
-	<p>To set up the following preferences is strongly recommended, but it is not required only if one wishes to 
-		contribute to the codes written by Everit.</p>	
-	<ol>
-		<li><p>Click the Help/Eclipse Marketplace... menu item in the Eclipse menu bar and select the "Search" menu.</p></li>
-		<li><p>Type "Checkstyle" in the "Find:" field and click "Install" as shown below.</p>
-				<img class="screenshot" src="install-checkstyle.png" /></li>
-		<li><p>Select all components, click "Confirm", accept the license agreement and finish installation.</p>
-				<img class="screenshot" src="select-checkstyle-components.png" /></li>
-		<li><p>Restart Eclipse to complete installation.</p></li>
-		<li><p>Click the Window/Preferences menu item in the Eclipse menu bar.</p></li>
-		<li><p>Select "Checkstyle" in the left hand list and click "New..." in the Checkstyle menu and configure it
-				in the following manner:</p>
-				<ul>
-						<li>Type: Remote Configuration</li>
-						<li>Name: everit</li>
-						<li>Location:
-						 <a href=
-						 "https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources/everit-checkstyle.xml">
-						 https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources/everit-checkstyle.xml</a>
-						 </li>
-						<li>Leave the Username and Password fields blank.</li>
-						<li>Tick "Cache configuration file" </li>
-						<li>Click "OK"</li>
-				</ul>
-				<img class="screenshot" src="check-configuration.png" /></li>
-		<li><p>Click the "Set as Default" button after selecting "everit" in the "Global Check Configurations" list 
-						and click OK. </p><img class="screenshot" src="set-everit-as-default-checkstyle.png" /></li>
-		<li><p>Right click on a project and select "Checkstyle/Activate Checkstyle" in the drop down menu to activate
-				Checkstyle on a project.</p></li>
-	</ol>	
+                <h3 id="set_checkstyle">Setting up Checkstyle</h3>
+                <p>To set up the following preferences is strongly recommended, but it is not required only if one wishes to contribute to the codes written by Everit.</p>
+                <ol>
+                    <li>
+                        <p>Click the Help/Eclipse Marketplace... menu item in the Eclipse menu bar and select the "Search" menu.</p>
+                    </li>
+                    <li>
+                        <p>Type "Checkstyle" in the "Find:" field and click "Install" as shown below.</p>
+                        <img class="img-responsive" src="install-checkstyle.png" />
+                    </li>
+                    <li>
+                        <p>Select all components, click "Confirm", accept the license agreement and finish installation.</p>
+                        <img class="img-responsive" src="select-checkstyle-components.png" />
+                    </li>
+                    <li>
+                        <p>Restart Eclipse to complete installation.</p>
+                    </li>
+                    <li>
+                        <p>Click the Window/Preferences menu item in the Eclipse menu bar.</p>
+                    </li>
+                    <li>
+                        <p>Select "Checkstyle" in the left hand list and click "New..." in the Checkstyle menu and configure it in the following manner:</p>
+                        <ul>
+                            <li>Type: Remote Configuration</li>
+                            <li>Name: everit</li>
+                            <li>Location:<a href="https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources/everit-checkstyle.xml">https://rawgithub.com/everit-org/coding-conventions/master/src/main/resources/everit-checkstyle.xml</a>
+                            </li>
+                            <li>Leave the Username and Password fields blank.</li>
+                            <li>Tick "Cache configuration file"</li>
+                            <li>Click "OK"</li>
+                        </ul>
+                        <img class="img-responsive" src="check-configuration.png" />
+                    </li>
+                    <li>
+                        <p>Click the "Set as Default" button after selecting "everit" in the "Global Check Configurations" list and click OK.</p>
+                        <img class="img-responsive" src="set-everit-as-default-checkstyle.png" />
+                    </li>
+                    <li>
+                        <p>Right click on a project and select "Checkstyle/Activate Checkstyle" in the drop down menu to activate Checkstyle on a project.</p>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        
+<!--        Affix-->
+<div class="col-md-2">
+    <nav id="affix-nav">
+        <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350" data-offset-bottom="140">
+
+            <li><a href="#content_of_tutorial">Content of the tutorial</a>
+            </li>
+            <li><a href="#installing_java">Step 1: Installing Java</a>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#java_on_linux">Installing Java on Linux</a>
+                    </li>
+                    <li><a href="#java_on_windows">Installing Java on Windows</a>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="#installing_maven">Step 2: Installing Maven</a>
+            </li>
+            <li><a href="#installing_eclipse">Step 3: Installing Eclipse</a>
+                <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#cust_java_editor">Customize the Java editor</a>
+                    </li>
+                    <li><a href="#conf_java_formatter">Configuring Java formatter</a>
+                    </li>
+                    <li><a href="#conf_clean_save_actions">Configuring 'Clean up and Save Actions'</a>
+                    </li>
+                    <li><a href="#conf_xml_html_formatter">Configuring the XML/HTML formatter</a>
+                    </li>
+                    <li><a href="#set_checkstyle">Setting up Checkstyle</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</div>
+    </div>
+
+    <div></div>
+    <footer class="bs-docs-footer" role="contentinfo">
+        <div class="container">
+            <div class="bs-docs-social">
+                <ul class="bs-docs-social-buttons">
+                    <li class="follow-btn ">
+                        <a href="https://twitter.com/EveritOrg" class="twitter-follow-button" data-show-count="true">Follow @EveritOrg</a>
+                    </li>
+                    <li class="tweet-btn">
+                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.everit.org/">Tweet</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/everit.js "></script>
+    <script type="text/javascript">
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
 </body>
+
 </html>
