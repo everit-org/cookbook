@@ -82,12 +82,12 @@
 
     <div class="container">
         <div class="col-md-10">
-            <div class="bs-docs-featurette" id="content_of_tutorial">
+            <div class="bs-docs-featurette cookbook" id="content_of_tutorial">
                 <h2>Content of the tutorial</h2>
                 <p>The aim of this tutorial is to describe how to get started with the development tools we use at Everit. Please follow each step carefully! Do not worry if you do not know any of the technologies, they will be introduced in later chapters. When reading this section, please focus on the IDE, its settings and its usage only.</p>
             </div>
             <hr class="featurette-divider">
-            <div class="bs-docs-featurette" id="installing_java">
+            <div class="bs-docs-featurette cookbook" id="installing_java">
                 <h2>Step 1: Installing Java</h2>
                 <p>
                     Download <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle
@@ -121,7 +121,7 @@
                 </ol>
             </div>
             <hr class="featurette-divider">
-            <div class="bs-docs-featurette" id="installing_maven">
+            <div class="bs-docs-featurette cookbook" id="installing_maven">
                 <h2>Step 2: Installing Maven</h2>
 
                 <p>Maven is the build tool Everit projects are compiled with. It can be installed as described below:</p>
@@ -145,12 +145,17 @@
                                 </p>
                             </li>
                         </ul>
-                        <p>In Linux: Create a symbolic link that points to the mvn script file at /usr/local/bin</p>
+                        <p>In Linux:</p>
+                        <ul>
+                            <li>
+                                <p>Create a symbolic link that points to the mvn script file at /usr/local/bin</p>
+                            </li>
+                        </ul>
                     </li>
                 </ol>
             </div>
             <hr class="featurette-divider">
-            <div class="bs-docs-featurette" id="installing_eclipse">
+            <div class="bs-docs-featurette cookbook" id="installing_eclipse">
                 <h2>Step 3: Installing Eclipse</h2>
                 <p>Download the latest stable version of <a href="http://www.eclipse.org/downloads/">Eclipse</a>. You will need the "Eclipse IDE for Java EE developers" version. It is a platform dependent ZIP file that you can uncompress into any folder. You can start Eclipse with the binary file located in the root directory of Eclipse (eclipse.exe in Windows or eclipse in Linux).
                 </p>
@@ -174,7 +179,7 @@
                     </li>
                     <li>
                         <p>Click "Apply" and then "OK".</p>
-                        <img class="img-responsive" src="java-editor.png" alt="Java editor customization" />
+                        <img class="img-responsive img-thumbnail" src="java-editor.png" alt="Java editor customization" />
                     </li>
                     <li>
                         <p>You may use the "ctrl+shift+f" keyboard shortcut to format codes automatically.</p>
@@ -201,7 +206,7 @@
                     </li>
                     <li>
                         <p>Click "OK" to make the above file the default formatter.</p>
-                        <img class="img-responsive" src="formatter.png" alt="Configure Java formatter" />
+                        <img class="img-responsive img-thumbnail" src="formatter.png" alt="Configure Java formatter" />
                     </li>
                 </ol>
 
@@ -223,7 +228,7 @@
                     </li>
                     <li>
                         <p>Click "OK" to make the above file the default code cleaner.</p>
-                        <img class="img-responsive" src="clean-up-and-save.png" alt="Configure clean up and save actions" />
+                        <img class="img-responsive img-thumbnail" src="clean-up-and-save.png" alt="Configure clean up and save actions" />
                     </li>
                     <li>
                         <p>To clean up a code, click "Source/Clean Up..." when in a java file.</p>
@@ -247,7 +252,7 @@
                     </li>
                     <li>
                         <p>Click "Apply" and then "OK".</p>
-                        <img class="img-responsive" src="xml-editor.png" alt="Configuring XML/HTML formatter" />
+                        <img class="img-responsive img-thumbnail" src="xml-editor.png" alt="Configuring XML/HTML formatter" />
                     </li>
                 </ol>
 
@@ -259,11 +264,11 @@
                     </li>
                     <li>
                         <p>Type "Checkstyle" in the "Find:" field and click "Install" as shown below.</p>
-                        <img class="img-responsive" src="install-checkstyle.png" alt="Install Checkstyle" />
+                        <img class="img-responsive img-thumbnail" src="install-checkstyle.png" alt="Install Checkstyle" />
                     </li>
                     <li>
                         <p>Select all components, click "Confirm", accept the license agreement and finish installation.</p>
-                        <img class="img-responsive" src="select-checkstyle-components.png" alt="Confirm components" />
+                        <img class="img-responsive img-thumbnail" src="select-checkstyle-components.png" alt="Confirm components" />
                     </li>
                     <li>
                         <p>Restart Eclipse to complete installation.</p>
@@ -282,11 +287,11 @@
                             <li>Tick "Cache configuration file"</li>
                             <li>Click "OK"</li>
                         </ul>
-                        <img class="img-responsive" src="check-configuration.png" alt="Check configuration" />
+                        <img class="img-responsive img-thumbnail" src="check-configuration.png" alt="Check configuration" />
                     </li>
                     <li>
                         <p>Click the "Set as Default" button after selecting "everit" in the "Global Check Configurations" list and click OK.</p>
-                        <img class="img-responsive" src="set-everit-as-default-checkstyle.png" alt="Set default checktyle" />
+                        <img class="img-responsive img-thumbnail" src="set-everit-as-default-checkstyle.png" alt="Set default checktyle" />
                     </li>
                     <li>
                         <p>Right click on a project and select "Checkstyle/Activate Checkstyle" in the drop down menu to activate Checkstyle on a project.</p>

@@ -81,12 +81,12 @@
     </div>
     <div class="container">
         <div class="col-md-10">
-            <div class="bs-docs-featurette" id="content_of_tutorial">
+            <div class="bs-docs-featurette cookbook" id="content_of_tutorial">
                 <h2>Scope</h2>
                 <p>In this chapter, we will create a dummy project that contains nothing else, but a parent project, a sample component and a test for that component.</p>
             </div>
             <hr class="featurette-divider">
-            <div class="bs-docs-featurette" id="checking_out_from_github">
+            <div class="bs-docs-featurette cookbook" id="checking_out_from_github">
                 <h2>Step 1: Checking out the Cookbook Sample from Github</h2>
                 <p>
                     The sample application that will be developed during the chapters of this CookBook is available in a <a href="https://github.com/everit-org/cookbook-sample/">Github repository</a>. Each chapter of the book is a branch in that repository. For this chapter, we need the first branch, which is basically an empty folder. Later, it will be possible to jump between chapters, just by switching between branches.
@@ -103,7 +103,7 @@
                 </ol>
             </div>
             <hr class="featurette-divider">
-            <div class="bs-docs-featurette" id="creating_parent_project">
+            <div class="bs-docs-featurette cookbook" id="creating_parent_project">
                 <h2>Step 2: Creating the parent project</h2>
                 <ol>
                     <li>
@@ -118,7 +118,7 @@
                     </li>
                     <li>
                         <p>Select "Maven Project" from the list</p>
-                        <img class="img-responsive" src="new_maven_project.gif" alt="New Maven project screenshot" />
+                        <img class="img-responsive img-thumbnail" src="new_maven_project.gif" alt="New Maven project screenshot" />
                     </li>
                     <li>
                         <p>Click Next. On the next screen</p>
@@ -132,7 +132,7 @@
                             <li>
                                 <p>Select the folder where the Git repository was checked out to</p>
                         </ul>
-                        <img class="img-responsive" src="project_name_and_location.gif" alt="Project name and location" />
+                        <img class="img-responsive img-thumbnail" src="project_name_and_location.gif" alt="Project name and location" />
                         </li>
                         <li>
                             <p>In the next window, define the following values (you must open the Advanced menu to be able to specify everything):</p>
@@ -206,7 +206,7 @@
                 </ol>
             </div>
             <hr class="featurette-divider">
-            <div class="bs-docs-featurette" id="creating_core_project">
+            <div class="bs-docs-featurette cookbook" id="creating_core_project">
                 <h2>Step 3: Creating the core project</h2>
                 <p>The core project contains the business logic and the definition of the persistent schema it uses directly. The created parent project makes it possible to compile the sub-modules together. However, we do not want the project to inherit any settings from its parent, therefore, we will define the org.everit:oss project as the parent of the core project.
                 </p>
@@ -230,7 +230,7 @@
                                 <p>Append "/core" to the parent project folder in the location input box</p>
                             </li>
                         </ul>
-                        <img class="img-responsive" src="core_maven_project_wizard.gif" alt="Create core maven project" />
+                        <img class="img-responsive img-thumbnail" src="core_maven_project_wizard.gif" alt="Create core maven project" />
                     </li>
                     <li>
                         <p>On the next page define the following values:</p>
@@ -321,7 +321,7 @@
                 </ol>
             </div>
             <hr class="featurette-divider">
-            <div class="bs-docs-featurette" id="creating_api_in_core_project">
+            <div class="bs-docs-featurette cookbook" id="creating_api_in_core_project">
                 <h2>Step 4: Create the API in the core project</h2>
                 <p>We will implement a simple User management component that handles users with two pieces of information: name and a birth date. At this point, our database will be a simple Map in the memory.</p>
                 <ol>
@@ -403,7 +403,7 @@ public class User {
                 </ol>
             </div>
             <hr class="featurette-divider">
-            <div class="bs-docs-featurette" id="creating_test_module">
+            <div class="bs-docs-featurette cookbook" id="creating_test_module">
                 <h2>Step 5: Creating the test module</h2>
                 <p>The test module will contain the tests of the</p>
             </div>
