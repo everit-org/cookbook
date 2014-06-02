@@ -12,6 +12,7 @@ html {
     background-color: rgb(90, 183, 14);
     background-image: -webkit-linear-gradient(top, #4FA10D 0, rgb(90, 183, 14) 100%);
     background-image: linear-gradient(to bottom, #4FA10D 0, rgb(90, 183, 14) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#4FA10D', endColorstr='#5AB70E', GradientType=0);
 }
 .bs-docs-nav .navbar-brand,
 .bs-docs-nav .navbar-nav>li>a {
@@ -36,6 +37,10 @@ html {
 .bs-docs-featurette>.container>h2 {
     margin-bottom: 25px;
 }
+.container>ul {
+    list-style-type: none;
+    padding: 0;
+}
 .bs-docs-featurette>h2 {
     margin-bottom: 25px;
 }
@@ -52,6 +57,18 @@ html {
     text-align: justify;
 }
 .bs-docs-featurette>ol>li>p {
+    color: #555;
+}
+.bs-docs-featurette>ul {
+    position: relative;
+    left: 20%;
+    width: 70%;
+    align-content: center;
+}
+.bs-docs-featurette>ul>li {
+    text-align: justify;
+}
+.bs-docs-featurette>ul>li>p {
     color: #555;
 }
 .bs-docs-booticon-outline {
@@ -95,16 +112,31 @@ a:focus {
     width: 300px;
 }
 .affix-top {
-    margin-left: 30px;
     position: static;
     margin-top: 60px;
     width: auto;
 }
 .affix {
-    margin-left: 30px;
     top: 0px;
-    position: fixed;
+    position: static;
     width: auto;
+}
+.affix-bottom {
+    position: static;
+    width: auto;
+}
+@media (min-width: 979px) {
+    .affix {
+        margin-left: 30px;
+        margin-top: 60px;
+        top: 0px;
+        position: fixed;
+        width: auto;
+    }
+    .affix-bottom {
+        position: absolute;
+        width: auto;
+    }
 }
 @media (min-width: 1276px) {
     .affix-top {
@@ -112,6 +144,7 @@ a:focus {
     }
     .affix {
         min-width: 200px;
+        position: fixed;
     }
 }
 @media (min-width: 1500px) {
@@ -129,10 +162,6 @@ a:focus {
         width: auto;
     }
 }
-.affix-bottom {
-    position: absolute;
-    width: auto;
-}
 #affix-nav .nav .nav {
     display: none;
 }
@@ -144,4 +173,16 @@ a:focus {
     border-top: 1px solid #e5e5e5;
     margin: 0;
     padding: 0;
+}
+.cookbook {
+    text-align: justify;
+}
+.img-responsive {
+    margin-bottom: 25px;
+}
+#affix-nav>.nav>li>a {
+    padding: 8px 13px;
+}
+#affix-nav>.nav>li>ul>li>a {
+    padding: 8px 13px;
 }
