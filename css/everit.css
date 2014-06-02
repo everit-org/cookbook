@@ -180,3 +180,9 @@ a:focus {
 .img-responsive {
     margin-bottom: 25px;
 }
+#affix-nav>.nav>li>a {
+    padding: 8px 13px;
+}
+#affix-nav>.nav>li>ul>li>a {
+    padding: 8px 13px;
+}
