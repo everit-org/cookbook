@@ -20,271 +20,277 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>
-        Everit Cookbook
-    </title>
-    <link rel="icon" type="image/ico" href="../fonts/favicon.ico">
+<meta charset="utf-8">
+<title>Everit Cookbook</title>
+<link rel="icon" type="image/ico" href="../fonts/favicon.ico">
 
-    <!--    <link rel="stylesheet" type="text/css" href="../common/css/base.css">-->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/docs.min.css" rel="stylesheet">
-    <link href="../css/everit.css" rel="stylesheet">
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-15041869-4']);
-        _gaq.push(['_setDomainName', 'everit.org']);
-        _gaq.push(['_trackPageview']);
-    </script>
+<!--    <link rel="stylesheet" type="text/css" href="../common/css/base.css">-->
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/docs.min.css" rel="stylesheet">
+<link href="../css/everit.css" rel="stylesheet">
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push([ '_setAccount', 'UA-15041869-4' ]);
+	_gaq.push([ '_setDomainName', 'everit.org' ]);
+	_gaq.push([ '_trackPageview' ]);
+</script>
 </head>
 
 <body class="bs-docs-home" data-spy="scroll" data-target="#affix-nav">
-    <a class="sr-only" href="#content">Skip to main content</a>
-    <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
-        <div class="container">
-            <div class="navbar-header">
-                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a href="../index.html" class="navbar-brand">Index</a>
-            </div>
-            <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="https://github.com/everit-org" target="_blank">Sources</a>
-                    </li>
-                    <li>
-                        <a href="http://www.everit.org/" target="_blank">Community</a>
-                    </li>
-
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="http://www.everit.biz" target="_blank">Enterprise</a>
-                    </li>
-                    <li><a href="http://everitorg.wordpress.com/" target="_blank">Blog</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <div class="bs-docs-masthead everit-header" id="content" role="main">
-        <div class="container">
-            <span class="bs-docs-booticon bs-docs-booticon-lg bs-docs-booticon-outline">
-                <img class="logo" src="../fonts/sbz_e.svg" alt="E"> 
-            </span>
-            <p class="lead">Creating the project frame</p>
-        </div>
-    </div>
+  <a class="sr-only" href="#content">Skip to main content</a>
+  <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
     <div class="container">
-        <div class="col-md-10">
-            <div class="bs-docs-featurette cookbook" id="content_of_tutorial">
-                <h2>Scope</h2>
-                <p>In this chapter, we will create a dummy project that contains nothing else, but a parent project, a sample component and a test for that component.</p>
-            </div>
-            <hr class="featurette-divider">
-            <div class="bs-docs-featurette cookbook" id="checking_out_from_github">
-                <h2>Step 1: Checking out the Cookbook Sample from Github</h2>
-                <p>
-                    The sample application that will be developed during the chapters of this CookBook is available in a <a href="https://github.com/everit-org/cookbook-sample/">Github repository</a>. Each chapter of the book is a branch in that repository. For this chapter, we need the first branch, which is basically an empty folder. Later, it will be possible to jump between chapters, just by switching between branches.
-                </p>
-                <ol>
-                    <li>
-                        <p>Start Eclipse.</p>
-                    </li>
-                    <li>
-                        <p>
-                            <a href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">Check out</a> the sample repository from the https://github.com/everit-org/cookbook-sample.git Git repository.
-                        </p>
-                    </li>
-                </ol>
-            </div>
-            <hr class="featurette-divider">
-            <div class="bs-docs-featurette cookbook" id="creating_parent_project">
-                <h2>Step 2: Creating the parent project</h2>
-                <ol>
-                    <li>
-                        <p>Start Eclipse</p>
-                    </li>
-                    <li>
-                        <p>Open the Java EE perspective (Window -&gt; Open Perspective -&gt; Other..., select Java EE from the list)
-                        </p>
-                    </li>
-                    <li>
-                        <p>On the left side, you will see the Project Explorer. Right click and select New -&gt; Project...</p>
-                    </li>
-                    <li>
-                        <p>Select "Maven Project" from the list</p>
-                        <img class="img-responsive img-thumbnail" src="new_maven_project.gif" alt="New Maven project screenshot" />
-                    </li>
-                    <li>
-                        <p>Click Next. On the next screen</p>
-                        <ul>
-                            <li>
-                                <p>Select "Create a simple project"</p>
-                            </li>
-                            <li>
-                                <p>Uncheck "Use default Workspace location" checkbox</p>
-                            </li>
-                            <li>
-                                <p>Select the folder where the Git repository was checked out to</p>
-                        </ul>
-                        <img class="img-responsive img-thumbnail" src="project_name_and_location.gif" alt="Project name and location" />
-                        </li>
-                        <li>
-                            <p>In the next window, define the following values (you must open the Advanced menu to be able to specify everything):</p>
-                            <ul>
-                                <li>
-                                    <p>Artifact</p>
-                                    <ul>
-                                        <li>
-                                            <p>
-                                                <b>Group Id:</b> org.everit.cookbook
-                                            </p>
-                                        </li>
-                                        <li>
-                                            <p>
-                                                <b>Artifact Id:</b> org.everit.cookbook.parent
-                                            </p>
-                                        </li>
-                                        <li>
-                                            <p>
-                                                <b>Version: </b> 1.0.0-SNAPSHOT
-                                            </p>
-                                        </li>
-                                        <li>
-                                            <p>
-                                                <b>Packaging:</b> pom
-                                            </p>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <p>Click on the Finish button</p>
-                        </li>
-                        <li>
-                            <p>The project appears in the "Project Explorer", however, it is displayed in red. The reason is that it cannot find the parent project. To solve the problem, you have to add the following snippet to the pom.xml file below the "packaging" block:</p>
-                            <div class="source-code source-xml">
-                                <pre>
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+          <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+            class="icon-bar"></span>
+        </button>
+        <a href="../index.html" class="navbar-brand">Index</a>
+      </div>
+      <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+        <ul class="nav navbar-nav">
+          <li><a href="https://github.com/everit-org" target="_blank">Sources</a></li>
+          <li><a href="http://www.everit.org/" target="_blank">Community</a></li>
+
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://www.everit.biz" target="_blank">Enterprise</a></li>
+          <li><a href="http://everitorg.wordpress.com/" target="_blank">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="bs-docs-masthead everit-header" id="content" role="main">
+    <div class="container">
+      <span class="bs-docs-booticon bs-docs-booticon-lg bs-docs-booticon-outline"> <img class="logo"
+        src="../fonts/sbz_e.svg" alt="E">
+      </span>
+      <p class="lead">Creating the project frame</p>
+    </div>
+  </div>
+  <div class="container">
+    <div class="col-md-10">
+      <div class="bs-docs-featurette cookbook" id="content_of_tutorial">
+        <h2>Scope</h2>
+        <p>In this chapter, we will create a dummy project that contains nothing else, but a parent project, a
+          sample component and a test for that component.</p>
+      </div>
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="checking_out_from_github">
+        <h2>Step 1: Checking out the Cookbook Sample from Github</h2>
+        <p>
+          The sample application that will be developed during the chapters of this CookBook is available in a <a
+            href="https://github.com/everit-org/cookbook-sample/">Github repository</a>. Each chapter of the book is a
+          branch in that repository. For this chapter, we need the first branch, which is basically an empty folder.
+          Later, it will be possible to jump between chapters, just by switching between branches.
+        </p>
+        <ol>
+          <li>
+            <p>Start Eclipse.</p>
+          </li>
+          <li>
+            <p>
+              <a href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">Check out</a> the sample
+              repository from the https://github.com/everit-org/cookbook-sample.git Git repository.
+            </p>
+          </li>
+        </ol>
+      </div>
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="creating_parent_project">
+        <h2>Step 2: Creating the parent project</h2>
+        <ol>
+          <li>
+            <p>Start Eclipse</p>
+          </li>
+          <li>
+            <p>Open the Java EE perspective (Window -&gt; Open Perspective -&gt; Other..., select Java EE from the
+              list)</p>
+          </li>
+          <li>
+            <p>On the left side, you will see the Project Explorer. Right click and select New -&gt; Project...</p>
+          </li>
+          <li>
+            <p>Select "Maven Project" from the list</p> <img class="img-responsive img-thumbnail"
+            src="new_maven_project.gif" alt="New Maven project screenshot" />
+          </li>
+          <li>
+            <p>Click Next. On the next screen</p>
+            <ul>
+              <li>
+                <p>Select "Create a simple project"</p>
+              </li>
+              <li>
+                <p>Uncheck "Use default Workspace location" checkbox</p>
+              </li>
+              <li>
+                <p>Select the folder where the Git repository was checked out to</p>
+            </ul> <img class="img-responsive img-thumbnail" src="project_name_and_location.gif"
+            alt="Project name and location" />
+          </li>
+          <li>
+            <p>In the next window, define the following values (you must open the Advanced menu to be able to
+              specify everything):</p>
+            <ul>
+              <li>
+                <p>Artifact</p>
+                <ul>
+                  <li>
+                    <p>
+                      <b>Group Id:</b> org.everit.cookbook
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      <b>Artifact Id:</b> org.everit.cookbook.parent
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      <b>Version: </b> 1.0.0-SNAPSHOT
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      <b>Packaging:</b> pom
+                    </p>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>Click on the Finish button</p>
+          </li>
+          <li>
+            <p>The project appears in the "Project Explorer", however, it is displayed in red. The reason is that it
+              cannot find the parent project. To solve the problem, you have to add the following snippet to the pom.xml
+              file below the "packaging" block:</p>
+            <div class="source-code source-xml">
+              <pre>
   &lt;repositories&gt;
     &lt;repository&gt;
       &lt;id&gt;everit.public&lt;/id&gt;
       &lt;url&gt;http://repository.everit.biz/nexus/content/groups/public&lt;/url&gt;
     &lt;/repository&gt;
   &lt;/repositories&gt;</pre>
-                            </div>
-                            <p>In case you have a good internet connection, the project should not be red anymore.</p>
-                        </li>
-                        <li>
-                            <p>We would like to skip the parent and tests projects from the deployment and the site generation. To do that, add the following lines to the pom.xml:</p>
-                            <div class="source-code source-xml">
-                                <pre>
+            </div>
+            <p>In case you have a good internet connection, the project should not be red anymore.</p>
+          </li>
+          <li>
+            <p>We would like to skip the parent and tests projects from the deployment and the site generation. To
+              do that, add the following lines to the pom.xml:</p>
+            <div class="source-code source-xml">
+              <pre>
   &lt;properties&gt;
     &lt;maven.site.skip&gt;true&lt;/maven.site.skip&gt;
     &lt;maven.site.deploy.skip&gt;true&lt;/maven.site.deploy.skip&gt;
     &lt;maven.deploy.skip&gt;true&lt;/maven.deploy.skip&gt;
   &lt;/properties&gt;</pre>
-                            </div>
-                        </li>
-                        <li>
-                            <p>Delete the src directory, as we do not need it in the parent project.</p>
-                        </li>
-                        <li>
-                            <p>Add a file named ".gitignore" next to the pom.xml. Although we work with Eclipse, we would not like to commit any IDE related file accidentally. The content of the .gitignore file should be:</p>
-                            <div class="source-code source-xml">
-                                <pre>
+            </div>
+          </li>
+          <li>
+            <p>Delete the src directory, as we do not need it in the parent project.</p>
+          </li>
+          <li>
+            <p>Add a file named ".gitignore" next to the pom.xml. Although we work with Eclipse, we would not like
+              to commit any IDE related file accidentally. The content of the .gitignore file should be:</p>
+            <div class="source-code source-xml">
+              <pre>
 /.project
 /.settings
 </pre>
-                            </div>
-                        </li>
-                </ol>
             </div>
-            <hr class="featurette-divider">
-            <div class="bs-docs-featurette cookbook" id="creating_core_project">
-                <h2>Step 3: Creating the core project</h2>
-                <p>The core project contains the business logic and the definition of the persistent schema it uses directly. The created parent project makes it possible to compile the sub-modules together. However, we do not want the project to inherit any settings from its parent, therefore, we will define the org.everit:oss project as the parent of the core project.
-                </p>
-                <ol>
-                    <li>
-                        <p>In the project explorer, click on the org.everit.cookbook.parent project with the right mouse button and select New -&gt; Other...</p>
-                    </li>
-                    <li>
-                        <p>Select the "Maven Project" item from the list in the new window and click "Next".</p>
-                    </li>
-                    <li>
-                        <p>On the next page</p>
-                        <ul>
-                            <li>
-                                <p>Select the "Create a simple project" checkbox</p>
-                            </li>
-                            <li>
-                                <p>Uncheck the "Use default Workspace location" checkbox</p>
-                            </li>
-                            <li>
-                                <p>Append "/core" to the parent project folder in the location input box</p>
-                            </li>
-                        </ul>
-                        <img class="img-responsive img-thumbnail" src="core_maven_project_wizard.gif" alt="Create core maven project" />
-                    </li>
-                    <li>
-                        <p>On the next page define the following values:</p>
-                        <ul>
-                            <li>
-                                <p>Artifact</p>
-                                <ul>
-                                    <li>
-                                        <p>
-                                            <b>Group Id:</b> org.everit.cookbook
-                                        </p>
-                                    </li>
-                                    <li>
-                                        <p>
-                                            <b>Artifact Id:</b> org.everit.cookbook.core
-                                        </p>
-                                    </li>
-                                    <li>
-                                        <p>
-                                            <b>Version: </b> 1.0.0-SNAPSHOT
-                                        </p>
-                                    </li>
-                                    <li>
-                                        <p>
-                                            <b>Packaging:</b> jar
-                                        </p>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p>Open the pom.xml file of the parent project again and add the following lines:</p>
-                        <div class="source-code source-xml">
-                            <pre>
+          </li>
+        </ol>
+      </div>
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="creating_core_project">
+        <h2>Step 3: Creating the core project</h2>
+        <p>The core project contains the business logic and the definition of the persistent schema it uses
+          directly. The created parent project makes it possible to compile the sub-modules together. However, we do not
+          want the project to inherit any settings from its parent, therefore, we will define the org.everit:oss project
+          as the parent of the core project.</p>
+        <ol>
+          <li>
+            <p>In the project explorer, click on the org.everit.cookbook.parent project with the right mouse button
+              and select New -&gt; Other...</p>
+          </li>
+          <li>
+            <p>Select the "Maven Project" item from the list in the new window and click "Next".</p>
+          </li>
+          <li>
+            <p>On the next page</p>
+            <ul>
+              <li>
+                <p>Select the "Create a simple project" checkbox</p>
+              </li>
+              <li>
+                <p>Uncheck the "Use default Workspace location" checkbox</p>
+              </li>
+              <li>
+                <p>Append "/core" to the parent project folder in the location input box</p>
+              </li>
+            </ul> <img class="img-responsive img-thumbnail" src="core_maven_project_wizard.gif"
+            alt="Create core maven project" />
+          </li>
+          <li>
+            <p>On the next page define the following values:</p>
+            <ul>
+              <li>
+                <p>Artifact</p>
+                <ul>
+                  <li>
+                    <p>
+                      <b>Group Id:</b> org.everit.cookbook
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      <b>Artifact Id:</b> org.everit.cookbook.core
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      <b>Version: </b> 1.0.0-SNAPSHOT
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      <b>Packaging:</b> jar
+                    </p>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>Open the pom.xml file of the parent project again and add the following lines:</p>
+            <div class="source-code source-xml">
+              <pre>
   &lt;modules&gt;
     &lt;module&gt;core&lt;/module&gt;
   &lt;/modules&gt;
 </pre>
-                        </div>
-                        <p>We have just defined that when we compile the parent project, the core should be compiled as well.</p>
-                    </li>
-                    <li>
-                        <p>
-                            <a href="../common/mini-howtos.html#git_ignore_for_eclipse_java_project">Create the .gitignore</a> file in the core project
-                        </p>
-                    </li>
-                    <li>
-                        <p>Delete the src/test/java and serc/test/resources folders from the core project (in the Project Explorer view as it will change the project build properties as well) as tests will be in a separate module.</p>
-                    </li>
-                    <li>
-                        <p>Open the pom.xml file of the core project and insert the following snippet after the version line:</p>
-                        <div class="source-code source-xml">
-                            <pre>
+            </div>
+            <p>We have just defined that when we compile the parent project, the core should be compiled as well.</p>
+          </li>
+          <li>
+            <p>
+              <a href="../common/mini-howtos.html#git_ignore_for_eclipse_java_project">Create the .gitignore</a> file in
+              the core project
+            </p>
+          </li>
+          <li>
+            <p>Delete the src/test/java and serc/test/resources folders from the core project (in the Project
+              Explorer view as it will change the project build properties as well) as tests will be in a separate
+              module.</p>
+          </li>
+          <li>
+            <p>Open the pom.xml file of the core project and insert the following snippet after the version line:</p>
+            <div class="source-code source-xml">
+              <pre>
   &lt;packaging&gt;bundle&lt;/packaging&gt;
  
   &lt;build&gt;
@@ -307,39 +313,43 @@
       &lt;/plugin&gt;
     &lt;/plugins&gt;
   &lt;/build&gt;</pre>
-                        </div>
-                    </li>
-                    <li>
-                        <p>
-                            Add the <a href="../common/mini-howtos.html#ds_and_metatype_in_pom">Declarative Services and Metatype
-          codegenerator configuration fragment</a> to the pom.xml of the core project.
-                        </p>
-                    </li>
-                    <li>
-                        <p>Due to the reason that Maven settings have been changed, the project has got errors. To solve them, press the right mouse button on the project in the Project Explorer and select "Maven -&gt; Update Project...". In the new window, select the Ok button.</p>
-                    </li>
-                </ol>
             </div>
-            <hr class="featurette-divider">
-            <div class="bs-docs-featurette cookbook" id="creating_api_in_core_project">
-                <h2>Step 4: Create the API in the core project</h2>
-                <p>We will implement a simple User management component that handles users with two pieces of information: name and a birth date. At this point, our database will be a simple Map in the memory.</p>
-                <ol>
-                    <li>
-                        <p>Create the User DTO class:</p>
-                        <ul>
-                            <li>
-                                <p>Create a class named User in the src/main/java source directory of the core project.</p>
-                            </li>
-                            <li>
-                                <p>
-                                    <a href="../common/mini-howtos.html#creating_a_property">Create three properties</a> in the class: long userId, String name, Date birthDate.
-                                </p>
-                            </li>
-                            <li>
-                                <p>In the end, the source of the class should look like this:</p>
-                                <div class="source-code">
-                                    <pre>
+          </li>
+          <li>
+            <p>
+              Add the <a href="../common/mini-howtos.html#ds_and_metatype_in_pom">Declarative Services and Metatype
+                codegenerator configuration fragment</a> to the pom.xml of the core project.
+            </p>
+          </li>
+          <li>
+            <p>Due to the reason that Maven settings have been changed, the project has got errors. To solve them,
+              press the right mouse button on the project in the Project Explorer and select "Maven -&gt; Update
+              Project...". In the new window, select the Ok button.</p>
+          </li>
+        </ol>
+      </div>
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="creating_api_in_core_project">
+        <h2>Step 4: Create the API in the core project</h2>
+        <p>We will implement a simple User management component that handles users with two pieces of information:
+          name and a birth date. At this point, our database will be a simple Map in the memory.</p>
+        <ol>
+          <li>
+            <p>Create the User DTO class:</p>
+            <ul>
+              <li>
+                <p>Create a class named User in the src/main/java source directory of the core project.</p>
+              </li>
+              <li>
+                <p>
+                  <a href="../common/mini-howtos.html#creating_a_property">Create three properties</a> in the class:
+                  long userId, String name, Date birthDate.
+                </p>
+              </li>
+              <li>
+                <p>In the end, the source of the class should look like this:</p>
+                <div class="source-code">
+                  <pre>
 package org.everit.cookbook.core;
 
 import java.util.Date;
@@ -377,89 +387,85 @@ public class User {
 	}
 }
 </pre>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p>Create a new interface in the core project called "org.everit.cookbook.core.UserService".</p>
-                    </li>
-                    <li>
-                        <p>Add the following functions to the interface:</p>
-                        <ul>
-                            <li>
-                                <p>long newUser(String name);</p>
-                            </li>
-                            <li>
-                                <p>long getUserNameById(String name);</p>
-                            </li>
-                        </ul>
-                        <p>In the end, the source of the interface should look like this:</p>
-                        <div class="source-code source-xml">
-                            <pre>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <p>Create a new interface in the core project called "org.everit.cookbook.core.UserService".</p>
+          </li>
+          <li>
+            <p>Add the following functions to the interface:</p>
+            <ul>
+              <li>
+                <p>long newUser(String name);</p>
+              </li>
+              <li>
+                <p>long getUserNameById(String name);</p>
+              </li>
+            </ul>
+            <p>In the end, the source of the interface should look like this:</p>
+            <div class="source-code source-xml">
+              <pre>
 </pre>
-                        </div>
-                    </li>
-                </ol>
             </div>
-            <hr class="featurette-divider">
-            <div class="bs-docs-featurette cookbook" id="creating_test_module">
-                <h2>Step 5: Creating the test module</h2>
-                <p>The test module will contain the tests of the</p>
-            </div>
-        </div>
-        <!--        Affix-->
-        <div class="col-md-2 col-sm-0 col-xs-0">
-            <nav id="affix-nav">
-                <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350" data-offset-bottom="140">
-
-                    <li class="active"><a href="#checking_out_from_github">Step 1: Checking out from Github</a>
-                    </li>
-                    <li><a href="#creating_parent_project">Step 2: Creating the parent project</a>
-                    </li>
-                    <li><a href="#creating_core_project">Step 3: Creating the core project</a>
-                    </li>
-                    <li><a href="#creating_api_in_core_project">Step 4: Create the API in the core project</a>
-                    </li>
-                    <li><a href="#creating_test_module">Step 5: Creating the test module</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+          </li>
+        </ol>
+      </div>
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="creating_test_module">
+        <h2>Step 5: Creating the test module</h2>
+        <p>The test module will contain the tests of the</p>
+      </div>
     </div>
+    <!--        Affix-->
+    <div class="col-md-2 col-sm-0 col-xs-0">
+      <nav id="affix-nav">
+        <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350"
+          data-offset-bottom="140">
 
-    <div></div>
-    <footer class="bs-docs-footer" role="contentinfo">
-        <div class="container">
-            <div class="bs-docs-social">
-                <ul class="bs-docs-social-buttons">
-                    <li class="follow-btn ">
-                        <a href="https://twitter.com/EveritOrg" class="twitter-follow-button" data-show-count="true">Follow @EveritOrg</a>
-                    </li>
-                    <li class="tweet-btn">
-                        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://www.everit.org/">Tweet</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </footer>
+          <li class="active"><a href="#checking_out_from_github">Step 1: Checking out from Github</a></li>
+          <li><a href="#creating_parent_project">Step 2: Creating the parent project</a></li>
+          <li><a href="#creating_core_project">Step 3: Creating the core project</a></li>
+          <li><a href="#creating_api_in_core_project">Step 4: Create the API in the core project</a></li>
+          <li><a href="#creating_test_module">Step 5: Creating the test module</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
 
-    <!-- Bootstrap core JavaScript
+  <div></div>
+  <footer class="bs-docs-footer" role="contentinfo">
+    <div class="container">
+      <div class="bs-docs-social">
+        <ul class="bs-docs-social-buttons">
+          <li class="follow-btn "><a href="https://twitter.com/EveritOrg" class="twitter-follow-button"
+            data-show-count="true">Follow @EveritOrg</a></li>
+          <li class="tweet-btn"><a href="https://twitter.com/share" class="twitter-share-button"
+            data-url="http://www.everit.org/">Tweet</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript
 ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../js/jquery-2.1.1.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/everit.js "></script>
-    <script type="text/javascript">
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/everit.js "></script>
+  <script type="text/javascript">
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl'
+						: 'http://www')
+						+ '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
 </body>
 
 </html>
