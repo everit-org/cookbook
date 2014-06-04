@@ -17,10 +17,4 @@
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>everit.public</id>
-      <url>http://repository.everit.biz/nexus/content/groups/public</url>
-    </repository>
-  </repositories>
 </project>
