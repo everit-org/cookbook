@@ -164,21 +164,6 @@
             <p>Click on the Finish button</p>
           </li>
           <li>
-            <p>The project appears in the "Project Explorer", however, it is displayed in red. The reason is that it
-              cannot find the parent project. To solve the problem, you have to add the following snippet to the pom.xml
-              file below the "packaging" block:</p>
-            <div class="source-code source-xml">
-              <pre>
-  &lt;repositories&gt;
-    &lt;repository&gt;
-      &lt;id&gt;everit.public&lt;/id&gt;
-      &lt;url&gt;http://repository.everit.biz/nexus/content/groups/public&lt;/url&gt;
-    &lt;/repository&gt;
-  &lt;/repositories&gt;</pre>
-            </div>
-            <p>In case you have a good internet connection, the project should not be red anymore.</p>
-          </li>
-          <li>
             <p>We would like to skip the parent and tests projects from the deployment and the site generation. To
               do that, add the following lines to the pom.xml:</p>
             <div class="source-code source-xml">
@@ -350,7 +335,7 @@
                 <p>In the end, the source of the class should look like this:</p>
                 <div class="source-code">
                   <pre>
-package org.everit.cookbook.core;
+package org.everit.cookbook.api;
 
 import java.util.Date;
 
@@ -392,22 +377,24 @@ public class User {
             </ul>
           </li>
           <li>
-            <p>Create a new interface in the core project called "org.everit.cookbook.core.UserService".</p>
+            <p>Create a new interface in the core project called "org.everit.cookbook.api.UserService".</p>
           </li>
           <li>
-            <p>Add the following functions to the interface:</p>
+            <p>Add the following function to the interface:</p>
             <ul>
               <li>
-                <p>long newUser(String name);</p>
-              </li>
-              <li>
-                <p>long getUserNameById(String name);</p>
+                <p>String getUserNameById(long userId);</p>
               </li>
             </ul>
             <p>In the end, the source of the interface should look like this:</p>
             <div class="source-code source-xml">
               <pre>
-</pre>
+package org.everit.cookbook.api;
+
+public interface UserService {
+
+    String getUserNameById(long userId);
+}</pre>
             </div>
           </li>
         </ol>
