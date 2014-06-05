@@ -21,45 +21,17 @@
 
 <head>
 <meta charset="utf-8">
-<title>Everit Cookbook</title>
+<title>Everit Cookbook - Skeleton</title>
 <link rel="icon" type="image/ico" href="../fonts/favicon.ico">
 
 <!--    <link rel="stylesheet" type="text/css" href="../common/css/base.css">-->
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <link href="../css/docs.min.css" rel="stylesheet">
 <link href="../css/everit.css" rel="stylesheet">
-<script type="text/javascript">
-	var _gaq = _gaq || [];
-	_gaq.push([ '_setAccount', 'UA-15041869-4' ]);
-	_gaq.push([ '_setDomainName', 'everit.org' ]);
-	_gaq.push([ '_trackPageview' ]);
-</script>
 </head>
 
 <body class="bs-docs-home" data-spy="scroll" data-target="#affix-nav">
-  <a class="sr-only" href="#content">Skip to main content</a>
-  <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
-    <div class="container">
-      <div class="navbar-header">
-        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-          <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
-            class="icon-bar"></span>
-        </button>
-        <a href="../index.html" class="navbar-brand">Index</a>
-      </div>
-      <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-        <ul class="nav navbar-nav">
-          <li><a href="https://github.com/everit-org" target="_blank">Sources</a></li>
-          <li><a href="http://www.everit.org/" target="_blank">Community</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="http://www.everit.biz" target="_blank">Enterprise</a></li>
-          <li><a href="http://everitorg.wordpress.com/" target="_blank">Blog</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
+  {% include header.html %}
   <div class="bs-docs-masthead everit-header" id="content" role="main">
     <div class="container">
       <span class="bs-docs-booticon bs-docs-booticon-lg bs-docs-booticon-outline"> <img class="logo"
@@ -633,37 +605,8 @@ public class UserServiceTest {
   </div>
 
   <div></div>
-  <footer class="bs-docs-footer" role="contentinfo">
-    <div class="container">
-      <div class="bs-docs-social">
-        <ul class="bs-docs-social-buttons">
-          <li class="follow-btn "><a href="https://twitter.com/EveritOrg" class="twitter-follow-button"
-            data-show-count="true">Follow @EveritOrg</a></li>
-          <li class="tweet-btn"><a href="https://twitter.com/share" class="twitter-share-button"
-            data-url="http://www.everit.org/">Tweet</a></li>
-        </ul>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Bootstrap core JavaScript
-================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
-  <script src="../js/jquery-2.1.1.min.js"></script>
-  <script src="../js/bootstrap.min.js"></script>
-  <script src="../js/everit.js "></script>
-  <script type="text/javascript">
-			(function() {
-				var ga = document.createElement('script');
-				ga.type = 'text/javascript';
-				ga.async = true;
-				ga.src = ('https:' == document.location.protocol ? 'https://ssl'
-						: 'http://www')
-						+ '.google-analytics.com/ga.js';
-				var s = document.getElementsByTagName('script')[0];
-				s.parentNode.insertBefore(ga, s);
-			})();
-		</script>
+  
+  {% include footer.html %}
 </body>
 
 </html>
