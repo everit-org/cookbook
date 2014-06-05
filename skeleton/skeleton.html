@@ -195,87 +195,109 @@
         <h2>Step 3: Creating the core project</h2>
         <p>The core project contains the business logic and the definition of the persistent schema it uses
           directly. The created parent project makes it possible to compile the sub-modules together. However, we do not
-          want the project to inherit any settings from its parent, therefore, we will define the org.everit:oss project
-          as the parent of the core project.</p>
-        <ol>
-          <li>
-            <p>In the project explorer, click on the org.everit.cookbook.parent project with the right mouse button
-              and select New -&gt; Other...</p>
-          </li>
-          <li>
-            <p>Select the "Maven Project" item from the list in the new window and click "Next".</p>
-          </li>
-          <li>
-            <p>On the next page</p>
-            <ul>
-              <li>
-                <p>Select the "Create a simple project" checkbox</p>
-              </li>
-              <li>
-                <p>Uncheck the "Use default Workspace location" checkbox</p>
-              </li>
-              <li>
-                <p>Append "/core" to the parent project folder in the location input box</p>
-              </li>
-            </ul> <img class="img-responsive img-thumbnail" src="core_maven_project_wizard.gif"
-            alt="Create core maven project" />
-          </li>
-          <li>
-            <p>On the next page define the following values:</p>
-            <ul>
-              <li>
-                <p>Artifact</p>
-                <ul>
-                  <li>
-                    <p>
-                      <b>Group Id:</b> org.everit.cookbook
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      <b>Artifact Id:</b> org.everit.cookbook.core
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      <b>Version: </b> 1.0.0-SNAPSHOT
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      <b>Packaging:</b> jar
-                    </p>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p>Open the pom.xml file of the parent project again and add the following lines:</p>
-            <div class="source-code source-xml">
-              <pre>
+          want the project to inherit any settings from its parent, therefore, we will define the org.everit.config.main
+          project as the parent of the core project.</p>
+        <div class="bs-docs-featurette cookbook" id="creating_core_project__maven_module">
+          <h3>Step 3.1: Maven module</h3>
+          <ol>
+            <li>
+              <p>In the project explorer, click on the org.everit.cookbook.parent project with the right mouse
+                button and select New -&gt; Other...</p>
+            </li>
+            <li>
+              <p>Select the "Maven Project" item from the list in the new window and click "Next".</p>
+            </li>
+            <li>
+              <p>On the next page</p>
+              <ul>
+                <li>
+                  <p>Select the "Create a simple project" checkbox</p>
+                </li>
+                <li>
+                  <p>Uncheck the "Use default Workspace location" checkbox</p>
+                </li>
+                <li>
+                  <p>Append "/core" to the parent project folder in the location input box</p>
+                </li>
+              </ul> <img class="img-responsive img-thumbnail" src="core_maven_project_wizard.gif"
+              alt="Create core maven project" />
+            </li>
+            <li>
+              <p>On the next page define the following values:</p>
+              <ul>
+                <li>
+                  <p>Artifact</p>
+                  <ul>
+                    <li>
+                      <p>
+                        <b>Group Id:</b> org.everit.cookbook
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        <b>Artifact Id:</b> org.everit.cookbook.core
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        <b>Version: </b> 1.0.0-SNAPSHOT
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        <b>Packaging:</b> jar
+                      </p>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <p>Parent project</p>
+                  <ul>
+                    <li>
+                      <p>
+                        <b>Group Id:</b> org.everit.config
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        <b>Artifact Id:</b> org.everit.config.main
+                      </p>
+                    </li>
+                    <li>
+                      <p>
+                        <b>Version: </b> 6.0.1
+                      </p>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <p>Open the pom.xml file of the parent project again and add the following lines:</p>
+              <div class="source-code source-xml">
+                <pre>
   &lt;modules&gt;
     &lt;module&gt;core&lt;/module&gt;
   &lt;/modules&gt;
 </pre>
-            </div>
-            <p>We have just defined that when we compile the parent project, the core should be compiled as well.</p>
-          </li>
-          <li>
-            <p>
-              <a href="../common/mini-howtos.html#git_ignore_for_eclipse_java_project">Create the .gitignore</a> file in
-              the core project
-            </p>
-          </li>
-          <li>
-            <p>Delete the src/test/java and serc/test/resources folders from the core project (in the Project
-              Explorer view as it will change the project build properties as well) as tests will be in a separate
-              module.</p>
-          </li>
-          <li>
-            <p>Open the pom.xml file of the core project and insert the following snippet after the version line:</p>
-            <div class="source-code source-xml">
-              <pre>
+              </div>
+              <p>We have just defined that when we compile the parent project, the core should be compiled as well.</p>
+            </li>
+            <li>
+              <p>
+                <a href="../common/mini-howtos.html#git_ignore_for_eclipse_java_project">Create the .gitignore</a> file
+                in the core project
+              </p>
+            </li>
+            <li>
+              <p>Delete the src/test/java and serc/test/resources folders from the core project (in the Project
+                Explorer view as it will change the project build properties as well) as tests will be in a separate
+                module.</p>
+            </li>
+            <li>
+              <p>Open the pom.xml file of the core project and insert the following snippet after the version line:</p>
+              <div class="source-code source-xml">
+                <pre>
   &lt;packaging&gt;bundle&lt;/packaging&gt;
  
   &lt;build&gt;
@@ -298,113 +320,295 @@
       &lt;/plugin&gt;
     &lt;/plugins&gt;
   &lt;/build&gt;</pre>
-            </div>
-          </li>
-          <li>
-            <p>
-              Add the <a href="../common/mini-howtos.html#ds_and_metatype_in_pom">Declarative Services and Metatype
-                codegenerator configuration fragment</a> to the pom.xml of the core project.
-            </p>
-          </li>
-          <li>
-            <p>Due to the reason that Maven settings have been changed, the project has got errors. To solve them,
-              press the right mouse button on the project in the Project Explorer and select "Maven -&gt; Update
-              Project...". In the new window, select the Ok button.</p>
-          </li>
-        </ol>
-      </div>
-      <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="creating_api_in_core_project">
-        <h2>Step 4: Create the API in the core project</h2>
-        <p>We will implement a simple User management component that handles users with two pieces of information:
-          name and a birth date. At this point, our database will be a simple Map in the memory.</p>
-        <ol>
-          <li>
-            <p>Create the User DTO class:</p>
-            <ul>
-              <li>
-                <p>Create a class named User in the src/main/java source directory of the core project.</p>
-              </li>
-              <li>
-                <p>
-                  <a href="../common/mini-howtos.html#creating_a_property">Create three properties</a> in the class:
-                  long userId, String name, Date birthDate.
-                </p>
-              </li>
-              <li>
-                <p>In the end, the source of the class should look like this:</p>
-                <div class="source-code">
-                  <pre>
-package org.everit.cookbook.api;
-
-import java.util.Date;
-
-public class User {
-
-	private long userId;
-
-	private String name;
-
-	private Date birthDate;
-
-	public Date getBirthDate() {
-		return birthDate;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public long getUserId() {
-		return userId;
-	}
-
-	public void setBirthDate(final Date birthDate) {
-		this.birthDate = birthDate;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	public void setUserId(final long userId) {
-		this.userId = userId;
-	}
-}
-</pre>
-                </div>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <p>Create a new interface in the core project called "org.everit.cookbook.api.UserService".</p>
-          </li>
-          <li>
-            <p>Add the following function to the interface:</p>
-            <ul>
-              <li>
-                <p>String getUserNameById(long userId);</p>
-              </li>
-            </ul>
-            <p>In the end, the source of the interface should look like this:</p>
-            <div class="source-code source-xml">
-              <pre>
+              </div>
+            </li>
+            <li>
+              <p>
+                Add the <a href="../common/mini-howtos.html#ds_and_metatype_in_pom">Declarative Services and
+                  Metatype codegenerator configuration fragment</a> to the pom.xml of the core project.
+              </p>
+            </li>
+            <li>
+              <p>Due to the reason that Maven settings have been changed, the project has got errors. To solve them,
+                press the right mouse button on the project in the Project Explorer and select "Maven -&gt; Update
+                Project...". In the new window, select the Ok button.</p>
+            </li>
+          </ol>
+        </div>
+        <div class="bs-docs-featurette cookbook" id="creating_api_in_core_project">
+          <h3>Step 3.2: Soiurce code</h3>
+          <p>We will implement a simple User management component that handles users with two pieces of information:
+            name and a birth date. At this point, our database will be a simple Map in the memory.</p>
+          <ol>
+            <li>
+              <p>Create a new interface in the core project called "org.everit.cookbook.api.UserService".</p>
+            </li>
+            <li>
+              <p>We leave this interface empty. Functions will be implemented in the next chapter.</p>
+            </li>
+          </ol>
+          <p>In the end, the source of the interface should look like this:</p>
+          <div class="source-code source-xml">
+            <pre>
 package org.everit.cookbook.api;
 
 public interface UserService {
 
-    String getUserNameById(long userId);
 }</pre>
-            </div>
-          </li>
-        </ol>
+          </div>
+        </div>
       </div>
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="creating_test_module">
-        <h2>Step 5: Creating the test module</h2>
-        <p>The test module will contain the tests of the</p>
+        <h2>Step 4: Creating the test module</h2>
+        <p>The test module will contain the integration and/or unit tests for the core module. The tests are
+          separated into a different maven module as they should be placed into a separate OSGi bundle. In this step, a
+          "Hello world" test will be created.</p>
+        <div class="bs-docs-featurette cookbook" id="creating_test_module__maven_module">
+          <h3>Step 4.1: Maven module</h3>
+          <ol>
+            <li>
+              <p>In the project explorer, click on the org.everit.cookbook.parent project with the right mouse
+                button and select New -&gt; Other...</p>
+            </li>
+            <li>
+              <p>
+                Select the <strong>Maven Module</strong> item from the list in the new window and click "Next".
+              </p>
+            </li>
+            <li>
+              <p>On the next page</p>
+              <ul>
+                <li>
+                  <p>Select the "Create a simple project" checkbox</p>
+                </li>
+                <li>
+                  <p>
+                    Write <strong>tests</strong> to the <i>Module name</i> field.
+                  </p> <img class="img-responsive img-thumbnail" src="test_maven_module_creation_1.png"
+                  alt="Create Test maven module" />
+                </li>
+                <li><p>Click Next</p></li>
+              </ul>
+            </li>
+            <li>
+              <p>
+                On the next page open the <i>Advanced</i> part and select the <i>[groupId].[artifactId]"</i> Naming
+                template.
+              </p> <img class="img-responsive img-thumbnail" src="test_maven_module_creation_2.png"
+              alt="Selecting the right naming template" />
+            </li>
+            <li><p>
+                The <i>Tests</i> project is imported into your Eclipse with its full name. However, the ArtifactId does
+                not match the naming convention of the previous modules. Open the pom file of the <i>Tests</i> project
+                and replace the value of the <i>artifactId</i> with "org.everit.cookbook.tests".
+              </p></li>
+            <li>
+              <p>
+                <a href="../common/mini-howtos.html#git_ignore_for_eclipse_java_project">Create the .gitignore</a> file
+                in the core project
+              </p>
+            </li>
+            <li><p>Add the core project as a dependency of the test project. You can do it in several ways. One
+                of the most refactor-safe way is the following:</p>
+              <div class="source-code source-xml">
+                <pre>
+&lt;dependency&gt;
+  &lt;groupId&gt;${project.groupId}&lt;/groupId&gt;
+  &lt;artifactId&gt;${project.groupId}.core&lt;/artifactId&gt;
+  &lt;version&gt;${project.version}&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+              </div></li>
+            <li>
+              <p>
+                Delete the src/test/java and serc/test/resources folders from the <i>tests</i> module.
+              </p>
+            </li>
+            <li>
+              <p>
+                Open the pom.xml file of the <i>tests</i> project and insert the following snippet after the <i>artifactId</i>
+                line:
+              </p>
+              <div class="source-code source-xml">
+                <pre>
+  &lt;packaging&gt;bundle&lt;/packaging&gt;
+ 
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+        &lt;artifactId&gt;maven-bundle-plugin&lt;/artifactId&gt;
+        &lt;version&gt;2.4.0&lt;/version&gt;
+
+        &lt;extensions&gt;true&lt;/extensions&gt;
+        &lt;configuration&gt;
+          &lt;instructions&gt;
+            &lt;Bundle-SymbolicName&gt;${project.artifactId}&lt;/Bundle-SymbolicName&gt;
+            &lt;Import-Package&gt;
+              *
+            &lt;/Import-Package&gt;
+            &lt;Export-Package /&gt;
+            <strong>&lt;EOSGi-TestNum&gt;0&lt;/EOSGi-TestNum&gt;</strong>
+          &lt;/instructions&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;</pre>
+              </div>
+              <p>
+                Please note, that there is a new custom MANIFEST header called <i>EOSGi-TestNum</i>. The test runner
+                solution needs that. In case of a full build, it waits until the expected number of tests are available.
+                For more information, please see the <a href="https://github.com/everit-org/osgi-testrunner">documentation
+                  of testrunner</a> module.
+              </p>
+            </li>
+            <li>
+              <p>
+                Add the <a href="../common/mini-howtos.html#ds_and_metatype_in_pom">Declarative Services and
+                  Metatype codegenerator configuration fragment</a> to the pom.xml of the <i>tests</i> project.
+              </p>
+            </li>
+            <li>
+              <p>Due to the reason that Maven settings have been changed, the project has got errors. To solve them,
+                press the right mouse button on the project in the Project Explorer and select "Maven -&gt; Update
+                Project...". In the new window, select the Ok button.</p>
+            </li>
+            <li>
+              <p>Add the following plugin to the pom.xml file of the tests module:</p>
+              <div class="source-code source-xml">
+                <pre>
+&lt;plugin&gt;
+  &lt;groupId&gt;org.everit.osgi.dev&lt;/groupId&gt;
+  &lt;artifactId&gt;eosgi-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;2.0.5&lt;/version&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;id&gt;integration-test&lt;/id&gt;
+      &lt;phase&gt;integration-test&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;integration-test&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+  &lt;configuration&gt;
+    &lt;environments&gt;
+      &lt;environment&gt;
+        &lt;id&gt;felixtest&lt;/id&gt;
+        &lt;framework&gt;felix&lt;/framework&gt;
+      &lt;/environment&gt;
+    &lt;/environments&gt;
+  &lt;/configuration&gt;
+&lt;/plugin&gt;</pre>
+              </div>
+            </li>
+            <li>
+              <p>
+                Add the <i>Junit4 testrunner</i> dependency to the <i>tests</i> project:
+              </p>
+              <div class="source-code source-xml">
+                <pre>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.everit.osgi.dev&lt;/groupId&gt;
+  &lt;artifactId&gt;org.everit.osgi.dev.testrunner.junit4&lt;/artifactId&gt;
+  &lt;version&gt;3.0.3&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+              </div>
+              <p>This module and its dependencies will be responsible for catching your tests.</p>
+            </li>
+            <li><p>
+                Add the <i>Service Component Runtime (Declarative Services implementaiton)</i> dependency to the <i>tests</i>
+                project:
+              </p> <pre>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.scr&lt;/artifactId&gt;
+  &lt;version&gt;1.8.2&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+              <p>This is the implementation of Declarative Services. We will implement several DS components later.
+                Felix SCR is responsible for picking them up in the runtime environmnent.</p></li>
+            <li><p>
+                Run <i>"mvn clean install"</i> on your parent project to test if everything is ok
+              </p></li>
+          </ol>
+        </div>
+        <div class="bs-docs-featurette cookbook" id="#creating_test_module__test_component">
+          <h3>Step 4.1: Hello world test</h3>
+          <p>We will create our first test. It will do nothing else, but write out a "Hello world" onto the standard
+            output.</p>
+          <ol>
+            <li><p>
+                Create a new class in the tests project with the following name: <i>org.everit.cookbook.tests.UserServiceTest</i>
+              </p></li>
+            <li><p>
+                Add the <i>@Component</i> annotation to the newly created class (<i>org.apache.felix.scr.annotations.Component</i>)
+              </p></li>
+            <li><p>
+                Add the <i>@Service</i> annotation to the UserServiceTest class and pass the class type as the value to
+                the annotaiton.
+              </p></li>
+            <li><p>
+                Add the <i>@Properties</i> annotation to the UserServiceTest class with the following two properties:
+              </p>
+              <ul>
+                <li><p>eosgi.testEngine=junit4</p></li>
+                <li><p>eosgi.testId=UserServiceTest</p></li>
+              </ul></li>
+            <li><p>Add a method with the following attributes:</p>
+              <ul>
+                <li>The signature should be: <i>public void testUserCreation()</i></li>
+                <li>Annotate the method with <i>@Test</i></li>
+                <li>Write "Hello world" to the standard output in the body of the function.</li>
+              </ul>
+              <p>After this step, your class should have the following source:</p>
+              <div class="source-code source-xml">
+                <pre>
+package org.everit.cookbook.tests;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Service;
+import org.junit.Test;
+
+@Component
+@Service(UserServiceTest.class)
+@Properties({
+        @Property(name = "eosgi.testEngine", value = "junit4"),
+        @Property(name = "eosgi.testId", value = "UserServiceTest")
+})
+public class UserServiceTest {
+
+    @Test
+    public void testUserCreation() {
+        System.out.println("Hello world");
+    }
+}</pre>
+              </div></li>
+            <li><p>
+                You have one test. Open the <i>pom.xml</i> file of the <i>tests</i> project and change the value of <i>EOSGi-TestNum</i>
+                to <strong>1</strong>.
+              </p></li>
+            <li><p>
+                Run <i>"mvn clean install"</i> again and see the success of your test on the console.
+              </p>
+              <p>
+                Check the <i>tests/target/eosgi-report/felixtest</i> directory and see the logs that were created during
+                the integration-test phase of maven. You will see:
+              </p>
+              <ul>
+                <li><p>JUnit test result files. You can drag the XML and drop it onto Eclipse and you will see
+                    the results in the same way as ordinary JUnit test results are shown.</p></li>
+                <li><p>
+                    The content of standard error and standard output in log files. You will be able to find the "Hello
+                    world" line in <i>system-out.txt</i>
+                  </p></li>
+              </ul></li>
+          </ol>
+        </div>
       </div>
     </div>
+
+
     <!--        Affix-->
     <div class="col-md-2 col-sm-0 col-xs-0">
       <nav id="affix-nav">
@@ -413,9 +617,17 @@ public interface UserService {
 
           <li class="active"><a href="#checking_out_from_github">Step 1: Checking out from Github</a></li>
           <li><a href="#creating_parent_project">Step 2: Creating the parent project</a></li>
-          <li><a href="#creating_core_project">Step 3: Creating the core project</a></li>
-          <li><a href="#creating_api_in_core_project">Step 4: Create the API in the core project</a></li>
-          <li><a href="#creating_test_module">Step 5: Creating the test module</a></li>
+          <li><a href="#creating_core_project">Step 3: Creating the core project</a>
+            <ul class="nav nav-pills nav-stacked">
+              <li><a href="#creating_core_project__maven_module">Step 3.1: Maven module</a></li>
+              <li><a href="#creating_api_in_core_project">Step 3.2: Interfaces</a></li>
+            </ul></li>
+
+          <li><a href="#creating_test_module">Step 4: Creating the test module</a>
+            <ul class="nav nav-pills nav-stacked">
+              <li><a href="#creating_test_module__maven_module">Step 4.1: Maven module</a></li>
+              <li><a href="#creating_test_module__test_component">Step 4.2: Hello world test</a></li>
+            </ul></li>
         </ul>
       </nav>
     </div>
