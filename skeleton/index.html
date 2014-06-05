@@ -68,6 +68,7 @@
       <p class="lead">Creating the project frame</p>
     </div>
   </div>
+
   <div class="container">
     <div class="col-md-10">
       <div class="bs-docs-featurette cookbook" id="content_of_tutorial">
@@ -80,9 +81,9 @@
         <h2>Step 1: Checking out the Cookbook Sample from Github</h2>
         <p>
           The sample application that will be developed during the chapters of this CookBook is available in a <a
-            href="https://github.com/everit-org/cookbook-sample/">Github repository</a>. Each chapter of the book is a
-          branch in that repository. For this chapter, we need the first branch, which is basically an empty folder.
-          Later, it will be possible to jump between chapters, just by switching between branches.
+            href="https://github.com/everit-org/cookbook/">Github repository</a>. Each chapter of the book is a branch
+          in that repository. For this chapter, we need the first, <i>00 - initial</i> branch, which is basically an
+          empty folder. Later, it will be possible to jump between chapters, just by switching between branches.
         </p>
         <ol>
           <li>
@@ -90,8 +91,8 @@
           </li>
           <li>
             <p>
-              <a href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">Check out</a> the sample
-              repository from the https://github.com/everit-org/cookbook-sample.git Git repository.
+              <a href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">Check out</a> the <i>00-initial</i> sample
+              repository from the https://github.com/everit-org/cookbook.git Git repository.
             </p>
           </li>
         </ol>
@@ -502,6 +503,20 @@ public interface UserService {
             </li>
             <li>
               <p>
+                Add the <a href="https://github.com/everit-org/osgi-richconsole"><i>Richconsole</i></a> dependency to the <i>tests</i> project:
+              </p>
+              <div class="source-code source-xml">
+                <pre>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.everit.osgi.dev&lt;/groupId&gt;
+  &lt;artifactId&gt;org.everit.osgi.dev.richconsole&lt;/artifactId&gt;
+  &lt;version&gt;1.2.0&lt;/version&gt;
+&lt;/dependency&gt;</pre>
+              </div>
+              <p>Richconsole will make it possible to deploy the bundles rapidly, without restarting the OSGi container.</p>
+            </li>
+            <li>
+              <p>
                 Add the <i>Junit4 testrunner</i> dependency to the <i>tests</i> project:
               </p>
               <div class="source-code source-xml">
@@ -512,7 +527,7 @@ public interface UserService {
   &lt;version&gt;3.0.3&lt;/version&gt;
 &lt;/dependency&gt;</pre>
               </div>
-              <p>This module and its dependencies will be responsible for catching your tests.</p>
+              <p>This module and its dependencies will be responsible for catching your tests in the running OSGi container.</p>
             </li>
             <li><p>
                 Add the <i>Service Component Runtime (Declarative Services implementaiton)</i> dependency to the <i>tests</i>

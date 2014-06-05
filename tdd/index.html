@@ -29,10 +29,10 @@
 <link href="../css/docs.min.css" rel="stylesheet">
 <link href="../css/everit.css" rel="stylesheet">
 <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push([ '_setAccount', 'UA-15041869-4' ]);
-  _gaq.push([ '_setDomainName', 'everit.org' ]);
-  _gaq.push([ '_trackPageview' ]);
+	var _gaq = _gaq || [];
+	_gaq.push([ '_setAccount', 'UA-15041869-4' ]);
+	_gaq.push([ '_setDomainName', 'everit.org' ]);
+	_gaq.push([ '_trackPageview' ]);
 </script>
 </head>
 
@@ -65,13 +65,45 @@
       <span class="bs-docs-booticon bs-docs-booticon-lg bs-docs-booticon-outline"> <img class="logo"
         src="../fonts/sbz_e.svg" alt="E">
       </span>
-      <p class="lead">Creating the project frame</p>
+      <p class="lead">Test Driven Development</p>
     </div>
   </div>
   <div class="container">
     <div class="col-md-10">
-    </div>
 
+      <div class="bs-docs-featurette cookbook" id="content_of_tutorial">
+        <h2>Scope</h2>
+        <p>
+          Based on the Dummy project that we have just created in the <a href="../skeleton/index.html">last chapter</a>
+          we will implement the business logic of UserService in the way that we always write the tests before the
+          implementation. If you skipped that chapter, please <a
+            href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">check out</a> the <i>01 - skeleton</i>
+          branch in eclipse and import the content as a maven project.
+        </p>
+      </div>
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="start_ide">
+        <h2>Step 1: Start the OSGi container</h2>
+        <ol>
+          <li><p>
+              Run <i>"mvn eosgi:dist"</i> on the tests project! If you ran <i>"mvn install"</i> previously and you have
+              not deleted the target folder since, you can skip this one.
+            </p></li>
+          <li><p>
+              Go to the <i>tests/target/eosgi-dist/felixtest/bin</i> folder and open a command line
+            </p></li>
+          <li><p>Start the Development OSGi container</p>
+            <ul>
+              <li><p>
+                  Windows: <i>runConsole.bat</i>
+                </p></li>
+              <li><p>
+                  Linux: <i>./runConsole.sh</i>
+                </p></li>
+            </ul></li>
+        </ol>
+      </div>
+    </div>
 
     <!--        Affix-->
     <div class="col-md-2 col-sm-0 col-xs-0">
@@ -79,19 +111,7 @@
         <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350"
           data-offset-bottom="140">
 
-          <li class="active"><a href="#checking_out_from_github">Step 1: Checking out from Github</a></li>
-          <li><a href="#creating_parent_project">Step 2: Creating the parent project</a></li>
-          <li><a href="#creating_core_project">Step 3: Creating the core project</a>
-            <ul class="nav nav-pills nav-stacked">
-              <li><a href="#creating_core_project__maven_module">Step 3.1: Maven module</a></li>
-              <li><a href="#creating_api_in_core_project">Step 3.2: Interfaces</a></li>
-            </ul></li>
-
-          <li><a href="#creating_test_module">Step 4: Creating the test module</a>
-            <ul class="nav nav-pills nav-stacked">
-              <li><a href="#creating_test_module__maven_module">Step 4.1: Maven module</a></li>
-              <li><a href="#creating_test_module__test_component">Step 4.2: Hello world test</a></li>
-            </ul></li>
+          <li class="active"><a href="#start_ide">Step 1: Start the OSGi container</a></li>
         </ul>
       </nav>
     </div>
@@ -118,17 +138,17 @@
   <script src="../js/bootstrap.min.js"></script>
   <script src="../js/everit.js "></script>
   <script type="text/javascript">
-      (function() {
-        var ga = document.createElement('script');
-        ga.type = 'text/javascript';
-        ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl'
-            : 'http://www')
-            + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl'
+						: 'http://www')
+						+ '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
 </body>
 
 </html>
