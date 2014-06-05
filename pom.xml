@@ -9,6 +9,7 @@
 
   <modules>
     <module>core</module>
+    <module>tests</module>
   </modules>
 
   <properties>
