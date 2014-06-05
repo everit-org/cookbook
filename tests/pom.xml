@@ -87,5 +87,10 @@
       <artifactId>org.everit.osgi.dev.testrunner.junit4</artifactId>
       <version>3.0.3</version>
     </dependency>
+    <dependency>
+      <groupId>org.everit.osgi.dev</groupId>
+      <artifactId>org.everit.osgi.dev.richconsole</artifactId>
+      <version>1.2.0</version>
+    </dependency>
   </dependencies>
 </project>
