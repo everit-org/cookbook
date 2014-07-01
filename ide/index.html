@@ -317,6 +317,20 @@
               activate Checkstyle on a project.</p>
           </li>
         </ol>
+
+        <h3 id="set_checkstyle">Installing m2e connectors</h3>
+        <p>To keep the target/classes directory up-to-date and having properly configured projects after a project
+          import, it a couple of m2e connectors have to be installed.</p>
+        <ol>
+          <li><p>Select Window/Preferences in your Eclipse IDE</p></li>
+          <li><p>In the preferences window, go to Maven/Discovery and click on the "Open Catalog" button</p> <img
+            class="img-responsive img-thumbnail" src="m2e-discovery-catalog.png" alt="Check configuration" /></li>
+          <li><p>In the popup window, select the <strong>buildhelper</strong> and the <strong>Tycho Configurator</strong> connectors and install them</p>
+          <img
+            class="img-responsive img-thumbnail" src="m2e-connector-buildhelper.png" alt="buildhelper m2e connector" /><img
+            class="img-responsive img-thumbnail" src="m2e-connector-tycho.png" alt="Tycho m2e connector" />
+          </li>
+        </ol>
       </div>
     </div>
 
