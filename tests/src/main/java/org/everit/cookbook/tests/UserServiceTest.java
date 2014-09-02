@@ -15,7 +15,7 @@ import org.junit.Test;
 public class UserServiceTest {
 
     @Test
-    public void testUserCreation() {
+    public void testCreateAndGetUser() {
         System.out.println("Hello world");
     }
 }
