@@ -1,4 +1,4 @@
-package org.everit.cookbook.api;
+package org.everit.cookbook;
 
 public interface UserService {
 
