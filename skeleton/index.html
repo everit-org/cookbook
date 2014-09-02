@@ -314,7 +314,7 @@
             &lt;Import-Package&gt;
               *
             &lt;/Import-Package&gt;
-            &lt;Export-Package&gt;${project.artifactId}&lt;/Export-Package&gt;
+            &lt;Export-Package&gt;$org.everit.cookbook&lt;/Export-Package&gt;
           &lt;/instructions&gt;
         &lt;/configuration&gt;
       &lt;/plugin&gt;
@@ -341,7 +341,7 @@
             name and a birth date. At this point, our database will be a simple Map in the memory.</p>
           <ol>
             <li>
-              <p>Create a new interface in the core project called "org.everit.cookbook.api.UserService".</p>
+              <p>Create a new interface in the core project called "org.everit.cookbook.UserService".</p>
             </li>
             <li>
               <p>We leave this interface empty. Functions will be implemented in the next chapter.</p>
@@ -350,7 +350,7 @@
           <p>In the end, the source of the interface should look like this:</p>
           <div class="source-code source-xml">
             <pre>
-package org.everit.cookbook.api;
+package org.everit.cookbook;
 
 public interface UserService {
 
