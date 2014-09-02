@@ -98,15 +98,13 @@
           following content:
         </p>
       </div>
-      <div class="source-code source-xml">
-        <pre>
+      <pre class="prettyprint">
 /.settings
 /target
 /.classpath
 /.project
 /.checkstyle
 </pre>
-      </div>
       <p>Based on the plugins you use in your IDE, other files should also be included in .gitignore.</p>
 
       <hr class="featurette-divider">
@@ -142,8 +140,7 @@
           is presented in the following example. To use the Felix implementation, put the following snippet into the
           pom.xml file of the project:
         </p>
-        <div class="source-code source-xml">
-          <pre>
+        <pre class="prettyprint lang-xml">
   &lt;build&gt;
     ...
     &lt;plugins&gt;
@@ -175,7 +172,6 @@
     &lt;/dependency&gt;
     ...
   &lt;/dependencies&gt;</pre>
-        </div>
         <p>This code generator (as all the others) checks the classes for annotations, extends the MANIFEST headers
           and generates the standard Declarative Services and Metatype XMLs in the target/classes folder of the project.
           This means that during runtime, the DS and Metatype technologies do not use the annotations, but only the XML
@@ -191,14 +187,11 @@
           variables are private. There are several ways to create properties. Here is an example of creating a property
           "private long fooId":</p>
         <ol>
-          <li><p>Create the member variable in the class by typing it:</p>
-            <div class="source-code source-xml">
-              <pre>
+          <li><p>Create the member variable in the class by typing it:</p> <pre class="prettyprint lang-java">
 public class Foo {
 
   <b>private long fooId;</b>
-}</pre>
-            </div></li>
+}</pre></li>
           <li><p>Generate getters and setters. You have several options:</p>
             <ul>
               <li><p>
@@ -212,9 +205,7 @@ public class Foo {
                   like to generate.
                 </p></li>
             </ul></li>
-          <li><p>The final code should look like this:</p>
-            <div class="source-code source-xml">
-              <pre>
+          <li><p>The final code should look like this:</p> <pre class="prettyprint lang-java">
 public class Foo {
 
 	private long fooId;
@@ -226,14 +217,13 @@ public class Foo {
 	public void setFooId(long fooId) {
 		this.fooId = fooId;
 	}
-}</pre>
-            </div></li>
+}</pre></li>
         </ol>
       </div>
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="start_osgi_container">
-        <h2>Step 1: Starting OSGi container</h2>
+        <h2>Starting the dev OSGi container</h2>
         <ol>
           <li><p>
               Run <i>"mvn eosgi:dist"</i> on the tests project! If you ran <i>mvn install</i> previously and you have
@@ -261,6 +251,68 @@ public class Foo {
         </ol>
       </div>
 
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="immutable_dto">
+        <h2>Implementing an immutable DTO</h2>
+        <p>There are many articles on the internet how to develop an immutable DTO. The requirements of a DTO are
+          the followings:</p>
+        <ul>
+          <li><p>A DTO should be serializable.</p></li>
+          <li><p>A DTO should be deserializable from custom formats like JSON.</p></li>
+          <li><p>A DTO should be immutable. In case a DTO is not immutable, it cannot be used by caches.</p></li>
+        </ul>
+        <p>It is hard to satisfy all of the requirements in Java (if not impossible). An almost good sample is the
+          following:</p>
+        <pre class="prettyprint lang-java">
+package test.test;
+
+import java.io.Serializable;
+
+public final class ImmutableClass implements Serializable {
+
+    private static final long serialVersionUID = -195005209277061131L;
+
+    protected OtherImmutableClass immutableProperty;
+
+    protected ImmutableClass() {
+    }
+
+    public ImmutableClass(OtherImmutableClass immutableProperty) {
+        this.immutableProperty = immutableProperty;
+    }
+
+    public OtherImmutableClass getImmutableProperty() {
+        return immutableProperty;
+    }
+}
+</pre>
+        <p>During the implementation of the class, the following rules were applied:</p>
+        <ul>
+          <li><p>
+              Implement the <i>Serializable</i> interface and generate a <i>serialVersionUID</i> constant! Technologies
+              will be able to use basic java serialization in this way that might be the fastest option to send process
+              remote objects.
+            </p></li>
+          <li><p>Use only immutable classes for property types! If it is not possible, always clone the value
+              of the property in the getter and return the cloned instance!</p></li>
+          <li><p>
+              Create a <i>protected</i> empty constructor! If there is not one, custom serializers will not be able to
+              instantiate the class. Well, they could with <a href="http://objenesis.org/">objenesis</a> but if not
+              necessary, it is not too good to use such evil tricks. Protected constructor can be used via reflection
+              without calling <i>setAccessible(true)</i>.
+            </p></li>
+          <li><p>
+              Qualify the member variables to be <i>protected</i>! The reason is the same as with constructor. They
+              should be accessible by custom serializers without using evil tricks.
+            </p></li>
+          <li><p>Qualify the class to be final! There should be no possibility to create a mutuable subclass of
+              our immutable class.</p></li>
+        </ul>
+        <p>The solution is nearly perfect. The only issue is that the properties can be modified without reflection
+          from classes that are located in the same package. Well, the one who does modification in the same package,
+          should know what he/she does.</p>
+      </div>
+
       <div></div>
       <footer class="bs-docs-footer" role="contentinfo">
         <div class="container">
@@ -281,6 +333,7 @@ public class Foo {
       <script src="../js/jquery-2.1.1.min.js"></script>
       <script src="../js/bootstrap.min.js"></script>
       <script src="../js/everit.js "></script>
+      <script src="../js/prettify/run_prettify.js"></script>
       <script type="text/javascript">
 							(function() {
 								var ga = document.createElement('script');
