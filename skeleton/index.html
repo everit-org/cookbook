@@ -21,7 +21,7 @@
 
 <head>
 <meta charset="utf-8">
-<title>Everit Cookbook</title>
+<title>Everit Cookbook - Skeleton</title>
 <link rel="icon" type="image/ico" href="../fonts/favicon.ico">
 
 <!--    <link rel="stylesheet" type="text/css" href="../common/css/base.css">-->
@@ -165,28 +165,23 @@
           </li>
           <li>
             <p>We would like to skip the parent and tests projects from the deployment and the site generation. To
-              do that, add the following lines to the pom.xml:</p>
-            <div class="source-code source-xml">
-              <pre>
+              do that, add the following lines to the pom.xml:</p> <pre class="prettyprint lang-xml">
   &lt;properties&gt;
     &lt;maven.site.skip&gt;true&lt;/maven.site.skip&gt;
     &lt;maven.site.deploy.skip&gt;true&lt;/maven.site.deploy.skip&gt;
     &lt;maven.deploy.skip&gt;true&lt;/maven.deploy.skip&gt;
   &lt;/properties&gt;</pre>
-            </div>
           </li>
           <li>
             <p>Delete the src directory, as we do not need it in the parent project.</p>
           </li>
           <li>
             <p>Add a file named ".gitignore" next to the pom.xml. Although we work with Eclipse, we would not like
-              to commit any IDE related file accidentally. The content of the .gitignore file should be:</p>
-            <div class="source-code source-xml">
-              <pre>
+              to commit any IDE related file accidentally. The content of the .gitignore file should be:</p> <pre
+              class="prettyprint">
 /.project
 /.settings
 </pre>
-            </div>
           </li>
         </ol>
       </div>
@@ -273,14 +268,12 @@
               </ul>
             </li>
             <li>
-              <p>Open the pom.xml file of the parent project again and add the following lines:</p>
-              <div class="source-code source-xml">
-                <pre>
+              <p>Open the pom.xml file of the parent project again and add the following lines:</p> <pre
+                class="prettyprint lang-xml">
   &lt;modules&gt;
     &lt;module&gt;core&lt;/module&gt;
   &lt;/modules&gt;
 </pre>
-              </div>
               <p>We have just defined that when we compile the parent project, the core should be compiled as well.</p>
             </li>
             <li>
@@ -296,8 +289,7 @@
             </li>
             <li>
               <p>Open the pom.xml file of the core project and insert the following snippet after the version line:</p>
-              <div class="source-code source-xml">
-                <pre>
+              <pre class="prettyprint lang-xml">
   &lt;packaging&gt;bundle&lt;/packaging&gt;
  
   &lt;build&gt;
@@ -320,7 +312,6 @@
       &lt;/plugin&gt;
     &lt;/plugins&gt;
   &lt;/build&gt;</pre>
-              </div>
             </li>
             <li>
               <p>
@@ -348,14 +339,12 @@
             </li>
           </ol>
           <p>In the end, the source of the interface should look like this:</p>
-          <div class="source-code source-xml">
-            <pre>
+          <pre class="prettyprint lang-java">
 package org.everit.cookbook;
 
 public interface UserService {
 
 }</pre>
-          </div>
         </div>
       </div>
       <hr class="featurette-divider">
@@ -410,15 +399,12 @@ public interface UserService {
               </p>
             </li>
             <li><p>Add the core project as a dependency of the test project. You can do it in several ways. One
-                of the most refactor-safe way is the following:</p>
-              <div class="source-code source-xml">
-                <pre>
+                of the most refactor-safe way is the following:</p> <pre class="prettyprint lang-xml">
 &lt;dependency&gt;
   &lt;groupId&gt;${project.groupId}&lt;/groupId&gt;
   &lt;artifactId&gt;${project.groupId}.core&lt;/artifactId&gt;
   &lt;version&gt;${project.version}&lt;/version&gt;
-&lt;/dependency&gt;</pre>
-              </div></li>
+&lt;/dependency&gt;</pre></li>
             <li>
               <p>
                 Delete the src/test/java and serc/test/resources folders from the <i>tests</i> module.
@@ -428,9 +414,7 @@ public interface UserService {
               <p>
                 Open the pom.xml file of the <i>tests</i> project and insert the following snippet after the <i>artifactId</i>
                 line:
-              </p>
-              <div class="source-code source-xml">
-                <pre>
+              </p> <pre class="prettyprint lang-xml">
   &lt;packaging&gt;bundle&lt;/packaging&gt;
  
   &lt;build&gt;
@@ -454,7 +438,6 @@ public interface UserService {
       &lt;/plugin&gt;
     &lt;/plugins&gt;
   &lt;/build&gt;</pre>
-              </div>
               <p>
                 Please note, that there is a new custom MANIFEST header called <i>EOSGi-TestNum</i>. The test runner
                 solution needs that. In case of a full build, it waits until the expected number of tests are available.
@@ -474,9 +457,7 @@ public interface UserService {
                 Project...". In the new window, select the Ok button.</p>
             </li>
             <li>
-              <p>Add the following plugin to the pom.xml file of the tests module:</p>
-              <div class="source-code source-xml">
-                <pre>
+              <p>Add the following plugin to the pom.xml file of the tests module:</p> <pre class="prettyprint lang-xml">
 &lt;plugin&gt;
   &lt;groupId&gt;org.everit.osgi.dev&lt;/groupId&gt;
   &lt;artifactId&gt;eosgi-maven-plugin&lt;/artifactId&gt;
@@ -499,43 +480,36 @@ public interface UserService {
     &lt;/environments&gt;
   &lt;/configuration&gt;
 &lt;/plugin&gt;</pre>
-              </div>
             </li>
             <li>
               <p>
                 Add the <a href="https://github.com/everit-org/osgi-richconsole"><i>Richconsole</i></a> dependency to
                 the <i>tests</i> project:
-              </p>
-              <div class="source-code source-xml">
-                <pre>
+              </p> <pre class="prettyprint lang-xml">
 &lt;dependency&gt;
   &lt;groupId&gt;org.everit.osgi.dev&lt;/groupId&gt;
   &lt;artifactId&gt;org.everit.osgi.dev.richconsole&lt;/artifactId&gt;
   &lt;version&gt;1.2.1&lt;/version&gt;
 &lt;/dependency&gt;</pre>
-              </div>
               <p>Richconsole will make it possible to deploy the bundles rapidly, without restarting the OSGi
                 container.</p>
             </li>
             <li>
               <p>
                 Add the <i>Junit4 testrunner</i> dependency to the <i>tests</i> project:
-              </p>
-              <div class="source-code source-xml">
-                <pre>
+              </p> <pre class="prettyprint lang-xml">
 &lt;dependency&gt;
   &lt;groupId&gt;org.everit.osgi.dev&lt;/groupId&gt;
   &lt;artifactId&gt;org.everit.osgi.dev.testrunner.junit4&lt;/artifactId&gt;
   &lt;version&gt;3.0.3&lt;/version&gt;
 &lt;/dependency&gt;</pre>
-              </div>
               <p>This module and its dependencies will be responsible for catching your tests in the running OSGi
                 container.</p>
             </li>
             <li><p>
                 Add the <i>Service Component Runtime (Declarative Services implementaiton)</i> dependency to the <i>tests</i>
                 project:
-              </p> <pre>
+              </p> <pre class="prettyprint lang-xml">
 &lt;dependency&gt;
   &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
   &lt;artifactId&gt;org.apache.felix.scr&lt;/artifactId&gt;
@@ -569,13 +543,11 @@ public interface UserService {
               </ul></li>
             <li><p>Add a method with the following attributes:</p>
               <ul>
-                <li>The signature should be: <i>public void testUserCreation()</i></li>
+                <li>The signature should be: <i>public void testCreateAndGetUser()</i></li>
                 <li>Annotate the method with <i>@Test</i></li>
                 <li>Write "Hello world" to the standard output in the body of the function.</li>
               </ul>
-              <p>After this step, your class should have the following source:</p>
-              <div class="source-code source-xml">
-                <pre>
+              <p>After this step, your class should have the following source:</p> <pre class="prettyprint lang-java">
 package org.everit.cookbook.tests;
 
 import org.apache.felix.scr.annotations.Component;
@@ -593,11 +565,10 @@ import org.junit.Test;
 public class UserServiceTest {
 
     @Test
-    public void testUserCreation() {
+    public void testCreateAndGetUser() {
         System.out.println("Hello world");
     }
-}</pre>
-              </div></li>
+}</pre></li>
             <li><p>
                 You have one test. Open the <i>pom.xml</i> file of the <i>tests</i> project and change the value of <i>EOSGi-TestNum</i>
                 to <strong>1</strong>.
@@ -667,6 +638,7 @@ public class UserServiceTest {
   <script src="../js/jquery-2.1.1.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script src="../js/everit.js "></script>
+  <script src="../js/prettify/run_prettify.js"></script>
   <script type="text/javascript">
 			(function() {
 				var ga = document.createElement('script');

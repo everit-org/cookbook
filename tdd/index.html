@@ -21,7 +21,7 @@
 
 <head>
 <meta charset="utf-8">
-<title>Everit Cookbook</title>
+<title>Everit Cookbook - Test Driven Development</title>
 <link rel="icon" type="image/ico" href="../fonts/favicon.ico">
 
 <!--    <link rel="stylesheet" type="text/css" href="../common/css/base.css">-->
@@ -80,42 +80,117 @@
             href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">check out</a> the <i>01 - skeleton</i>
           branch in eclipse and import the content as a maven project.
         </p>
+        <p>
+          If it is not started, please start the <a href="../common/mini-howtos.html#start_osgi_container">development
+            OSGi container</a>.
+        </p>
       </div>
+
       <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="start_ide">
-        <h2>Step 1: Start the OSGi container</h2>
+      <div class="bs-docs-featurette cookbook" id="create_user_dto">
+        <h2>Step 1: Creating User DTO</h2>
+        <p>It is often necessary to return the data of users. To be able to do that, a DTO class should be created.</p>
         <ol>
           <li><p>
-              Run <i>"mvn eosgi:dist"</i> on the tests project! If you ran <i>"mvn install"</i> previously and you have
-              not deleted the target folder since, you can skip this one.
+              Create an class named <i>UserDTO</i> in the core project with the package name <i>org.everit.cookbook.dto</i>
             </p></li>
-          <li><p>
-              Go to the <i>tests/target/eosgi-dist/felixtest/bin</i> folder and open a command line
-            </p></li>
-          <li><p>Start the Development OSGi container</p>
+          <li><p>Add the following read-only properties to the newly created class:</p>
             <ul>
               <li><p>
-                  Windows: <i>runConsole.bat</i>
+                  <i>long userId</i>
                 </p></li>
               <li><p>
-                  Linux: <i>./runConsole.sh</i>
+                  <i>String firstName</i>
+                </p></li>
+              <li><p>
+                  <i>String lastName</i>
                 </p></li>
             </ul></li>
+          <li><p>Create a constructor for the class that accepts the three fields</p></li>
+          <li><p>
+              Change the definition of the class to implement <i>Serializable</i>
+            </p></li>
+          <li><p>Generate a version UID for the class</p></li>
         </ol>
+        <p>In the you should get an immutable DTO class. The final source should look like the following:</p>
+
+        <pre class="prettyprint lang-java">
+package org.everit.cookbook.dto;
+
+import java.io.Serializable;
+
+public class UserDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private long userId;
+
+    private String firstName;
+
+    private String lastName;
+
+    public UserDTO(long userId, String firstName, String lastName) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+}
+</pre>
       </div>
+
       <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="start_ide">
-        <h2>Step 1: Start the OSGi container</h2>
+      <div class="bs-docs-featurette cookbook" id="define_userservice_functions">
+        <h2>Step 2: Functions of UserService</h2>
+        <p>Add the following two functions with javadoc to the UserService interface</p>
+        <ul>
+          <li><p>
+              <i>long createUser(String firstName, String lastName); // Parameters must not be null</i>
+            </p></li>
+          <li><p>
+              <i>UserDTO getUserById(long userId);</i>
+            </p></li>
+        </ul>
+        <p>In the end, the source of the UserService interface should look similar to the following:</p>
+        <pre class="prettyprint lang-java">
+package org.everit.cookbook;
+
+import org.everit.cookbook.dto.UserDTO;
+
+public interface UserService {
+
+    long createUser(String firstName, String lastName);
+    
+    UserDTO getUserById(long userId);
+}
+</pre>
       </div>
+
     </div>
+
+
 
     <!--        Affix-->
     <div class="col-md-2 col-sm-0 col-xs-0">
       <nav id="affix-nav">
         <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350"
           data-offset-bottom="140">
+          <li class="active"><a href="#content_of_tutorial">Scope</a></li>
+          <li><a href="#create_user_dto">Step 1: Creating User DTO</a></li>
+          <li><a href="#define_userservice_functions">Step 2: Functions of UserService</a></li>
 
-          <li class="active"><a href="#start_ide">Step 1: Start the OSGi container</a></li>
         </ul>
       </nav>
     </div>
@@ -141,6 +216,7 @@
   <script src="../js/jquery-2.1.1.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
   <script src="../js/everit.js "></script>
+  <script src="../js/prettify/run_prettify.js"></script>
   <script type="text/javascript">
 			(function() {
 				var ga = document.createElement('script');
