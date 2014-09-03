@@ -2,15 +2,18 @@ package org.everit.cookbook.dto;
 
 import java.io.Serializable;
 
-public class UserDTO implements Serializable {
+public final class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private long userId;
+    protected long userId;
 
-    private String firstName;
+    protected String firstName;
 
-    private String lastName;
+    protected String lastName;
+    
+    protected UserDTO() {
+    }
 
     public UserDTO(long userId, String firstName, String lastName) {
         this.userId = userId;
