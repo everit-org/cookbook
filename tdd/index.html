@@ -28,6 +28,7 @@
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 <link href="../css/docs.min.css" rel="stylesheet">
 <link href="../css/everit.css" rel="stylesheet">
+<link href="../css/terminal-emulator.css" rel="stylesheet">
 <script type="text/javascript">
 	var _gaq = _gaq || [];
 	_gaq.push([ '_setAccount', 'UA-15041869-4' ]);
@@ -80,18 +81,60 @@
             href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">check out</a> the <i>01 - skeleton</i>
           branch in eclipse and import the content as a maven project.
         </p>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="open_jacoco_coverage_view">
+        <h2>Step 0: Open JaCoCo coverage view</h2>
         <p>
-          If it is not started, please start the <a href="../common/mini-howtos.html#start_osgi_container">development
-            OSGi container</a>.
+          This step expects that the JaCoCo Eclipse plugin is installed as described in the <a
+            href="../ide/index.html#install_jacoco">Development tools</a> chapter.
         </p>
+        <ol>
+          <li><p>
+              Open the <i>pom.xml</i> file of the tests project and add <a
+                href="http://www.everit.org/eosgi-maven-plugin/index.html#jacoco_configuration">jacoco configuration</a>
+              to the <i>eosgi-maven-plugin</i>:
+            </p> <pre class="prettyprint lang-java">
+&lt;jacoco&gt;
+  &lt;includes&gt;org.everit.osgi.cookbook.*&lt;/includes&gt;
+  &lt;output&gt;$${ if (System.getenv("EOSGI_STOP_AFTER_TESTS").equals("true")) "file"; else "tcpserver"; }&lt;/output&gt;
+&lt;/jacoco&gt;</pre></li>
+          <li><p>If the development OSGi container is started, stop it.</p></li>
+          <li><p>
+              Do an <a href="http://www.everit.org/eosgi-maven-plugin/#incremental_update">incremental update</a> on the
+              OSGi container by running <i>"mvn eosgi:dist"</i> command on the <i>tests</i> project.
+            </p></li>
+          <li><p>
+              <a href="../common/mini-howtos.html#start_osgi_container">Start the development OSGi container</a>
+            </p></li>
+          <li><p>
+              Select <i>File -> Import...</i> item in Eclipse menu
+            </p></li>
+          <li><p>
+              In the popup window, type "coverage" into the search field and select the <i>Coverage Session</i> option
+            </p> <img class="img-responsive img-thumbnail" src="import_coverage-1.png" alt="Import JaCoCo Coverage" /></li>
+          <li><p>
+              On the next screen select the <i>Agent Address</i> option and click <i>Next</i>
+            </p> <img class="img-responsive img-thumbnail" src="import_coverage-2.png" alt="Import JaCoCo Coverage" /></li>
+          <li><p>
+              On the following screen select <i>scr/main/java</i> folder of <i>org.everit.cookbook.<b>core</b></i>
+              project and click Finish
+            </p> <img class="img-responsive img-thumbnail" src="import_coverage-3.png" alt="Import JaCoCo Coverage" /></li>
+        </ol>
+        <p>After finishing the steps, a new View should appear in Eclipse.</p>
+        <img class="img-responsive img-thumbnail" src="coverage_view_after_initial_import.png"
+          alt="JaCoCo Coverage View" />
+        <p>The content of the view is empty as there is no class in the specified source folder. This view can be
+          refreshed with a right click or by pushing F5 when the focus is on the view later.
       </div>
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="create_user_dto">
         <h2>Step 1: Creating User DTO</h2>
         <p>
-          Create an immutable DTO class named <i>UserDTO</i> in the core project with the package name <i>org.everit.cookbook.dto</i>
-          and the following properties:
+          Create an <a href="../common/mini-howtos.html#immutable_dto">serializable immutable DTO</a> class named <i>UserDTO</i>
+          in the core project with the package name <i>org.everit.cookbook.dto</i> and the following properties:
         </p>
         <ul>
           <li><p>
@@ -104,7 +147,7 @@
               <i>String lastName</i>
             </p></li>
         </ul>
-        <p>In the you should get an <a href="../common/mini-howtos.html#immutable_dto">immutable DTO</a> class. The final source should look like the following:</p>
+        <p>The final source should look like the following:</p>
 
         <pre class="prettyprint lang-java">
 package org.everit.cookbook.dto;
@@ -166,20 +209,124 @@ import org.everit.cookbook.dto.UserDTO;
 
 public interface UserService {
 
+    /**
+     * Creates a new user.
+     * 
+     * @param firstName
+     *            The first name of the user. Must not be null.
+     * @param lastName
+     *            The last name of the user. Must not be null.
+     * @return The id of the newly created user.
+     * @throws NullPointerException
+     *             if any of the parameter is null.
+     */
     long createUser(String firstName, String lastName);
-    
+
+    /**
+     * Queries the data of a user.
+     * 
+     * @param userId
+     *            The id of the user.
+     * @return The data of the user or <code>null</code> if there is no user with the specified id.
+     */
     UserDTO getUserById(long userId);
 }
 </pre>
+        <p>Let's have a look on the coverage report!</p>
+        <ol>
+          <li><p>
+              Click on the <i>Coverage</i> view
+            </p></li>
+          <li><p>Push F5</p></li>
+          <li><p>The core project with the source folder that was selected during the import appears. Open all
+              notes the tree of the project!</p> <img class="img-responsive img-thumbnail"
+            src="coverage_view_after_api_creation.png" alt="JaCoCo Coverage View after API creation" /></li>
+          <li><p>
+              Double click on the name of the class to open the <i>UserDTO</i> class in Java.
+            </p> <img class="img-responsive img-thumbnail" src="coverage_view_of_userdto.png"
+            alt="JaCoCo Coverage of UserDTO" />
+          <p>All rows that contain runnable command are highlighted with red color as the class is not tested at all
+              yet.</p></li>
+        </ol>
       </div>
 
-      <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="define_userservice_functions">
-        <h2>Step 3: Implement</h2>
+      <hr class="featurette-divider" />
+      <div class="bs-docs-featurette cookbook" id="implement_createandget">
+        <h2>
+          Step 3: Implementing <i>createAndGet</i>
+        </h2>
+        <p>
+          At this point, there as an API that can be tested. In one iteration the test code must be implemented first
+          than the production code. For more information about the development method, see <a
+            href="http://butunclebob.com/ArticleS.UncleBob.TheThreeRulesOfTdd">the three laws of TDD</a>.
+        <h3>TDD iteration 1: Implementing core logic</h3>
+        <p>
+          To be able to call functions on the <i>UserService</i> OSGi service, it must be injected into the <i>UserServiceTest</i>
+          component.
+        <p>
+        <ol>
+          <li><p>
+              Add a new private write-only property to the <i>UserServiceTest</i> class with <i>UserService</i> type and
+              the name <i>userService</i>
+            </p></li>
+          <li><p>
+              Add the <i>@Reference</i> annotation to the new property and set the bind method to be the setter of the
+              property.
+            </p></li>
+          <li><p></p></li>
+          <li>
+            <p>
+              At this point the code of <i>UserServiceTest</i> class should look like the following:
+            </p> <pre class="prettyprint lang-java">
+package org.everit.cookbook.tests;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+<b>import org.apache.felix.scr.annotations.Reference;</b>
+import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.UserService;
+import org.junit.Test;
+
+@Component
+@Service(UserServiceTest.class)
+@Properties({
+        @Property(name = "eosgi.testEngine", value = "junit4"),
+        @Property(name = "eosgi.testId", value = "UserServiceTest")
+})
+public class UserServiceTest {
+
+<b>    @Reference(bind = "setUserService")
+    private UserService userService;
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }</b>
+    
+    @Test
+    public void testCreateAndGetUser() {
+        System.out.println("Hello world");
+    }
+}
+</pre>
+          </li>
+        </ol>
+
+        <h3>
+          TDD iteration 2: Test <i>firstName</i> null parameter behavior
+        </h3>
+        <p>
+          The <i>createUser(firstName, lastName)</i> function should throw a <i>NullPointerException</i> if the value of
+          the <i>firstName</i> parameter is <i>null</i>.
+        </p>
+        <ol>
+          <li><p></p> <pre class="terminal-emulator">
+dfdffd
+fedf   fdd  fdsfd sdfsdf dsfdsfs dsfds
+          </pre></li>
+        </ol>
       </div>
     </div>
-
-
 
     <!--        Affix-->
     <div class="col-md-2 col-sm-0 col-xs-0">
@@ -187,9 +334,11 @@ public interface UserService {
         <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350"
           data-offset-bottom="140">
           <li class="active"><a href="#content_of_tutorial">Scope</a></li>
+          <li><a href="#open_jacoco_coverage_view">Step 0: Open JaCoCo Coverage view</a></li>
           <li><a href="#create_user_dto">Step 1: Creating User DTO</a></li>
           <li><a href="#define_userservice_functions">Step 2: Functions of UserService</a></li>
-
+          <li><a href="#implement_createandget">Step 3: Implementing <i>createAndGet</i> test
+          </a></li>
         </ul>
       </nav>
     </div>

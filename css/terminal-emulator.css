@@ -1,0 +1,94 @@
+/*
+Copyright (c) 2013 michaelb
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+/* ************************* */
+/*  Edit your titlebar here  */
+/* ************************* */
+.terminal-emulator:before {
+    content: "Terminal";
+}
+
+.terminal-emulator {
+    font-size: 11pt;
+    line-height: 15pt;
+    border-radius: 4px;
+    display: block;
+    min-width: 80%;
+    min-height: 20px;
+    background: black;
+    color: #bbb;
+    padding: 0;
+    font-family: monospace;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    padding-right: 2px;
+    resize: both;
+    overflow: auto;
+}
+
+.terminal-emulator:before {
+    height: 20px;
+    display: block;
+    text-align: center;
+    border: 1px solid #e5e5e5;
+    text-shadow: 0px 0px 1px #000;
+    padding: 0;
+    color: black;
+    margin-left: -2px;
+    margin-right: -2px;
+    font-family: sans-serif;
+
+    /* Set up a nice smooth gradient */
+    background: #eee; /* Old browsers */
+    background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%); /* IE10+ */
+    background: linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+}
+
+.terminal-emulator.vim {
+    overflow: hidden;
+    padding-left: 30px;
+    position: relative;
+    border: none;
+}
+
+.terminal-emulator.vim:after {
+    /* lolololololol --v */
+    content: "1 \a 2 \a 3 \a 4 \a 5 \a 6 \a 7 \a 8 \a 9 \a 10 \a 11 \a 12 \a 13 \a 14 \a 15 \a 16 \a 17 \a 18 \a 19 \a 20 \a 21 \a 22 \a 23 \a 24 \a 25 \a 26 \a 27 \a 28 \a 29 \a 30 \a 31 \a 32 \a 33 \a 34 \a 35 \a 36 \a 37 \a 38 \a 39 \a 40 \a 41 \a 42 \a 43 \a 44 \a 45 \a 46 \a 47 \a 48 \a 49 \a 50 \a 51 \a 52 \a 53 \a 54 \a 55 \a 56 \a 57 \a 58 \a 59 \a 60 \a 61 \a 62 \a 63 \a 64 \a 65 \a 66 \a 67 \a 68 \a 69 \a 70 \a 71 \a 72 \a 73 \a 74 \a 75 \a 76 \a 77 \a 78 \a 79 \a 80 \a 81 \a 82 \a 83 \a 84 \a 85 \a 86 \a 87 \a 88 \a 89 \a 90 \a 91 \a 92 \a 93 \a 94 \a 95 \a 96 \a 97 \a 98 \a 99 \a 100 \a 101 \a 102 \a 103 \a 104 \a 105 \a ";
+    color: #aa0;
+    font-weight: bold;
+    text-align: right;
+    position: absolute;
+    display: block;
+    width: 4ex;
+    height: 100px;
+    margin-left: -28px;
+    top: 22px;
+}
+
+.terminal-emulator.vim:before {
+    margin-left: -32px;
+}

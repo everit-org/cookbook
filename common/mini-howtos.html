@@ -253,7 +253,7 @@ public class Foo {
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="immutable_dto">
-        <h2>Implementing an immutable DTO</h2>
+        <h2>Implementing a serializable immutable DTO</h2>
         <p>There are many articles on the internet how to develop an immutable DTO. The requirements of a DTO are
           the followings:</p>
         <ul>
@@ -268,20 +268,20 @@ package test.test;
 
 import java.io.Serializable;
 
-public final class ImmutableClass implements Serializable {
+public final class ImmutableDTOClass implements Serializable {
 
     private static final long serialVersionUID = -195005209277061131L;
 
-    protected OtherImmutableClass immutableProperty;
+    protected OtherImmutableDTOClass immutableProperty;
 
-    protected ImmutableClass() {
+    protected ImmutableDTOClass() {
     }
 
-    public ImmutableClass(OtherImmutableClass immutableProperty) {
+    public ImmutableDTOClass(OtherImmutableDTOClass immutableProperty) {
         this.immutableProperty = immutableProperty;
     }
 
-    public OtherImmutableClass getImmutableProperty() {
+    public OtherImmutableDTOClass getImmutableProperty() {
         return immutableProperty;
     }
 }

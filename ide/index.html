@@ -202,13 +202,19 @@
         <p>By default, Project Explorer does not show generated folders and resources starting with a dot. As it is
           often necessary to check the content of these files (especially the content of the generated MANIFEST.MF
           file), the settings of the Project Explorer should be modified.</p>
-          <ol>
-            <li><p>Select the <i>Customize view...</i> menu item from the drop down menu of Project Explorer</p><img class="img-responsive img-thumbnail"
-            src="project_explorer_customize_view_1.png" alt="Select Customize View menu item on Project Explorer" /></li>
-            <li><p>Remove the tick from <i>.*resources</i> and <i>Java output folders</i></p><img class="img-responsive img-thumbnail"
-            src="project_explorer_customize_view_2.png" alt="Remove the tick from .*resources and Java output folders" /></li>
-            <li><p>Push the <i>OK</i> button</p></li>
-          </ol>
+        <ol>
+          <li><p>
+              Select the <i>Customize view...</i> menu item from the drop down menu of Project Explorer
+            </p> <img class="img-responsive img-thumbnail" src="project_explorer_customize_view_1.png"
+            alt="Select Customize View menu item on Project Explorer" /></li>
+          <li><p>
+              Remove the tick from <i>.*resources</i> and <i>Java output folders</i>
+            </p> <img class="img-responsive img-thumbnail" src="project_explorer_customize_view_2.png"
+            alt="Remove the tick from .*resources and Java output folders" /></li>
+          <li><p>
+              Push the <i>OK</i> button
+            </p></li>
+        </ol>
 
 
         <h3 id="conf_java_formatter">Configuring Java formatter</h3>
@@ -344,6 +350,19 @@
             alt="buildhelper m2e connector" /><img class="img-responsive img-thumbnail" src="m2e-connector-tycho.png"
             alt="Tycho m2e connector" /></li>
         </ol>
+
+        <h3 id="install_jacoco">Installing JaCoCo Eclipse plugin</h3>
+        <p>During our development it is very useful to see what is tested. This tutorial uses JaCoCo, a great code
+          coverage tool that has an Eclipse plugin as well.</p>
+        <ol>
+          <li><p>Click the Help/Eclipse Marketplace... menu item in the Eclipse menu bar and select the
+              "Search" menu.</p></li>
+          <li><p>Type "jacoco" in the "Find:" field and click "Install" as shown below.</p> <img
+            class="img-responsive img-thumbnail" src="install-jacoco-1.png" alt="Select JaCoCo plugin" /></li>
+          <li><p>Select all components, click "Confirm", accept the license agreement and finish installation.</p>
+            <img class="img-responsive img-thumbnail" src="install-jacoco-2.png" alt="Select JaCoCo plugin components" /></li>
+          <li><p>Restart Eclipse to complete installation.</p></li>
+        </ol>
       </div>
     </div>
 
@@ -369,6 +388,7 @@
               <li><a href="#conf_xml_html_formatter">Configuring the XML/HTML formatter</a></li>
               <li><a href="#set_checkstyle">Setting up Checkstyle</a></li>
               <li><a href="#install_m2e_connectors">Installing m2e connectors</a></li>
+              <li><a href="#install_jacoco">Installing JaCoCo Eclipse plugin</a></li>
             </ul></li>
         </ul>
       </nav>
