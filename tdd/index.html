@@ -97,7 +97,7 @@
               to the <i>eosgi-maven-plugin</i>:
             </p> <pre class="prettyprint lang-java">
 &lt;jacoco&gt;
-  &lt;includes&gt;org.everit.osgi.cookbook.*&lt;/includes&gt;
+  &lt;includes&gt;org.everit.cookbook.*&lt;/includes&gt;
   &lt;output&gt;$${ if (System.getenv("EOSGI_STOP_AFTER_TESTS").equals("true")) "file"; else "tcpserver"; }&lt;/output&gt;
 &lt;/jacoco&gt;</pre></li>
           <li><p>If the development OSGi container is started, stop it.</p></li>
@@ -132,24 +132,24 @@
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="create_user_dto">
         <h2>Step 1: Creating User DTO</h2>
-        <p>
-          Create an <a href="../common/mini-howtos.html#immutable_dto">serializable immutable DTO</a> class named <i>UserDTO</i>
-          in the core project with the package name <i>org.everit.cookbook.dto</i> and the following properties:
-        </p>
-        <ul>
-          <li><p>
-              <i>long userId</i>
-            </p></li>
-          <li><p>
-              <i>String firstName</i>
-            </p></li>
-          <li><p>
-              <i>String lastName</i>
-            </p></li>
-        </ul>
-        <p>The final source should look like the following:</p>
-
-        <pre class="prettyprint lang-java">
+        <ol>
+          <li>
+            <p>
+              Create an <a href="../common/mini-howtos.html#immutable_dto">serializable immutable DTO</a> class named <i>UserDTO</i>
+              in the core project with the package name <i>org.everit.cookbook.dto</i> and the following properties:
+            </p>
+            <ul>
+              <li><p>
+                  <i>long userId</i>
+                </p></li>
+              <li><p>
+                  <i>String firstName</i>
+                </p></li>
+              <li><p>
+                  <i>String lastName</i>
+                </p></li>
+            </ul>
+            <p>The final source should look like the following:</p> <pre class="prettyprint lang-java">
 package org.everit.cookbook.dto;
 
 import java.io.Serializable;
@@ -187,6 +187,12 @@ public final class UserDTO implements Serializable {
 
 }
 </pre>
+          </li>
+          <li><p>
+              The new package must be exported from the bundle. Add a <i>org.everit.cookbook.dto</i> to the list of
+              exported packages in the pom file of the core project.
+            </p></li>
+        </ol>
       </div>
 
       <hr class="featurette-divider">
@@ -245,21 +251,21 @@ public interface UserService {
               Double click on the name of the class to open the <i>UserDTO</i> class in Java.
             </p> <img class="img-responsive img-thumbnail" src="coverage_view_of_userdto.png"
             alt="JaCoCo Coverage of UserDTO" />
-          <p>All rows that contain runnable command are highlighted with red color as the class is not tested at all
-              yet.</p></li>
+            <p>All rows that contain runnable command are highlighted with red color as the class is not tested at
+              all yet.</p></li>
         </ol>
       </div>
 
       <hr class="featurette-divider" />
       <div class="bs-docs-featurette cookbook" id="implement_createandget">
         <h2>
-          Step 3: Implementing <i>createAndGet</i>
+          Step 3: Implementing <i>createAndGet</i> functionality
         </h2>
         <p>
           At this point, there as an API that can be tested. In one iteration the test code must be implemented first
           than the production code. For more information about the development method, see <a
             href="http://butunclebob.com/ArticleS.UncleBob.TheThreeRulesOfTdd">the three laws of TDD</a>.
-        <h3>TDD iteration 1: Implementing core logic</h3>
+        <h3 id="implementing_core_logic">TDD iteration 1: Implementing core logic</h3>
         <p>
           To be able to call functions on the <i>UserService</i> OSGi service, it must be injected into the <i>UserServiceTest</i>
           component.
@@ -270,11 +276,16 @@ public interface UserService {
               the name <i>userService</i>
             </p></li>
           <li><p>
-              Add the <i>@Reference</i> annotation to the new property and set the bind method to be the setter of the
-              property.
+              Add the <i>@Reference</i> annotation to the new property and set the bind method to be the setter.
             </p></li>
-          <li><p></p></li>
-          <li>
+          <li><p>
+              Implement the <i>testCreateAndGet()</i> function in the way that it
+            </p>
+            <ul>
+              <li><p>creates a new user</p></li>
+              <li><p>checks if the newly created user exists and the data of the user is the same specified
+                  during creation</p></li>
+            </ul>
             <p>
               At this point the code of <i>UserServiceTest</i> class should look like the following:
             </p> <pre class="prettyprint lang-java">
@@ -283,9 +294,11 @@ package org.everit.cookbook.tests;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
-<b>import org.apache.felix.scr.annotations.Reference;</b>
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.everit.cookbook.UserService;
+import org.everit.cookbook.dto.UserDTO;
+import org.junit.Assert;
 import org.junit.Test;
 
 @Component
@@ -296,34 +309,210 @@ import org.junit.Test;
 })
 public class UserServiceTest {
 
-<b>    @Reference(bind = "setUserService")
+    @Reference(bind = "setUserService")
     private UserService userService;
 
-    public void setUserService(UserService userService) {
+    protected void setUserService(final UserService userService) {
         this.userService = userService;
-    }</b>
-    
+    }
+
     @Test
     public void testCreateAndGetUser() {
-        System.out.println("Hello world");
+        long userId = userService.createUser("John", "Doe");
+        UserDTO user = userService.getUserById(userId);
+
+        Assert.assertNotNull(user);
+        Assert.assertEquals(userId, user.getUserId());
+        Assert.assertEquals("John", user.getFirstName());
+        Assert.assertEquals("Doe", user.getLastName());
     }
 }
 </pre>
-          </li>
+            <p>
+              If the test bundle was deployed now to the container, nothing would be shown. The test component needs a <i>UserService</i>
+              OSGi service to become satisfied.
+            </p></li>
+          <li><p>
+              Create a new class in the <i>org.everit.cookbook.internal</i> package of the core project called <i>UserServiceComponent</i>
+              that implements the <i>UserService</i> interface! The methods of the interface should be implemented in
+              the most primitive way as Eclipse generates them.
+            </p></li>
+          <li><p>
+              Add <i>@Component</i> and <i>@Component</i> annotations to the class!
+            </p>
+            <p>The source of the created class should look like the following:</p> <pre class="prettyprint lang-java">
+package org.everit.cookbook.internal;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.UserService;
+import org.everit.cookbook.dto.UserDTO;
+
+@Component
+@Service
+public class UserServiceComponent implements UserService {
+
+    public long createUser(String firstName, String lastName) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    public UserDTO getUserById(long userId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+}
+</pre></li>
+          <li><p>
+              <a href="../common/mini-howots.html#deploy_to_osgi_container">Deploy</a> the core and the tests project
+              together to the OSGi container! You will see that although the test engine processed the test component,
+              no were processed. The reason is that during the development mode, only those test functions are processed
+              that have the <i>@TestDuringDevelopment</i> annotation. It is also possible to add this annotation to the
+              class. In that case, all test method would be processed after the deployment.
+            </p>
+            <p>
+              Add the <i>@TestDuringDevelopment</i> annotation to the <i>UserServiceTest</i> class so all test methods
+              will be processed after each redeployment.
+            </p></li>
+          <li><p>
+              <a href="../common/mini-howots.html#deploy_to_osgi_container">Deploy</a> the <i>tests</i> bundle to the
+              OSGi container! The test method is processed, but there is an AssertionException.
+            </p> <pre class="terminal-emulator">
+INFO|2404/0|felixtest|14-09-04 10:17:47|INFO:
+INFO|2404/0|felixtest|14-09-04 10:17:47|-------------------------------------------------------------------------------
+INFO|2404/0|felixtest|14-09-04 10:17:47|Test set: org.everit.cookbook.tests.UserServiceTest (UserServiceTest)
+INFO|2404/0|felixtest|14-09-04 10:17:47|-------------------------------------------------------------------------------
+INFO|2404/0|felixtest|14-09-04 10:17:47|Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec <<< FA
+ILURE!
+INFO|2404/0|felixtest|14-09-04 10:17:47|testCreateAndGetUser  Time elapsed: 0.004 sec  <<< FAILURE!
+INFO|2404/0|felixtest|14-09-04 10:17:47|java.lang.AssertionError
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at org.junit.Assert.fail(Assert.java:86)
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at org.junit.Assert.assertTrue(Assert.java:41)
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at org.junit.Assert.assertNotNull(Assert.java:621)
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at org.junit.Assert.assertNotNull(Assert.java:631)
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at org.everit.cookbook.tests.UserServiceTest.testCreateAndGetUser(UserSe
+rviceTest.java:35)
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.
+java:62)
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAcces
+sorImpl.java:43)
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at java.lang.reflect.Method.invoke(Method.java:483)
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(Framework
+Method.java:47)
+INFO|2404/0|felixtest|14-09-04 10:17:47|        at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCal
+lable.java:12)</pre>
+            <p>Failing of the test is normal as there has been no production code implemented in the current
+              iteration yet.</p></li>
+          <li><p>
+              Implement the <i>createUser(String firstName, String lastName)</i> and the <i>getUserById(long userId)</i>
+              functions of <i>UserComponent</i> class in the way that
+            </p>
+            <ul>
+              <li><p>
+                  the data is stored in a <i>ConcurrentHashMap&lt;Long, UserDTO&gt;</i>
+                </p></li>
+              <li><p>
+                  the user id is generated by calling the <i>incrementAndGet()</i> function of an <i>AtomicLong</i>
+                  member variable.
+                </p></li>
+            </ul>
+            <p>
+              At this point the source code of the <i>UserServiceComponent</i> should look similar to the following:
+            </p> <pre class="prettyprint lang-java">
+package org.everit.cookbook.internal;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.UserService;
+import org.everit.cookbook.dto.UserDTO;
+
+@Component
+@Service
+public class UserServiceComponent implements UserService {
+
+    private final AtomicLong lastGeneratedUserId = new AtomicLong();
+
+    private final Map&lt;Long, UserDTO&gt; storage = new ConcurrentHashMap&lt;Long, UserDTO&gt;();
+    
+    public long createUser(String firstName, String lastName) {
+        long userId = lastGeneratedUserId.get();
+        UserDTO userData = new UserDTO(userId, firstName, lastName);
+        storage.put(userId, userData);
+        return userId;
+    }
+
+    public UserDTO getUserById(long userId) {
+        return storage.get(userId);
+    }
+
+}
+</pre></li>
+          <li><p>
+              <a href="../common/mini-howots.html#deploy_to_osgi_container">Deploy</a> the core project to the OSGi
+              container! The console shows that the test was processed successfully.
+            </p> <pre class="terminal-emulator">
+FINEST|2404/0|felixtest|14-09-04 11:09:08|Sep 04, 2014 11:09:08 AM org.everit.osgi.dev.richconsole.internal.Logger info
+FINEST|2404/0|felixtest|14-09-04 11:09:08|INFO: Richconsole INFO: Installing bundle from 'reference:file:/C:/Users/balaz
+s_zsoldos/git/cookbook/core/'
+FINEST|2404/0|felixtest|14-09-04 11:09:08|Sep 04, 2014 11:09:08 AM org.everit.osgi.dev.richconsole.internal.Logger info
+FINEST|2404/0|felixtest|14-09-04 11:09:08|INFO: Richconsole INFO: Calling refresh on OSGi framework. All packages on uni
+nstalled bundles should be re-wired
+FINEST|2404/0|felixtest|14-09-04 11:09:08|Sep 04, 2014 11:09:08 AM org.everit.osgi.dev.richconsole.internal.Logger info
+FINEST|2404/0|felixtest|14-09-04 11:09:08|INFO: Richconsole INFO: Framework refresh finished with code PACKAGES_REFRESHE
+D
+FINEST|2404/0|felixtest|14-09-04 11:09:08|Sep 04, 2014 11:09:08 AM org.everit.osgi.dev.testrunner.junit4.internal.Junit4
+TestEngine runTest
+FINEST|2404/0|felixtest|14-09-04 11:09:08|INFO: Test OSGI Service will be run by JUnit: [org.everit.cookbook.tests.UserS
+erviceTest]
+FINEST|2404/0|felixtest|14-09-04 11:09:08|Sep 04, 2014 11:09:08 AM org.everit.osgi.dev.testrunner.internal.TestServiceTr
+acker dumpTestResults
+FINEST|2404/0|felixtest|14-09-04 11:09:08|INFO:
+FINEST|2404/0|felixtest|14-09-04 11:09:08|------------------------------------------------------------------------------
+-
+FINEST|2404/0|felixtest|14-09-04 11:09:08|Test set: org.everit.cookbook.tests.UserServiceTest (UserServiceTest)
+FINEST|2404/0|felixtest|14-09-04 11:09:08|------------------------------------------------------------------------------
+-
+FINEST|2404/0|felixtest|14-09-04 11:09:08|Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+FINEST|2404/0|felixtest|14-09-04 11:09:08|</pre></li>
+          <li><p>Refresh the coverage view and check which lines were tested and what is missing!</p>
+            <img class="img-responsive img-thumbnail" src="coverage_view_after_first_test.png"
+            alt="Coverage view after first test" /></li>
         </ol>
 
-        <h3>
-          TDD iteration 2: Test <i>firstName</i> null parameter behavior
+        <h3 id="firstname_null">
+          TDD iteration 2: <i>firstName</i> cannot be null
         </h3>
         <p>
           The <i>createUser(firstName, lastName)</i> function should throw a <i>NullPointerException</i> if the value of
           the <i>firstName</i> parameter is <i>null</i>.
         </p>
         <ol>
-          <li><p></p> <pre class="terminal-emulator">
-dfdffd
-fedf   fdd  fdsfd sdfsdf dsfdsfs dsfds
-          </pre></li>
+          <li><p>
+              Create a new method in the <i>UserServiceTest</i> component with the name <i>testCreateUserFirstNameNull</i>
+            </p></li>
+          <li><p>
+              Annotate the method with <i>@Test(expected = NullPointerException.class)</i>
+            </p></li>
+          <li><p>
+              Call the <i>createUser(...)</i> method of the injected <i>UserService</i> in the way that the firstName is
+              <i>null</i> and the last name has a value.
+            </p>
+            <p>At this point the method should look similar to the following:</p> <pre class="prettyprint lang-java">
+@Test(expected = NullPointerException.class)
+public void testCreateUserFirstNameNull() {
+    userService.createUser(null, "Doe");
+}</pre>
+            <p>In case the test project was deployed, the test would fail. The logic must be implemented on the
+              production side as well.</p></li>
+          <li><p>
+              Add the following line to the beginning of <i>createUser(...)</i> function of <i>UserServiceComponent</i>:
+            </p> <pre class="prettyprint lang-java"></pre></li>
         </ol>
       </div>
     </div>
@@ -337,8 +526,13 @@ fedf   fdd  fdsfd sdfsdf dsfdsfs dsfds
           <li><a href="#open_jacoco_coverage_view">Step 0: Open JaCoCo Coverage view</a></li>
           <li><a href="#create_user_dto">Step 1: Creating User DTO</a></li>
           <li><a href="#define_userservice_functions">Step 2: Functions of UserService</a></li>
-          <li><a href="#implement_createandget">Step 3: Implementing <i>createAndGet</i> test
-          </a></li>
+          <li><a href="#implement_createandget">Step 3: Implementing <i>createAndGet</i> functionality
+          </a>
+            <ul class="nav nav-pills nav-stacked">
+              <li><a href="#implementing_core_logic">TDD iteration 1: Implementing core logic</a></li>
+              <li><a href="#firstname_null">TDD iteration 2: <i>firstName</i> cannot be null
+              </a></li>
+            </ul></li>
         </ul>
       </nav>
     </div>

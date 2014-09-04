@@ -287,9 +287,15 @@
                 Explorer view as it will change the project build properties as well) as tests will be in a separate
                 module.</p>
             </li>
+            <li><p>Open the pom.xml file of the core project and insert the following snippet after the version
+                line to define that the module is based on Java 8:</p> <pre class="prettyprint lang-xml">
+&lt;properties&gt;
+  &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;
+  &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;
+&lt;/properties&gt;
+</pre></li>
             <li>
-              <p>Open the pom.xml file of the core project and insert the following snippet after the version line:</p>
-              <pre class="prettyprint lang-xml">
+              <p>Insert the following snippet also into the pom file:</p> <pre class="prettyprint lang-xml">
   &lt;packaging&gt;bundle&lt;/packaging&gt;
  
   &lt;build&gt;
@@ -327,7 +333,7 @@
           </ol>
         </div>
         <div class="bs-docs-featurette cookbook" id="creating_api_in_core_project">
-          <h3>Step 3.2: Soiurce code</h3>
+          <h3>Step 3.2: Source code</h3>
           <p>We will implement a simple User management component that handles users with two pieces of information:
             name and a birth date. At this point, our database will be a simple Map in the memory.</p>
           <ol>
@@ -411,10 +417,15 @@ public interface UserService {
               </p>
             </li>
             <li>
-              <p>
-                Open the pom.xml file of the <i>tests</i> project and insert the following snippet after the <i>artifactId</i>
-                line:
-              </p> <pre class="prettyprint lang-xml">
+            <li><p>Open the pom.xml file of the tests project and insert the following snippet after the version
+                line to define that the module is based on Java 8:</p> <pre class="prettyprint lang-xml">
+&lt;properties&gt;
+  &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;
+  &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;
+&lt;/properties&gt;
+</pre></li>
+            <li>
+              <p>Insert the following snippet also into the pom file:</p> <pre class="prettyprint lang-xml">
   &lt;packaging&gt;bundle&lt;/packaging&gt;
  
   &lt;build&gt;
