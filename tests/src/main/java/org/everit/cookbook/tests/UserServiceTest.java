@@ -6,6 +6,9 @@ import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.everit.cookbook.UserService;
+import org.everit.cookbook.dto.UserDTO;
+import org.everit.osgi.dev.testrunner.TestDuringDevelopment;
+import org.junit.Assert;
 import org.junit.Test;
 
 @Component
@@ -14,17 +17,29 @@ import org.junit.Test;
         @Property(name = "eosgi.testEngine", value = "junit4"),
         @Property(name = "eosgi.testId", value = "UserServiceTest")
 })
+@TestDuringDevelopment
 public class UserServiceTest {
 
     @Reference(bind = "setUserService")
     private UserService userService;
-    
-    public void setUserService(UserService userService) {
+
+    protected void setUserService(final UserService userService) {
         this.userService = userService;
     }
-    
+
     @Test
     public void testCreateAndGetUser() {
-        System.out.println("Hello world");
+        long userId = userService.createUser("John", "Doe");
+        UserDTO user = userService.getUserById(userId);
+
+        Assert.assertNotNull(user);
+        Assert.assertEquals(userId, user.getUserId());
+        Assert.assertEquals("John", user.getFirstName());
+        Assert.assertEquals("Doe", user.getLastName());
     }
+    
+//    @Test(expected = NullPointerException.class)
+//    public void testCreateUserFirstNameNull() {
+//        userService.createUser(null, "Doe");
+//    }
 }

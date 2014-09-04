@@ -10,6 +10,11 @@
 
   <packaging>bundle</packaging>
 
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -43,7 +48,7 @@
         </executions>
         <configuration>
           <jacoco>
-            <includes>org.everit.osgi.cookbook.*</includes>
+            <includes>org.everit.cookbook.*</includes>
             <output>$${ if (System.getenv("EOSGI_STOP_AFTER_TESTS").equals("true")) "file"; else "tcpserver"; }</output>
           </jacoco>
           <environments>
