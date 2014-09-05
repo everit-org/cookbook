@@ -25,6 +25,7 @@
             <Import-Package>
               *
             </Import-Package>
+            <Export-Package>org.everit.cookbook</Export-Package>
           </instructions>
         </configuration>
       </plugin>
