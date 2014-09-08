@@ -365,7 +365,7 @@ public class UserServiceComponent implements UserService {
 }
 </pre></li>
           <li><p>
-              <a href="../common/mini-howots.html#deploy_to_osgi_container">Deploy</a> the core and the tests project
+              <a href="../common/mini-howtos.html#deploy_to_osgi_container">Deploy</a> the core and the tests project
               together to the OSGi container! You will see that although the test engine processed the test component,
               no were processed. The reason is that during the development mode, only those test functions are processed
               that have the <i>@TestDuringDevelopment</i> annotation. It is also possible to add this annotation to the
@@ -376,7 +376,7 @@ public class UserServiceComponent implements UserService {
               will be processed after each redeployment.
             </p></li>
           <li><p>
-              <a href="../common/mini-howots.html#deploy_to_osgi_container">Deploy</a> the <i>tests</i> bundle to the
+              <a href="../common/mini-howtos.html#deploy_to_osgi_container">Deploy</a> the <i>tests</i> bundle to the
               OSGi container! The test method is processed, but there is an AssertionException.
             </p> <pre class="terminal-emulator">
 INFO|2404/0|felixtest|14-09-04 10:17:47|INFO:
@@ -454,7 +454,7 @@ public class UserServiceComponent implements UserService {
 }
 </pre></li>
           <li><p>
-              <a href="../common/mini-howots.html#deploy_to_osgi_container">Deploy</a> the core project to the OSGi
+              <a href="../common/mini-howtos.html#deploy_to_osgi_container">Deploy</a> the core project to the OSGi
               container! The console shows that the test was processed successfully.
             </p> <pre class="terminal-emulator">
 FINEST|2404/0|felixtest|14-09-04 11:09:08|Sep 04, 2014 11:09:08 AM org.everit.osgi.dev.richconsole.internal.Logger info
@@ -480,8 +480,8 @@ FINEST|2404/0|felixtest|14-09-04 11:09:08|--------------------------------------
 -
 FINEST|2404/0|felixtest|14-09-04 11:09:08|Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
 FINEST|2404/0|felixtest|14-09-04 11:09:08|</pre></li>
-          <li><p>Refresh the coverage view and check which lines were tested and what is missing!</p>
-            <img class="img-responsive img-thumbnail" src="coverage_view_after_first_test.png"
+          <li><p>Refresh the coverage view and check which lines were tested and what is missing!</p> <img
+            class="img-responsive img-thumbnail" src="coverage_view_after_first_test.png"
             alt="Coverage view after first test" /></li>
         </ol>
 
@@ -511,8 +511,48 @@ public void testCreateUserFirstNameNull() {
             <p>In case the test project was deployed, the test would fail. The logic must be implemented on the
               production side as well.</p></li>
           <li><p>
-              Add the following line to the beginning of <i>createUser(...)</i> function of <i>UserServiceComponent</i>:
-            </p> <pre class="prettyprint lang-java"></pre></li>
+              Add the following line to the beginning of <i>createUser(...)</i> function of <i>UserServiceComponent
+                class</i>:
+            </p> <pre class="prettyprint lang-java">Objects.requireNonNull(firstName, "firstName must not be null");</pre></li>
+          <li><p>
+              <a href="../common/mini-howtos.html#deploy_to_osgi_container">Deploy</a> the core and the tests project to
+              the OSGi container. All tests should be ok.
+            </p></li>
+        </ol>
+
+        <h3 id="lastname_null">
+          TDD iteration 3: <i>lastName</i> cannot be null
+        </h3>
+        <p>
+          The <i>createUser(firstName, lastName)</i> function should throw a <i>NullPointerException</i> if the value of
+          the <i>lastName</i> parameter is <i>null</i>.
+        </p>
+        <ol>
+          <li><p>
+              Create a new method in the <i>UserServiceTest</i> component with the name <i>testCreateUserLastNameNull</i>
+            </p></li>
+          <li><p>
+              Annotate the method with <i>@Test(expected = NullPointerException.class)</i>
+            </p></li>
+          <li><p>
+              Call the <i>createUser(...)</i> method of the injected <i>UserService</i> in the way that the firstName
+              has a value and lastName is <i>null</i>.
+            </p>
+            <p>At this point the method should look similar to the following:</p> <pre class="prettyprint lang-java">
+@Test(expected = NullPointerException.class)
+public void testCreateUserLastNameNull() {
+    userService.createUser("John", null);
+}</pre>
+            <p>In case the test project was deployed, the test would fail. The logic must be implemented on the
+              production side as well.</p></li>
+          <li><p>
+              Add the following line to the beginning of <i>createUser(...)</i> function of <i>UserServiceComponent
+                class</i>:
+            </p> <pre class="prettyprint lang-java">Objects.requireNonNull(lastName, "lastName must not be null");</pre></li>
+          <li><p>
+              <a href="../common/mini-howtos.html#deploy_to_osgi_container">Deploy</a> the core and the tests project to
+              the OSGi container! All tests should be ok.
+            </p></li>
         </ol>
       </div>
     </div>
@@ -531,6 +571,8 @@ public void testCreateUserFirstNameNull() {
             <ul class="nav nav-pills nav-stacked">
               <li><a href="#implementing_core_logic">TDD iteration 1: Implementing core logic</a></li>
               <li><a href="#firstname_null">TDD iteration 2: <i>firstName</i> cannot be null
+              </a></li>
+              <li><a href="#lastname_null">TDD iteration 3: <i>lastName</i> cannot be null
               </a></li>
             </ul></li>
         </ul>
