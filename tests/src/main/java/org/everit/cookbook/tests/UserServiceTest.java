@@ -38,8 +38,13 @@ public class UserServiceTest {
         Assert.assertEquals("Doe", user.getLastName());
     }
     
-//    @Test(expected = NullPointerException.class)
-//    public void testCreateUserFirstNameNull() {
-//        userService.createUser(null, "Doe");
-//    }
+    @Test(expected = NullPointerException.class)
+    public void testCreateUserFirstNameNull() {
+        userService.createUser(null, "Doe");
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testCreateUserLastNameNull() {
+        userService.createUser("John", null);
+    }
 }

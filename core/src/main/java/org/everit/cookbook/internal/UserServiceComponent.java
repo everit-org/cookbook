@@ -15,11 +15,14 @@ import org.everit.cookbook.dto.UserDTO;
 public class UserServiceComponent implements UserService {
 
     private final Map<Long, UserDTO> storage = new ConcurrentHashMap<Long, UserDTO>();
-    
+
     private final AtomicLong lastGeneratedUserId = new AtomicLong();
 
     @Override
-    public long createUser(String firstName, String lastName) {        
+    public long createUser(String firstName, String lastName) {
+        Objects.requireNonNull(firstName, "firstName must not be null");
+        Objects.requireNonNull(lastName, "lastName must not be null");
+
         long userId = lastGeneratedUserId.get();
         UserDTO userData = new UserDTO(userId, firstName, lastName);
         storage.put(userId, userData);
