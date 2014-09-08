@@ -554,6 +554,13 @@ public void testCreateUserLastNameNull() {
               the OSGi container! All tests should be ok.
             </p></li>
         </ol>
+
+        <h3 id="change_testnum_in_pom">Changing the number of tests in the pom file</h3>
+        <p>
+          There are three tests now. In case <i>"mvn clean install"</i> would have been started from the command line,
+          the process would fail. To avoid that, increase the value of <b><i>EOSGi-TestNum</i></b> setting in the <i>pom</i> file of
+          the <i>tests</i> project to <b>3</b>.
+        </p>
       </div>
     </div>
 
@@ -573,6 +580,8 @@ public void testCreateUserLastNameNull() {
               <li><a href="#firstname_null">TDD iteration 2: <i>firstName</i> cannot be null
               </a></li>
               <li><a href="#lastname_null">TDD iteration 3: <i>lastName</i> cannot be null
+              </a></li>
+              <li><a href="#change_testnum_in_pom">Changing the number of tests in the pom file
               </a></li>
             </ul></li>
         </ul>
