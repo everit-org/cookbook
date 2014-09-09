@@ -226,3 +226,7 @@ pre {
 pre.prettyprint {
     padding: 1em !important;
 }
+
+a.coming-soon {
+    opacity: 0.5;
+}

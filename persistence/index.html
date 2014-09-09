@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<!-- Copyright (c) 2011, Everit Kft.
+
+    All rights reserved.
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 3 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNUc
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301  USA -->
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>Everit Cookbook - Persistence</title>
+<link rel="icon" type="image/ico" href="../fonts/favicon.ico">
+
+<!--    <link rel="stylesheet" type="text/css" href="../common/css/base.css">-->
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/docs.min.css" rel="stylesheet">
+<link href="../css/everit.css" rel="stylesheet">
+<link href="../css/terminal-emulator.css" rel="stylesheet">
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push([ '_setAccount', 'UA-15041869-4' ]);
+	_gaq.push([ '_setDomainName', 'everit.org' ]);
+	_gaq.push([ '_trackPageview' ]);
+</script>
+</head>
+
+<body class="bs-docs-home" data-spy="scroll" data-target="#affix-nav">
+  <a class="sr-only" href="#content">Skip to main content</a>
+  <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+          <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+            class="icon-bar"></span>
+        </button>
+        <a href="../index.html" class="navbar-brand">Index</a>
+      </div>
+      <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+        <ul class="nav navbar-nav">
+          <li><a href="https://github.com/everit-org" target="_blank">Sources</a></li>
+          <li><a href="http://www.everit.org/" target="_blank">Community</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://www.everit.biz" target="_blank">Enterprise</a></li>
+          <li><a href="http://everitorg.wordpress.com/" target="_blank">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="bs-docs-masthead everit-header" id="content" role="main">
+    <div class="container">
+      <span class="bs-docs-booticon bs-docs-booticon-lg bs-docs-booticon-outline"> <img class="logo"
+        src="../fonts/sbz_e.svg" alt="E">
+      </span>
+      <p class="lead">Persistence</p>
+    </div>
+  </div>
+  <div class="container">
+    <div class="col-md-10">
+      <div class="bs-docs-featurette cookbook" id="content_of_tutorial">
+        <h2>Scope</h2>
+        <p>In this chapter we will modify the core implementation to store the user data in a relational database.</p>
+        <p>
+          If you skipped that <a href="../tdd/index.html">last chapter</a>, please <a
+            href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">check out</a> the <i>03 -
+            configuration</i> branch in eclipse and import the content as a maven project!
+        </p>
+        <p>
+          Before doing this chapter of the tutorial, please visit the <a
+            href="http://everitorg.wordpress.com/2014/06/18/modularized-persistence/">Modularized persistence</a> blog
+          post, where you can find more information about the concept of this solution.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <div></div>
+  <footer class="bs-docs-footer" role="contentinfo">
+    <div class="container">
+      <div class="bs-docs-social">
+        <ul class="bs-docs-social-buttons">
+          <li class="follow-btn "><a href="https://twitter.com/EveritOrg" class="twitter-follow-button"
+            data-show-count="true">Follow @EveritOrg</a></li>
+          <li class="tweet-btn"><a href="https://twitter.com/share" class="twitter-share-button"
+            data-url="http://www.everit.org/">Tweet</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript
+================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/everit.js "></script>
+  <script src="../js/prettify/run_prettify.js"></script>
+  <script type="text/javascript">
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl'
+						: 'http://www')
+						+ '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+</body>
+</html>
