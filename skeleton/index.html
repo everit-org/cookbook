@@ -330,6 +330,15 @@
                 press the right mouse button on the project in the Project Explorer and select "Maven -&gt; Update
                 Project...". In the new window, select the Ok button.</p>
             </li>
+            <li>
+              <p>
+                Finally add your <a href="../common/mini-howtos.html#licensing">license-maven-plugin</a> configuration
+                to the pom.xml of the core project. Note that every time you add a new source file (.java, .xml,
+                .properties, etc) and maven builds your project, it will check the files for license headers. If the
+                build fails, execute the "<i>mvn license:format</i>" command on your maven project to add the license
+                headers. After that the build will not fail due to missing license headers.
+              </p>
+            </li>
           </ol>
         </div>
         <div class="bs-docs-featurette cookbook" id="creating_api_in_core_project">
