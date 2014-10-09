@@ -256,9 +256,12 @@ public class Foo {
         <h2>Deploy project(s) to the OSGi container</h2>
         <p>You have several ways of deploying projects to the development OSGi container:</p>
         <ul>
-          <li><p>Drag one or more projects from the Project Explorer of Eclipse or a file manager and drop them to the deployer
-              window. In case of this choice, the <i>target/classes</i> folder of the project must be up-to-date.</p></li>
-              <li><p>Re-package the module with maven and drop the generated JAR to the deployer window.</p></li>
+          <li><p>
+              Drag one or more projects from the Project Explorer of Eclipse or a file manager and drop them to the
+              deployer window. In case of this choice, the <i>target/classes</i> folder of the project must be
+              up-to-date.
+            </p></li>
+          <li><p>Re-package the module with maven and drop the generated JAR to the deployer window.</p></li>
         </ul>
       </div>
 
@@ -322,6 +325,73 @@ public final class ImmutableDTOClass implements Serializable {
         <p>The solution is nearly perfect. The only issue is that the properties can be modified without reflection
           from classes that are located in the same package. Well, the one who does modification in the same package,
           should know what he/she does.</p>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="licensing">
+        <h2>Protecting the source code with licensing</h2>
+        <p>
+          It is very important to protect our work, source codes, configuration files, etc. with licenses to avoid
+          unauthorized usage. To achive this we are using the <a href="http://code.mycila.com/license-maven-plugin/">license-maven-plugin</a>.
+          This maven plugin maintains the license headers of the protected files: checks if the header is exists or not
+          (fails the maven build), add the header to files, etc. For configuration possibilities and usage check the <a
+            href="http://code.mycila.com/license-maven-plugin/#documentation">documentation</a> of the plugin.
+        </p>
+        <p>This is a pom.xml configuration snippet used in our open source project that uses the standard LGPLv3
+          license:</p>
+        <pre class="prettyprint lang-xml">
+  &lt;build&gt;
+    ...
+    &lt;plugins&gt;
+      ...
+      &lt;plugin&gt;
+        &lt;groupId&gt;com.mycila&lt;/groupId&gt;
+        &lt;artifactId&gt;license-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;2.6&lt;/version&gt;
+        &lt;configuration&gt;
+          &lt;aggregate&gt;false&lt;/aggregate&gt;
+          &lt;header&gt;/com/mycila/maven/plugin/license/templates/LGPL-3.txt&lt;/header&gt;
+          &lt;excludes&gt;
+            &lt;exclude&gt;LICENSE&lt;/exclude&gt;
+          &lt;/excludes&gt;
+          &lt;skipExistingHeaders&gt;true&lt;/skipExistingHeaders&gt;
+        &lt;/configuration&gt;
+        &lt;executions&gt;
+          &lt;execution&gt;
+            &lt;id&gt;check-license&lt;/id&gt;
+            &lt;phase&gt;verify&lt;/phase&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;check&lt;/goal&gt;
+            &lt;/goals&gt;
+          &lt;/execution&gt;
+        &lt;/executions&gt;
+      &lt;/plugin&gt;
+      ...
+    &lt;/plugins&gt;
+    ...  
+  &lt;/build&gt;</pre>
+        <h3>Basic usage of the plugin</h3>
+        <p>
+          When the maven build reaches the <a
+            href="http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html">verify</a> phase the
+          plugin executes its <i>check</i> goal which verifies if some files miss license header. If so execute the
+          following maven command on your project:
+        </p>
+        <pre>mvn license:format</pre>
+        <p>
+          This command will add license header to the files where missing. You can remove the license headers from your
+          files using the "<i>mvn license:remove</i>" command if necessary.
+        </p>
+        <h3>Notes</h3>
+        <p>
+          Our open source projects inherits this configuration from the parent project <i>org.everit.config:org.everit.config.oss</i>
+          so we don't need to configure this plugin one-by-one.
+        </p>
+        <p>
+          If you are working on a customer project (your parent project should not be the <i>org.everit.config:org.everit.config.oss</i>
+          because it is probably not an open source project), it is recommended to configure the <i>license-maven-plugin</i>
+          in your parent configuration maven project with a software license defined in the contract with your customer.
+        </p>
       </div>
 
       <div></div>
