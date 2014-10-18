@@ -22,11 +22,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
 import org.everit.cookbook.UserService;
 import org.everit.cookbook.dto.UserDTO;
 
-@Component
+@Component(configurationFactory = true)
+@Properties({ @Property(name = "service.description", propertyPrivate = false) })
 @Service
 public class UserServiceComponent implements UserService {
 
