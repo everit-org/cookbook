@@ -1,0 +1,200 @@
+<!DOCTYPE HTML>
+<!-- Copyright (c) 2011, Everit Kft.
+
+    All rights reserved.
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 3 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301  USA -->
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>Everit Cookbook - Configuration</title>
+<link rel="icon" type="image/ico" href="../fonts/favicon.ico">
+
+<!--    <link rel="stylesheet" type="text/css" href="../common/css/base.css">-->
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/docs.min.css" rel="stylesheet">
+<link href="../css/everit.css" rel="stylesheet">
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push([ '_setAccount', 'UA-15041869-4' ]);
+	_gaq.push([ '_setDomainName', 'everit.org' ]);
+	_gaq.push([ '_trackPageview' ]);
+</script>
+</head>
+
+<body class="bs-docs-home" data-spy="scroll" data-target="#affix-nav">
+  <a class="sr-only" href="#content">Skip to main content</a>
+  <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+          <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+            class="icon-bar"></span>
+        </button>
+        <a href="../index.html" class="navbar-brand">Index</a>
+      </div>
+      <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+        <ul class="nav navbar-nav">
+          <li><a href="https://github.com/everit-org" target="_blank">Sources</a></li>
+          <li><a href="http://www.everit.org/" target="_blank">Community</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://www.everit.biz" target="_blank">Enterprise</a></li>
+          <li><a href="http://everitorg.wordpress.com/" target="_blank">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="bs-docs-masthead everit-header" id="content" role="main">
+    <div class="container">
+      <span class="bs-docs-booticon bs-docs-booticon-lg bs-docs-booticon-outline"> <img class="logo"
+        src="../fonts/sbz_e.svg" alt="E">
+      </span>
+      <p class="lead">Configuration</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="col-md-10">
+      <div class="bs-docs-featurette cookbook" id="content_of_tutorial">
+        <h2>Scope</h2>
+        <p>
+          The goal of this chapter is to start instrumentig our components based on <a
+            href="http://felix.apache.org/documentation/subprojects/apache-felix-config-admin.html">Config Admin</a>. At
+          this time, only the method of creating, updating and storing configuration will be introduced.
+        </p>
+        <p>
+          The business logic and the integration tests were developed in the <a href="../tdd/index.html">last
+            chapter</a>. If you skipped that part, please <a
+            href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">check out</a> the <i>02 - tdd</i>
+          branch in eclipse and import the content as a maven project.
+        </p>
+      </div>
+      
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="adding_jetty_with_webconsole">
+        <h2>
+          Step 0: Adding Jetty and Webconsole
+        </h2>
+        <p>
+          We would like to allow the programmers to configure the <i>UserServiceComponent</i>. The component will be
+          instantiated only when there is a configuration available. Also, we would like to make it possible to
+          instantiate the component more than once by creating multiple configuration entries. Multiple instances will
+          be useful when tests should run on different database engines.
+        </p>
+
+
+        <p>
+          Open the <i>UserServiceComponent</i> class and change the annotation of the class in the following way:
+        </p>
+        <pre class="prettyprint lang-java">
+@Component(configurationFactory = true)
+@Properties({ @Property(name = "service.description", propertyPrivate = false) })
+@Service</pre>
+
+      </div>
+      
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="installing_java">
+        <h2>
+          Step 1: Adding annotations to <i>UserServiceComponent</i>
+        </h2>
+        <p>
+          We would like to allow the programmers to configure the <i>UserServiceComponent</i>. The component will be
+          instantiated only when there is a configuration available. Also, we would like to make it possible to
+          instantiate the component more than once by creating multiple configuration entries. Multiple instances will
+          be useful when tests should run on different database engines.
+        </p>
+
+
+        <p>
+          Open the <i>UserServiceComponent</i> class and change the annotation of the class in the following way:
+        </p>
+        <pre class="prettyprint lang-java">
+@Component(configurationFactory = true)
+@Properties({ @Property(name = "service.description", propertyPrivate = false) })
+@Service</pre>
+
+      </div>
+    </div>
+
+    <!--        Affix-->
+    <div class="col-md-2">
+      <nav id="affix-nav">
+        <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350"
+          data-offset-bottom="140">
+
+          <li class="active"><a href="#content_of_tutorial">Content of the tutorial</a></li>
+          <li><a href="#installing_java">Step 1: Installing Java</a>
+            <ul class="nav nav-pills nav-stacked">
+              <li><a href="#java_on_linux">Installing Java on Linux</a></li>
+              <li><a href="#java_on_windows">Installing Java on Windows</a></li>
+            </ul></li>
+          <li><a href="#installing_maven">Step 2: Installing Maven</a></li>
+          <li><a href="#installing_eclipse">Step 3: Installing Eclipse</a>
+            <ul class="nav nav-pills nav-stacked">
+              <li><a href="#cust_java_editor">Customizing Java editor</a></li>
+              <li><a href="#cust_project_explorar">Customizing Project Explorer</a></li>
+              <li><a href="#conf_java_formatter">Configuring Java formatter</a></li>
+              <li><a href="#conf_clean_save_actions">Configuring 'Clean up and Save Actions'</a></li>
+              <li><a href="#conf_xml_html_formatter">Configuring the XML/HTML formatter</a></li>
+              <li><a href="#set_checkstyle">Setting up Checkstyle</a></li>
+              <li><a href="#install_m2e_connectors">Installing m2e connectors</a></li>
+              <li><a href="#install_jacoco">Installing JaCoCo Eclipse plugin</a></li>
+            </ul></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <div></div>
+  <footer class="bs-docs-footer" role="contentinfo">
+    <div class="container">
+      <div class="bs-docs-social">
+        <ul class="bs-docs-social-buttons">
+          <li class="follow-btn "><a href="https://twitter.com/EveritOrg" class="twitter-follow-button"
+            data-show-count="true">Follow @EveritOrg</a></li>
+          <li class="tweet-btn"><a href="https://twitter.com/share" class="twitter-share-button"
+            data-url="http://www.everit.org/">Tweet</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript
+================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/everit.js "></script>
+  <script src="../js/prettify/run_prettify.js"></script>
+  <script type="text/javascript">
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl'
+						: 'http://www')
+						+ '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+</body>
+
+</html>

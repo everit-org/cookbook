@@ -95,7 +95,7 @@
               Open the <i>pom.xml</i> file of the tests project and add <a
                 href="http://www.everit.org/eosgi-maven-plugin/index.html#jacoco_configuration">jacoco configuration</a>
               to the <i>eosgi-maven-plugin</i>:
-            </p> <pre class="prettyprint lang-java">
+            </p> <pre class="prettyprint lang-xml">
 &lt;jacoco&gt;
   &lt;includes&gt;org.everit.cookbook.*&lt;/includes&gt;
   &lt;output&gt;$${ if (System.getenv("EOSGI_STOP_AFTER_TESTS").equals("true")) "file"; else "tcpserver"; }&lt;/output&gt;

@@ -40,6 +40,7 @@ html {
 }
 
 .bs-docs-featurette>.container>h2 {
+    text-align:left;
     margin-bottom: 25px;
 }
 
@@ -50,12 +51,14 @@ html {
 
 .bs-docs-featurette>h2 {
     margin-bottom: 25px;
+    text-align:left;
 }
 
 .bs-docs-featurette>h3 {
     margin-top: 25px;
     margin-bottom: 15px;
     color: #555;
+    text-align:left;
 }
 
 .bs-docs-featurette>ol {
