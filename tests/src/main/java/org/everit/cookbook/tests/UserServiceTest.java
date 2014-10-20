@@ -1,6 +1,7 @@
 package org.everit.cookbook.tests;
 
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.ConfigurationPolicy;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -11,9 +12,11 @@ import org.everit.osgi.dev.testrunner.TestDuringDevelopment;
 import org.junit.Assert;
 import org.junit.Test;
 
-@Component
+@Component(configurationFactory = true, metatype = true, policy = ConfigurationPolicy.REQUIRE)
 @Service(UserServiceTest.class)
 @Properties({
+        @Property(name = "userService.target"),
+        @Property(name = "service.description", propertyPrivate = false),
         @Property(name = "eosgi.testEngine", value = "junit4"),
         @Property(name = "eosgi.testId", value = "UserServiceTest")
 })
@@ -37,12 +40,12 @@ public class UserServiceTest {
         Assert.assertEquals("John", user.getFirstName());
         Assert.assertEquals("Doe", user.getLastName());
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testCreateUserFirstNameNull() {
         userService.createUser(null, "Doe");
     }
-    
+
     @Test(expected = NullPointerException.class)
     public void testCreateUserLastNameNull() {
         userService.createUser("John", null);
