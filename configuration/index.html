@@ -88,7 +88,7 @@
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="adding_jetty_with_webconsole">
-        <h2>Step 0: Adding Jetty and Webconsole</h2>
+        <h2>Part 0: Adding Jetty and Webconsole</h2>
         <p>There are many ways to add a Servlet Containers to an OSGi environment. In this tutorial, Jetty will be
           used with its own OSGi support. By doing that, the newest features of Jetty can be used. (Websocket, SPDY,
           ...).</p>
@@ -220,7 +220,7 @@
               as the password. You should see the website below:
             </p> <img class="img-responsive img-thumbnail" src="felix_webconsole.png" alt="Felix Webconsole" /></li>
         </ol>
-        <p>During the step many dependencies were added. Those dependencies are not only necessary because of Jetty,
+        <p>During the part many dependencies were added. Those dependencies are not only necessary because of Jetty,
           but they will also be used by the technologies introduced in the following chapters of this tutorial.</p>
         <p>Jetty listens on a random port if integration tests are started by maven and it listens on the port 4848
           if the OSGi container is started within a console. This port is used only for the management console so it
@@ -233,7 +233,7 @@
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="making_userservicecomponent_configurable">
         <h2>
-          Step 1: Making <i>UserServiceComponent</i> configurable
+          Part 1: Making <i>UserServiceComponent</i> configurable
         </h2>
         <ol>
           <li>
@@ -279,7 +279,7 @@ service.description.description=Descriptive name of the service
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="making_testcomponent_configurable">
         <h2>
-          Step 2: Making <i>Test Component</i> configurable
+          Part 2: Making <i>Test Component</i> configurable
         </h2>
         <ol>
           <li>
@@ -331,7 +331,7 @@ service.description.description=Descriptive name of the service
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="configure_components">
-        <h2>Step 3: Configuring the components</h2>
+        <h2>Part 3: Configuring the components</h2>
         <p>Both components were changed in the way that they need at least one configuration entry to be
           instantiated.</p>
         <ol>
@@ -362,13 +362,13 @@ service.description.description=Descriptive name of the service
             </p> <img class="img-responsive img-thumbnail" src="user_service_test_config.png"
             alt="User Service Test configuration" /></li>
         </ol>
-        <p>In the end of this step, all tests should run automatically. You can check it in the console.</p>
+        <p>In the end of this part, all tests should run automatically. You can check it in the console.</p>
       </div>
 
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="persisting_configuration_permanent">
-        <h2>Step 4: Persisting the configuration permanently</h2>
+        <h2>Part 4: Persisting the configuration permanently</h2>
         <p>Although the configuration is persisted into the data folder of the configadmin bundle, it will be lost
           after the target folder is deleted. The configuration should be stored in the source folder of the project.</p>
         <ol>
@@ -420,12 +420,12 @@ service.description.description=Descriptive name of the service
           data-offset-bottom="140">
 
           <li class="active"><a href="#scope">Scope</a></li>
-          <li><a href="#adding_jetty_with_webconsole">Step 0: Adding Jetty with Webconsole</a>
-          <li><a href="#making_userservicecomponent_configurable">Step 1: Making UserServiceComponent
+          <li><a href="#adding_jetty_with_webconsole">Part 0: Adding Jetty with Webconsole</a>
+          <li><a href="#making_userservicecomponent_configurable">Part 1: Making UserServiceComponent
               Configurable</a></li>
-          <li><a href="#making_testcomponent_configurable">Step 2: Making Test Component Configurable</a></li>
-          <li><a href="#configure_components">Step 3: Configuring the components</a></li>
-          <li><a href="#persisting_configuration_permanent">Step 4: Persisting the configuration permanently</a></li>
+          <li><a href="#making_testcomponent_configurable">Part 2: Making Test Component Configurable</a></li>
+          <li><a href="#configure_components">Part 3: Configuring the components</a></li>
+          <li><a href="#persisting_configuration_permanent">Part 4: Persisting the configuration permanently</a></li>
         </ul>
       </nav>
     </div>

@@ -78,7 +78,7 @@
           an in-memory <a href="http://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html">HashMap</a>.
         </p>
         <p>
-          Before starting the steps of this chapter, please visit the <a
+          Before starting the the chapter, please visit the <a
             href="http://everitorg.wordpress.com/2014/06/18/modularized-persistence/">Modularized persistence</a> blog
           post, where you can find more information about the concept!
         </p>
@@ -93,7 +93,7 @@
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="specifying_database_schema">
-        <h2>Step 1: Specifying database schema</h2>
+        <h2>Part 1: Specifying database schema</h2>
 
         <ol>
           <li><p>
@@ -155,7 +155,7 @@
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="generating_querydsl_metadata">
-        <h2>Step 2: Generating Querydsl Metadata</h2>
+        <h2>Part 2: Generating Querydsl Metadata</h2>
         <ol>
           <li><p>
               Add <i>querydsl-sql</i> as a dependency to the <i>pom.xml</i> of the <i>core</i> project as the generated
@@ -219,7 +219,7 @@
   &lt;/namingRules&gt;
 &lt;/lqmg&gt;</pre></li>
           <li><p>
-              Change the capability that was provided in <i>Step 1</i> to contain the lqmg file:
+              Change the capability that was provided in <i>Part 1</i> to contain the lqmg file:
             </p> <pre class="prettyprint lang-xml">
 &lt;Provide-Capability&gt;liquibase.schema;name=org.everit.cookbook;resource=/META-INF/liquibase/org.everit.cookbook.changelog.xml<strong>;lqmg.config.resource=/META-INF/liquibase/org.everit.cookbook.lqmg.xml</strong>&lt;/Provide-Capability&gt;</pre>
           </li>
@@ -326,7 +326,7 @@ INFO: Connection closed.
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="using_relational_database">
-        <h2>Step 3: Using relational database instead of HashMap</h2>
+        <h2>Part 3: Using relational database instead of HashMap</h2>
         <ol>
           <li><p>
               Add the following dependencies to the <i>core</i> project:
@@ -452,7 +452,7 @@ querydslSupport.target.description=OSGi service filter of the querydslSupport re
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="adding_jetty_with_webconsole">
-        <h2>Step 4: Configuring embedded database</h2>
+        <h2>Part 4: Configuring embedded database</h2>
       </div>
     </div>
 

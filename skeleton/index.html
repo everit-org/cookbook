@@ -78,7 +78,7 @@
       </div>
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="checking_out_from_github">
-        <h2>Step 1: Checking out the Cookbook Sample from Github</h2>
+        <h2>Part 1: Checking out the Cookbook Sample from Github</h2>
         <p>
           The sample application that will be developed during the chapters of this CookBook is available in a <a
             href="https://github.com/everit-org/cookbook/">Github repository</a>. Each chapter of the book is a branch
@@ -99,7 +99,7 @@
       </div>
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="creating_parent_project">
-        <h2>Step 2: Creating the parent project</h2>
+        <h2>Part 2: Creating the parent project</h2>
         <ol>
           <li>
             <p>Start Eclipse</p>
@@ -187,13 +187,13 @@
       </div>
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="creating_core_project">
-        <h2>Step 3: Creating the core project</h2>
+        <h2>Part 3: Creating the core project</h2>
         <p>The core project contains the business logic and the definition of the persistent schema it uses
           directly. The created parent project makes it possible to compile the sub-modules together. However, we do not
           want the project to inherit any settings from its parent, therefore, we will define the org.everit.config.main
           project as the parent of the core project.</p>
         <div class="bs-docs-featurette cookbook" id="creating_core_project__maven_module">
-          <h3>Step 3.1: Maven module</h3>
+          <h3>Part 3.1: Maven module</h3>
           <ol>
             <li>
               <p>In the project explorer, click on the org.everit.cookbook.parent project with the right mouse
@@ -342,7 +342,7 @@
           </ol>
         </div>
         <div class="bs-docs-featurette cookbook" id="creating_api_in_core_project">
-          <h3>Step 3.2: Source code</h3>
+          <h3>Part 3.2: Source code</h3>
           <p>We will implement a simple User management component that handles users with two pieces of information:
             name and a birth date. At this point, our database will be a simple Map in the memory.</p>
           <ol>
@@ -364,12 +364,12 @@ public interface UserService {
       </div>
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="creating_test_module">
-        <h2>Step 4: Creating the test module</h2>
+        <h2>Part 4: Creating the test module</h2>
         <p>The test module will contain the integration and/or unit tests for the core module. The tests are
-          separated into a different maven module as they should be placed into a separate OSGi bundle. In this step, a
+          separated into a different maven module as they should be placed into a separate OSGi bundle. In this part, a
           "Hello world" test will be created.</p>
         <div class="bs-docs-featurette cookbook" id="creating_test_module__maven_module">
-          <h3>Step 4.1: Maven module</h3>
+          <h3>Part 4.1: Maven module</h3>
           <ol>
             <li>
               <p>In the project explorer, click on the org.everit.cookbook.parent project with the right mouse
@@ -540,7 +540,7 @@ public interface UserService {
           </ol>
         </div>
         <div class="bs-docs-featurette cookbook" id="creating_test_module__test_component">
-          <h3>Step 4.2: Hello world test</h3>
+          <h3>Part 4.2: Hello world test</h3>
           <p>We will create our first test. It will do nothing else, but write out a "Hello world" onto the standard
             output.</p>
           <ol>
@@ -567,7 +567,7 @@ public interface UserService {
                 <li>Annotate the method with <i>@Test</i></li>
                 <li>Write "Hello world" to the standard output in the body of the function.</li>
               </ul>
-              <p>After this step, your class should have the following source:</p> <pre class="prettyprint lang-java">
+              <p>After this part, your class should have the following source:</p> <pre class="prettyprint lang-java">
 package org.everit.cookbook.tests;
 
 import org.apache.felix.scr.annotations.Component;
@@ -620,18 +620,18 @@ public class UserServiceTest {
         <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350"
           data-offset-bottom="140">
 
-          <li class="active"><a href="#checking_out_from_github">Step 1: Checking out from Github</a></li>
-          <li><a href="#creating_parent_project">Step 2: Creating the parent project</a></li>
-          <li><a href="#creating_core_project">Step 3: Creating the core project</a>
+          <li class="active"><a href="#checking_out_from_github">Part 1: Checking out from Github</a></li>
+          <li><a href="#creating_parent_project">Part 2: Creating the parent project</a></li>
+          <li><a href="#creating_core_project">Part 3: Creating the core project</a>
             <ul class="nav nav-pills nav-stacked">
-              <li><a href="#creating_core_project__maven_module">Step 3.1: Maven module</a></li>
-              <li><a href="#creating_api_in_core_project">Step 3.2: Interfaces</a></li>
+              <li><a href="#creating_core_project__maven_module">Part 3.1: Maven module</a></li>
+              <li><a href="#creating_api_in_core_project">Part 3.2: Interfaces</a></li>
             </ul></li>
 
-          <li><a href="#creating_test_module">Step 4: Creating the test module</a>
+          <li><a href="#creating_test_module">Part 4: Creating the test module</a>
             <ul class="nav nav-pills nav-stacked">
-              <li><a href="#creating_test_module__maven_module">Step 4.1: Maven module</a></li>
-              <li><a href="#creating_test_module__test_component">Step 4.2: Hello world test</a></li>
+              <li><a href="#creating_test_module__maven_module">Part 4.1: Maven module</a></li>
+              <li><a href="#creating_test_module__test_component">Part 4.2: Hello world test</a></li>
             </ul></li>
         </ul>
       </nav>
