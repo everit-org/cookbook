@@ -21,6 +21,8 @@
 
 <head>
 <meta charset="utf-8">
+<meta name="description"
+  content="Running JUnit tests on OSGi containers and develop applications with rapid deployment iterations. The guide is based on Maven, Eclipse and Everit tools.">
 <title>Everit Cookbook - Test Driven Development</title>
 <link rel="icon" type="image/ico" href="../fonts/favicon.ico">
 
@@ -558,8 +560,8 @@ public void testCreateUserLastNameNull() {
         <h3 id="change_testnum_in_pom">Changing the number of tests in the pom file</h3>
         <p>
           There are three tests now. In case <i>"mvn clean install"</i> would have been started from the command line,
-          the process would fail. To avoid that, increase the value of <b><i>EOSGi-TestNum</i></b> setting in the <i>pom</i> file of
-          the <i>tests</i> project to <b>3</b>.
+          the process would fail. To avoid that, increase the value of <b><i>EOSGi-TestNum</i></b> setting in the <i>pom</i>
+          file of the <i>tests</i> project to <b>3</b>.
         </p>
       </div>
     </div>
@@ -581,8 +583,7 @@ public void testCreateUserLastNameNull() {
               </a></li>
               <li><a href="#lastname_null">TDD iteration 3: <i>lastName</i> cannot be null
               </a></li>
-              <li><a href="#change_testnum_in_pom">Changing the number of tests in the pom file
-              </a></li>
+              <li><a href="#change_testnum_in_pom">Changing the number of tests in the pom file </a></li>
             </ul></li>
         </ul>
       </nav>
