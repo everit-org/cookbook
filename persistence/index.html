@@ -71,23 +71,403 @@
   </div>
   <div class="container">
     <div class="col-md-10">
-      <div class="bs-docs-featurette cookbook" id="content_of_tutorial">
+      <div class="bs-docs-featurette cookbook" id="scope">
         <h2>Scope</h2>
-        <p>In this chapter we will modify the core implementation to store the user data in a relational database.</p>
+        <p>
+          The goal of the chapter is to change the implementation of UserService to use a relational database instead of
+          an in-memory <a href="http://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html">HashMap</a>.
+        </p>
+        <p>
+          Before starting the steps of this chapter, please visit the <a
+            href="http://everitorg.wordpress.com/2014/06/18/modularized-persistence/">Modularized persistence</a> blog
+          post, where you can find more information about the concept!
+        </p>
         <p>
           If you skipped that <a href="../tdd/index.html">last chapter</a>, please <a
             href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">check out</a> the <i>03 -
-            configuration</i> branch in eclipse and import the content as a maven project!
-        </p>
-        <p>
-          Before doing this chapter of the tutorial, please visit the <a
-            href="http://everitorg.wordpress.com/2014/06/18/modularized-persistence/">Modularized persistence</a> blog
-          post, where you can find more information about the concept of this solution.
+            configuration</i> branch in eclipse and import the content as a maven project! Also compile the full project by
+          executing the "<i>mvn install</i>" command and <a href="../common/mini-howtos.html#start_osgi_container">start
+            the development OSGi container</a>!
         </p>
       </div>
 
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="specifying_database_schema">
+        <h2>Step 1: Specifying database schema</h2>
+
+        <ol>
+          <li><p>
+              Create a new file with <i>org.everit.cookbook.changelog.xml</i> name in the <i>core</i> project in the <i>src/main/resources/META-INF/liquibase</i>
+              folder!
+            </p></li>
+          <li><p>Add the following content to the XML file:</p> <pre class="prettyprint lang-xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+  objectQuotingStrategy="QUOTE_ALL_OBJECTS" logicalFilePath="org.everit.cookbook"&gt;
+
+  &lt;changeSet id="1.0.0_10" author="everit"&gt;
+    &lt;createTable tableName="cookbook_user"&gt;
+      &lt;column name="user_id" autoIncrement="true" type="bigint"&gt;
+        &lt;constraints nullable="false" /&gt;
+      &lt;/column&gt;
+      &lt;column name="first_name" type="varchar(255)"&gt;
+        &lt;constraints nullable="false" /&gt;
+      &lt;/column&gt;
+      &lt;column name="last_name" type="varchar(255)"&gt;
+        &lt;constraints nullable="false" /&gt;
+      &lt;/column&gt;
+    &lt;/createTable&gt;
+  &lt;/changeSet&gt;
+
+  &lt;changeSet id="1.0.0_20" author="everit"&gt;
+    &lt;addPrimaryKey tableName="cookbook_user" columnNames="user_id" /&gt;
+  &lt;/changeSet&gt;
+
+  &lt;changeSet id="1.0.0_30" author="everit"&gt;
+    &lt;createIndex tableName="cookbook_user" indexName="idx_cookbook_user_fn"&gt;
+      &lt;column name="first_name" /&gt;
+    &lt;/createIndex&gt;
+  &lt;/changeSet&gt;
+
+  &lt;changeSet id="1.0.0_40" author="everit"&gt;
+    &lt;createIndex tableName="cookbook_user" indexName="idx_cookbook_user_ln"&gt;
+      &lt;column name="last_name" /&gt;
+    &lt;/createIndex&gt;
+  &lt;/changeSet&gt;
+&lt;/databaseChangeLog&gt;
+</pre>
+            <p>Please note, that the id of the changeSet reflects to the version of the module! Every atomic
+              modification is separated into a different changeset. The reason of the separation is that not all of the
+              database engines support transactional DDL execution. In case of an error, the failed changesets can be
+              executed separately after a bugfix has been applied.</p>
+            <p>The logical file path is always the name of the module. By having a unique logicalFilePath attribute
+              value, different modules will not conflict if the same changeSet ids are used.</p></li>
+          <li><p>
+              Add the following capability to the instructions of <i>maven-bundle-plugin</i> conifuguration in the <i>pom.xml</i>
+              file of the <i>core</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;Provide-Capability&gt;liquibase.schema;name=org.everit.cookbook;resource=/META-INF/liquibase/org.everit.cookbook.changelog.xml&lt;/Provide-Capability&gt;</pre>
+          </li>
+        </ol>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="generating_querydsl_metadata">
+        <h2>Step 2: Generating Querydsl Metadata</h2>
+        <ol>
+          <li><p>
+              Add <i>querydsl-sql</i> as a dependency to the <i>pom.xml</i> of the <i>core</i> project as the generated
+              classes will need it:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+  &lt;groupId&gt;com.mysema.querydsl&lt;/groupId&gt;
+  &lt;artifactId&gt;querydsl-sql&lt;/artifactId&gt;
+  &lt;version&gt;3.5.0&lt;/version&gt;
+&lt;/dependency&gt;</pre></li>
+          <li><p>
+              Add the following plugins to the <i>pom.xml</i> of the <i>core</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;plugin&gt;
+  &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+  &lt;artifactId&gt;build-helper-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;1.9&lt;/version&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;phase&gt;generate-sources&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;add-source&lt;/goal&gt;
+      &lt;/goals&gt;
+      &lt;configuration&gt;
+        &lt;sources&gt;
+          &lt;source&gt;src/main/generated/java/&lt;/source&gt;
+        &lt;/sources&gt;
+      &lt;/configuration&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;
+
+&lt;plugin&gt;
+  &lt;groupId&gt;org.everit.osgi.dev&lt;/groupId&gt;
+  &lt;artifactId&gt;lqmg-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;3.0.1&lt;/version&gt;
+  &lt;configuration&gt;
+    &lt;defaultSchema&gt;org.everit.cookbook&lt;/defaultSchema&gt;
+    &lt;capability&gt;org.everit.cookbook&lt;/capability&gt;
+    &lt;packages&gt;org.everit.cookbook.schema.qdsl&lt;/packages&gt;
+  &lt;/configuration&gt;
+&lt;/plugin&gt;</pre></li>
+          <li><p>
+              Add a new file with <i>org.everit.cookbook.lqmg.xml</i> name to the same folder where <i>org.everit.cookbook.changelog.xml</i>
+              is with the following content:
+            </p> <pre class="prettyprint lang-xml">
+ &lt;lqmg xmlns="http://everit.org/lqmg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://everit.org/lqmg http://www.everit.org/xml/ns/lqmg/lqmg-3.0.0.xsd" defaultPackage="org.everit.cookbook.schema.qdsl"&gt;
+
+  &lt;namingRules&gt;
+    &lt;classNameRule&gt;
+      &lt;entity&gt;cookbook_user&lt;/entity&gt;
+      &lt;class&gt;User&lt;/class&gt;
+      &lt;propertyMappings&gt;
+        &lt;primaryKey&gt;
+          &lt;name&gt;pk_cookbook_user&lt;/name&gt;
+          &lt;property&gt;userPk&lt;/property&gt;
+        &lt;/primaryKey&gt;
+      &lt;/propertyMappings&gt;
+    &lt;/classNameRule&gt;
+  &lt;/namingRules&gt;
+&lt;/lqmg&gt;</pre></li>
+          <li><p>
+              Change the capability that was provided in <i>Step 1</i> to contain the lqmg file:
+            </p> <pre class="prettyprint lang-xml">
+&lt;Provide-Capability&gt;liquibase.schema;name=org.everit.cookbook;resource=/META-INF/liquibase/org.everit.cookbook.changelog.xml<strong>;lqmg.config.resource=/META-INF/liquibase/org.everit.cookbook.lqmg.xml</strong>&lt;/Provide-Capability&gt;</pre>
+          </li>
+          <li><p>
+              Run "<i>mvn package lqmg:generate</i>" command in the root folder of the <i>core</i> project! In the end
+              of the console should show something similar:
+            </p> <pre class="terminal-emulator" style="height: 25em;">
+[INFO] Start lqmg-maven-plugin.
+[INFO] Generation target folder: c:\Users\balazs_zsoldos\git\cookbook\core\src\main\generated\java
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/org/apache/felix/org.apache.felix.scr.annotations/1
+.9.8/org.apache.felix.scr.annotations-1.9.8.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/mysema/querydsl/querydsl-sql/3.5.0/querydsl-sql
+-3.5.0.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/mysema/querydsl/querydsl-core/3.5.0/querydsl-co
+re-3.5.0.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/google/guava/guava/18.0/guava-18.0.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.
+jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/mysema/commons/mysema-commons-lang/0.2.4/mysema
+-commons-lang-0.2.4.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/joda-time/joda-time/1.6/joda-time-1.6.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/javax/validation/validation-api/1.1.0.Final/validat
+ion-api-1.1.0.Final.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/org/apache/servicemix/bundles/org.apache.servicemix
+.bundles.javax-inject/1_2/org.apache.servicemix.bundles.javax-inject-1_2.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/infradna/tool/bridge-method-annotation/1.13/bri
+dge-method-annotation-1.13.jar
+[INFO] Adding artifact (current project): file:/c:/Users/balazs_zsoldos/git/cookbook/core/target/org.everit.cookbook.cor
+e-1.0.0-SNAPSHOT.jar
+Oct 21, 2014 1:38:03 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Load driver.
+Oct 21, 2014 1:38:03 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Loaded driver.
+Oct 21, 2014 1:38:03 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Creating connection.
+Oct 21, 2014 1:38:03 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Created connection.
+Oct 21, 2014 1:38:03 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Get database.
+Oct 21, 2014 1:38:04 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Start LiquiBase and update.
+INFO 10/21/14 1:38 PM:liquibase: Successfully acquired change log lock
+INFO 10/21/14 1:38 PM:liquibase: Creating database history table with name: "PUBLIC"."DATABASECHANGELOG"
+INFO 10/21/14 1:38 PM:liquibase: Reading from "PUBLIC"."DATABASECHANGELOG"
+INFO 10/21/14 1:38 PM:liquibase: Reading from "PUBLIC"."DATABASECHANGELOG"
+INFO 10/21/14 1:38 PM:liquibase: Reading from "PUBLIC"."DATABASECHANGELOG"
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: Reading from "PUBLIC"."DATABASECHANGELOG"
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: Table cookbook_user created
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: ChangeSet org.everit.cookbook::1.0.0_10::everit
+ran successfully in 18ms
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: Primary key added to cookbook_user (user_id)
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: ChangeSet org.everit.cookbook::1.0.0_20::everit
+ran successfully in 3ms
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: Index idx_cookbook_user_fn created
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: ChangeSet org.everit.cookbook::1.0.0_30::everit
+ran successfully in 12ms
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: Index idx_cookbook_user_ln created
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: ChangeSet org.everit.cookbook::1.0.0_40::everit
+ran successfully in 2ms
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: Successfully released change log lock
+Oct 21, 2014 1:38:06 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Finish LiquiBase and update.
+Oct 21, 2014 1:38:06 PM org.everit.osgi.dev.lqmg.LQMG exportMetaData
+INFO: Start meta data export.
+[INFO] No configuration for table 'DATABASECHANGELOG' in schema 'PUBLIC'. Ignoring from metadata class generation
+[INFO] No configuration for table 'DATABASECHANGELOGLOCK' in schema 'PUBLIC'. Ignoring from metadata class generation
+[INFO] Exported cookbook_user successfully
+Oct 21, 2014 1:38:06 PM org.everit.osgi.dev.lqmg.LQMG exportMetaData
+INFO: Finish meta data export.
+Oct 21, 2014 1:38:06 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Connection closed.
+[INFO] Finished the metamodell generation at path c:\Users\balazs_zsoldos\git\cookbook\core\src\main\generated\java
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 8.949 s
+[INFO] Finished at: 2014-10-21T13:38:06+01:00
+[INFO] Final Memory: 27M/110M
+[INFO] ------------------------------------------------------------------------</pre></li>
+          <li><p>
+              Select the <i>core</i> project in the <i>Project Explorer</i> and push <i>ALT + F5</i> key combination! On
+              the pop-up window, click on the <i>OK</i> button!
+            </p>
+            <p>
+              The "<i>src/main/generated/java</i>" source folder should appear at the project. If the source folder is
+              not added, the M2E extension of the <i>build-helper-maven-plugin</i> is not installed in Eclipse. For more
+              information, see the <a href="../ide/index.html#install_m2e_connectors">Installing m2e connectors</a> step
+              in the <a href="../ide/index.html">Development tools</a> chapter of the Cookbook.
+            </p></li>
+          <li><p>
+              Add the <i>org.everit.cookbook.schema.qdsl</i> package to the list of exported packages in the <i>pom.xml</i>
+              of the <i>core</i> project!
+            </p></li>
+        </ol>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="using_relational_database">
+        <h2>Step 3: Using relational database instead of HashMap</h2>
+        <ol>
+          <li><p>
+              Add the following dependencies to the <i>core</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.everit.osgi&lt;/groupId&gt;
+    &lt;artifactId&gt;org.everit.osgi.querydsl.support&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+</pre></li>
+          <li><p>
+              Open the <i>UserServiceComponent</i> class and
+            </p>
+            <ul>
+              <li><p>
+                  Remove the <i>storage</i> and <i>lastGeneratedUserId</i> member variables!
+                </p></li>
+              <li><p>
+                  Create a new member variable with the name "<i>qdsl</i>" and the type "<i>QuerydslSupport</i>"!
+                </p></li>
+              <li><p>Generate a setter for the new variable!</p></li>
+              <li><p>
+                  Add the <i>@Reference</i> annotation to the new variable and define the bind method to be the setter,
+                  the name to be "<i>querydslSupport</i>"!
+                </p></li>
+              <li><p>
+                  Change the implementation of <i>createUser</i> method in the way that it uses the <i>qdsl</i> member
+                  variable with the <i>QUser</i> class to insert a user record into the database:
+                </p> <pre class="prettyprint lang-java">
+return qdsl.execute((connection, configuration) -&gt; {
+    QUser user = QUser.user;
+    SQLInsertClause insert = new SQLInsertClause(connection, configuration, user);
+
+    return insert
+            .set(user.firstName, firstName)
+            .set(user.lastName, lastName)
+            .executeWithKey(user.userId);
+        });</pre></li>
+              <li><p>
+                  Change the implementation of <i>getUserById</i> method to use the <i>qdsl</i> member variable:
+                </p> <pre class="prettyprint lang-java">
+return qdsl.execute((connection, configuration) -> {
+    QUser user = QUser.user;
+    SQLQuery query = new SQLQuery(connection, configuration);
+    return query.from(user)
+            .where(user.userId.eq(userId))
+            .singleResult(new QBean&lt;UserDTO&gt;(UserDTO.class, user.userId, user.firstName, user.lastName));
+});</pre></li>
+              <li><p>
+                  Add a new <i>@Property</i> annotation to the class with the "<i>querydslSupport.target</i>" name!
+                </p></li>
+            </ul>
+            <p>The code of the class should look like the following in the end:</p> <pre class="prettyprint lang-java">
+package org.everit.cookbook.internal;
+
+import java.util.Objects;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.ConfigurationPolicy;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.UserService;
+import org.everit.cookbook.dto.UserDTO;
+import org.everit.cookbook.schema.qdsl.QUser;
+import org.everit.osgi.querydsl.support.QuerydslSupport;
+
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.types.QBean;
+
+@Component(name = "org.everit.cookbook.UserService", configurationFactory = true, metatype = true,
+        policy = ConfigurationPolicy.REQUIRE)
+@Properties({
+        <strong>@Property(name = "querydslSupport.target"),</strong>
+        @Property(name = "service.description", propertyPrivate = false) })
+@Service
+public class UserServiceComponent implements UserService {
+
+    <strong>@Reference(name = "querydslSupport", bind = "setQdsl")
+    private QuerydslSupport qdsl;</strong>
+
+    @Override
+    public long createUser(String firstName, String lastName) {
+        Objects.requireNonNull(firstName, "firstName must not be null");
+        Objects.requireNonNull(lastName, "lastName must not be null");
+
+        <strong>return qdsl.execute((connection, configuration) -&gt; {
+            QUser user = QUser.user;
+            SQLInsertClause insert = new SQLInsertClause(connection, configuration, user);
+
+            return insert
+                    .set(user.firstName, firstName)
+                    .set(user.lastName, lastName)
+                    .executeWithKey(user.userId);
+        });</strong>
+    }
+
+    @Override
+    public UserDTO getUserById(long userId) {
+        <strong>return qdsl.execute((connection, configuration) -> {
+            QUser user = QUser.user;
+            SQLQuery query = new SQLQuery(connection, configuration);
+            return query.from(user)
+                    .where(user.userId.eq(userId))
+                    .singleResult(new QBean&lt;UserDTO&gt;(UserDTO.class, user.userId, user.firstName, user.lastName));
+        });</strong>
+    }
+
+    <strong>public void setQdsl(QuerydslSupport qdsl) {
+        this.qdsl = qdsl;
+    }</strong>
+
+}</pre></li>
+          <li><p>
+              Add the following content to the <i>metatype.properties</i> file of the <i>core</i> project:
+            </p> <pre>
+querydslSupport.target.name=QuerydslSupport Target
+querydslSupport.target.description=OSGi service filter of the querydslSupport reference</pre></li>
+        </ol>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="adding_jetty_with_webconsole">
+        <h2>Step 4: Configuring embedded database</h2>
+      </div>
+    </div>
+
+    <!--        Affix-->
+    <div class="col-md-2">
+      <nav id="affix-nav">
+        <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350"
+          data-offset-bottom="140">
+
+          <li class="active"><a href="#scope">Scope</a></li>
+        </ul>
+      </nav>
     </div>
   </div>
+
 
   <div></div>
   <footer class="bs-docs-footer" role="contentinfo">
@@ -97,7 +477,7 @@
           <li class="follow-btn "><a href="https://twitter.com/EveritOrg" class="twitter-follow-button"
             data-show-count="true">Follow @EveritOrg</a></li>
           <li class="tweet-btn"><a href="https://twitter.com/share" class="twitter-share-button"
-            data-url="http://www.everit.org/">Tweet</a></li>
+            data-related="EveritOrg">Tweet</a></li>
         </ul>
       </div>
     </div>
@@ -122,5 +502,6 @@
 				s.parentNode.insertBefore(ga, s);
 			})();
 		</script>
+
 </body>
 </html>
