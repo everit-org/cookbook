@@ -45,8 +45,10 @@
             </Import-Package>
             <Export-Package>
               org.everit.cookbook,
-              org.everit.cookbook.dto
+              org.everit.cookbook.dto,
+              org.everit.cookbook.schema.qdsl
             </Export-Package>
+            <Provide-Capability>liquibase.schema;name=org.everit.cookbook;resource=/META-INF/liquibase/org.everit.cookbook.changelog.xml;lqmg.config.resource=/META-INF/liquibase/org.everit.cookbook.lqmg.xml</Provide-Capability>
           </instructions>
         </configuration>
       </plugin>
@@ -85,6 +87,36 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.9</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/main/generated/java/</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.everit.osgi.dev</groupId>
+        <artifactId>lqmg-maven-plugin</artifactId>
+        <version>3.0.1</version>
+        <configuration>
+          <defaultSchema>org.everit.cookbook</defaultSchema>
+          <capability>org.everit.cookbook</capability>
+          <packages>org.everit.cookbook.schema.qdsl</packages>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -93,6 +125,17 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.scr.annotations</artifactId>
       <version>1.9.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.mysema.querydsl</groupId>
+      <artifactId>querydsl-sql</artifactId>
+      <version>3.5.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.querydsl.support</artifactId>
+      <version>1.0.0</version>
     </dependency>
   </dependencies>
 </project>

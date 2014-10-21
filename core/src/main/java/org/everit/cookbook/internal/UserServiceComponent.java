@@ -16,43 +16,68 @@
  */
 package org.everit.cookbook.internal;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.ConfigurationPolicy;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
 import org.everit.cookbook.UserService;
 import org.everit.cookbook.dto.UserDTO;
+import org.everit.cookbook.schema.qdsl.QUser;
+import org.everit.osgi.querydsl.support.QuerydslSupport;
+
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.types.QBean;
 
 @Component(name = "org.everit.cookbook.UserService", configurationFactory = true, metatype = true,
         policy = ConfigurationPolicy.REQUIRE)
-@Properties({ @Property(name = "service.description", propertyPrivate = false) })
+@Properties({
+        @Property(name = "querydslSupport.target"),
+        @Property(name = "service.description", propertyPrivate = false) })
 @Service
 public class UserServiceComponent implements UserService {
 
-    private final Map<Long, UserDTO> storage = new ConcurrentHashMap<Long, UserDTO>();
-
-    private final AtomicLong lastGeneratedUserId = new AtomicLong();
+    @Reference(name = "querydslSupport", bind = "setQdsl")
+    private QuerydslSupport qdsl;
 
     @Override
     public long createUser(String firstName, String lastName) {
         Objects.requireNonNull(firstName, "firstName must not be null");
         Objects.requireNonNull(lastName, "lastName must not be null");
 
-        long userId = lastGeneratedUserId.get();
-        UserDTO userData = new UserDTO(userId, firstName, lastName);
-        storage.put(userId, userData);
-        return userId;
+        return qdsl.execute((connection, configuration) -> {
+            QUser user = QUser.user;
+            SQLInsertClause insert = new SQLInsertClause(connection, configuration, user);
+
+            return insert
+                    .set(user.firstName, firstName)
+                    .set(user.lastName, lastName)
+                    .executeWithKey(user.userId);
+        });
     }
 
     @Override
     public UserDTO getUserById(long userId) {
-        return storage.get(userId);
+        return qdsl.execute((connection, configuration) -> {
+            QUser user = QUser.user;
+            SQLQuery query = new SQLQuery(connection, configuration);
+
+            QBean<UserDTO> userQBean = new QBean<UserDTO>(UserDTO.class, true, user.userId, user.firstName,
+                    user.lastName);
+
+            return query
+                    .from(user)
+                    .where(user.userId.eq(userId))
+                    .singleResult(
+                            userQBean);
+        });
     }
 
+    public void setQdsl(QuerydslSupport qdsl) {
+        this.qdsl = qdsl;
+    }
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This file is part of org.everit.cookbook.core.
+
+    org.everit.cookbook.core is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    org.everit.cookbook.core is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with org.everit.cookbook.core.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+  objectQuotingStrategy="QUOTE_ALL_OBJECTS" logicalFilePath="org.everit.cookbook">
+
+  <changeSet id="1.0.0_10" author="everit">
+    <createTable tableName="cookbook_user">
+      <column name="user_id" autoIncrement="true" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="first_name" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="last_name" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="1.0.0_20" author="everit">
+    <addPrimaryKey constraintName="pk_cookbook_user" tableName="cookbook_user" columnNames="user_id" />
+  </changeSet>
+
+  <changeSet id="1.0.0_30" author="everit">
+    <createIndex tableName="cookbook_user" indexName="idx_cookbook_user_fn">
+      <column name="first_name" />
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="1.0.0_40" author="everit">
+    <createIndex tableName="cookbook_user" indexName="idx_cookbook_user_ln">
+      <column name="last_name" />
+    </createIndex>
+  </changeSet>
+</databaseChangeLog>

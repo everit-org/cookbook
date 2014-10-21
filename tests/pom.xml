@@ -59,11 +59,46 @@
                 <jetty.port>$${ if (System.getenv("EOSGI_STOP_AFTER_TESTS").equals("true")) "0"; else "4848"; }</jetty.port>
                 <jetty.home.bundle>org.eclipse.jetty.osgi.boot</jetty.home.bundle>
                 <felix.cm.dir>${wrapper_home}/../conf/configadmin</felix.cm.dir>
+                <org.osgi.framework.system.packages>
+                  org.osgi.framework;version=1.7.0,
+                  org.osgi.framework.hooks.bundle;version=1.1.0,
+                  org.osgi.framework.hooks.resolver;version=1.0.0,
+                  org.osgi.framework.hooks.service;version=1.1.0,
+                  org.osgi.framework.hooks.weaving;version=1.0.0,
+                  org.osgi.framework.launch;version=1.1.0,
+                  org.osgi.framework.namespace;version=1.0.0,
+                  org.osgi.framework.startlevel;version=1.0.0,
+                  org.osgi.framework.wiring;version=1.1.0,
+                  org.osgi.resource;version=1.0.0,
+                  org.osgi.service.packageadmin;version=1.2.0,
+                  org.osgi.service.startlevel;version=1.1.0,
+                  org.osgi.service.url;version=1.0.0,
+                  org.osgi.util.tracker;version=1.5.1,
+                  javax.swing,
+                  javax.swing.border,
+                  javax.imageio,
+                  javax.naming,
+                  javax.naming.spi,
+                  javax.net,
+                  javax.net.ssl,
+                  javax.management,
+                  javax.management.modelmbean,
+                  javax.management.remote,
+                  javax.security.auth,
+                  javax.security.cert,
+                  org.ietf.jgss,
+                  javax.crypto,
+                  javax.crypto.spec,
+                  javax.naming.ldap,
+                  javax.security.auth.callback,
+                  javax.security.auth.login,
+                  javax.security.auth.x500
+                </org.osgi.framework.system.packages>
               </systemProperties>
             </environment>
           </environments>
         </configuration>
-      </plugin>      
+      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-scr-plugin</artifactId>
@@ -196,6 +231,84 @@
       <groupId>org.everit.osgi.bundles</groupId>
       <artifactId>org.everit.osgi.bundles.org.json</artifactId>
       <version>1.0.0-v20140107</version>
+    </dependency>
+    
+    <!-- Bundles instead of JDK based system packages -->
+
+    <dependency>
+      <groupId>org.everit.osgi.bundles</groupId>
+      <artifactId>org.everit.osgi.bundles.org.apache.xmlcommons.full</artifactId>
+      <version>1.4.1-20140713</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ow2.spec.ee</groupId>
+      <artifactId>ow2-annotation-1.1-spec</artifactId>
+      <version>1.0.13</version>
+    </dependency>
+    
+    <!-- Transaction manager -->
+
+    <dependency>
+      <groupId>org.apache.aries.transaction</groupId>
+      <artifactId>org.apache.aries.transaction.manager</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.aries</groupId>
+      <artifactId>org.apache.aries.util</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+    
+    <!-- Persistence -->
+
+    <dependency>
+      <groupId>org.everit.osgi.bundles</groupId>
+      <artifactId>org.everit.osgi.bundles.javax.sql</artifactId>
+      <version>4.1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.4.182</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ow2.spec.osgi</groupId>
+      <artifactId>ow2-jdbc-service-1.0-spec</artifactId>
+      <version>1.0.13</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.jdbc.dsf</artifactId>
+      <version>2.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.jdbc.commons.dbcp</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.liquibase.datasource</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.querydsl.templates</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.everit.osgi</groupId>
+      <artifactId>org.everit.osgi.querydsl.configuration</artifactId>
+      <version>1.0.0</version>
     </dependency>
   </dependencies>
 </project>
