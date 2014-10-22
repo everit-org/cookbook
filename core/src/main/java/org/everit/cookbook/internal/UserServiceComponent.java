@@ -73,8 +73,7 @@ public class UserServiceComponent implements UserService {
             return query
                     .from(user)
                     .where(user.userId.eq(userId))
-                    .singleResult(
-                            userQBean);
+                    .singleResult(userQBean);
         });
     }
 
