@@ -38,7 +38,7 @@ public class UserServiceComponent implements UserService {
 
     @Override
     public long createUser(CreateUserParameter newUserParam) {
-        Objects.requireNonNull(newUserParam, "Parameter user cannot be null");
+        Objects.requireNonNull(newUserParam, "User parameter cannot be null");
         Objects.requireNonNull(newUserParam.firstName, "firstName must not be null");
         Objects.requireNonNull(newUserParam.lastName, "lastName must not be null");
 

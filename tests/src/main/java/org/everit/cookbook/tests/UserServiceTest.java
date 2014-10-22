@@ -40,7 +40,7 @@ public class UserServiceTest {
     }
     
     @Test(expected = NullPointerException.class)
-    public void testCreateUserParamNull() {
+    public void testNewUserParamNull() {
         userService.createUser(null);
     }
     
