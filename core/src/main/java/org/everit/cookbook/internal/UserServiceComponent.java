@@ -46,7 +46,7 @@ public class UserServiceComponent implements UserService {
     private QuerydslSupport qdsl;
 
     @Override
-    public long createUser(CreateUserParameter parameterObject) {
+    public long createUser(final CreateUserParameter parameterObject) {
         Objects.requireNonNull(parameterObject.firstName, "firstName must not be null");
         Objects.requireNonNull(parameterObject.lastName, "lastName must not be null");
 
@@ -62,7 +62,7 @@ public class UserServiceComponent implements UserService {
     }
 
     @Override
-    public UserDTO getUserById(long userId) {
+    public UserDTO getUserById(final long userId) {
         return qdsl.execute((connection, configuration) -> {
             QUser user = QUser.user;
             SQLQuery query = new SQLQuery(connection, configuration);
@@ -78,7 +78,7 @@ public class UserServiceComponent implements UserService {
         });
     }
 
-    public void setQuerydslSupport(QuerydslSupport qdsl) {
+    public void setQuerydslSupport(final QuerydslSupport qdsl) {
         this.qdsl = qdsl;
     }
 }

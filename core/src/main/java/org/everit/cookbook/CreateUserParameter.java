@@ -19,14 +19,14 @@ package org.everit.cookbook;
 public class CreateUserParameter {
     public String firstName;
     public String lastName;
-    
-    public CreateUserParameter lastName(String lastName) {
-        this.lastName = lastName;
+
+    public CreateUserParameter firstName(final String firstName) {
+        this.firstName = firstName;
         return this;
     }
-    
-    public CreateUserParameter firstName(String firstName) {
-        this.firstName = firstName;
+
+    public CreateUserParameter lastName(final String lastName) {
+        this.lastName = lastName;
         return this;
     }
 }

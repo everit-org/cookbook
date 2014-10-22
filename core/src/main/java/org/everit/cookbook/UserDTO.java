@@ -22,32 +22,32 @@ public final class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public long userId;
-
     public String firstName;
 
     public String lastName;
 
-    public UserDTO(ImmutableUser immutableUser) {
-        this.userId = immutableUser.getUserId();
-        this.firstName = immutableUser.getFirstName();
-        this.lastName = immutableUser.getLastName();
-    }
+    public long userId;
 
     public UserDTO() {
     }
 
-    public UserDTO lastName(String lastName) {
-        this.lastName = lastName;
-        return this;
+    public UserDTO(final ImmutableUser immutableUser) {
+        userId = immutableUser.getUserId();
+        firstName = immutableUser.getFirstName();
+        lastName = immutableUser.getLastName();
     }
 
-    public UserDTO firstName(String firstName) {
+    public UserDTO firstName(final String firstName) {
         this.firstName = firstName;
         return this;
     }
 
-    public UserDTO userId(long userId) {
+    public UserDTO lastName(final String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public UserDTO userId(final long userId) {
         this.userId = userId;
         return this;
     }

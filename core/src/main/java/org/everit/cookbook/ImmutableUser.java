@@ -16,22 +16,18 @@
  */
 package org.everit.cookbook;
 
-public class ImmutableUser{
-
-    private final long userId;
+public class ImmutableUser {
 
     private final String firstName;
 
     private final String lastName;
 
-    public ImmutableUser(UserDTO userDTO) {
-        this.userId = userDTO.userId;
-        this.firstName = userDTO.firstName;
-        this.lastName = userDTO.lastName;
-    }
+    private final long userId;
 
-    public long getUserId() {
-        return userId;
+    public ImmutableUser(final UserDTO userDTO) {
+        userId = userDTO.userId;
+        firstName = userDTO.firstName;
+        lastName = userDTO.lastName;
     }
 
     public String getFirstName() {
@@ -40,5 +36,9 @@ public class ImmutableUser{
 
     public String getLastName() {
         return lastName;
+    }
+
+    public long getUserId() {
+        return userId;
     }
 }

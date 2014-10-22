@@ -16,13 +16,14 @@
  */
 package org.everit.cookbook;
 
-
 public interface UserService {
 
     /**
      * Creates a new user.
-     * @param parameterObject TODO
-     * 
+     *
+     * @param parameterObject
+     *            TODO
+     *
      * @return The id of the newly created user.
      * @throws NullPointerException
      *             if any of the parameter is null.
@@ -31,7 +32,7 @@ public interface UserService {
 
     /**
      * Queries the data of a user.
-     * 
+     *
      * @param userId
      *            The id of the user.
      * @return The data of the user or <code>null</code> if there is no user with the specified id.
