@@ -24,8 +24,9 @@ import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.CreateUserParameter;
+import org.everit.cookbook.UserDTO;
 import org.everit.cookbook.UserService;
-import org.everit.cookbook.dto.UserDTO;
 import org.everit.cookbook.schema.qdsl.QUser;
 import org.everit.osgi.querydsl.support.QuerydslSupport;
 
@@ -41,21 +42,21 @@ import com.mysema.query.types.QBean;
 @Service
 public class UserServiceComponent implements UserService {
 
-    @Reference(name = "querydslSupport", bind = "setQdsl")
+    @Reference(name = "querydslSupport", bind = "setQuerydslSupport")
     private QuerydslSupport qdsl;
 
     @Override
-    public long createUser(String firstName, String lastName) {
-        Objects.requireNonNull(firstName, "firstName must not be null");
-        Objects.requireNonNull(lastName, "lastName must not be null");
+    public long createUser(CreateUserParameter parameterObject) {
+        Objects.requireNonNull(parameterObject.firstName, "firstName must not be null");
+        Objects.requireNonNull(parameterObject.lastName, "lastName must not be null");
 
         return qdsl.execute((connection, configuration) -> {
             QUser user = QUser.user;
             SQLInsertClause insert = new SQLInsertClause(connection, configuration, user);
 
             return insert
-                    .set(user.firstName, firstName)
-                    .set(user.lastName, lastName)
+                    .set(user.firstName, parameterObject.firstName)
+                    .set(user.lastName, parameterObject.lastName)
                     .executeWithKey(user.userId);
         });
     }
@@ -77,7 +78,7 @@ public class UserServiceComponent implements UserService {
         });
     }
 
-    public void setQdsl(QuerydslSupport qdsl) {
+    public void setQuerydslSupport(QuerydslSupport qdsl) {
         this.qdsl = qdsl;
     }
 }

@@ -14,39 +14,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with org.everit.cookbook.core.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.everit.cookbook.dto;
+package org.everit.cookbook;
 
-import java.io.Serializable;
-
-public final class UserDTO implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    protected long userId;
-
-    protected String firstName;
-
-    protected String lastName;
+public class CreateUserParameter {
+    public String firstName;
+    public String lastName;
     
-    protected UserDTO() {
-    }
-
-    public UserDTO(long userId, String firstName, String lastName) {
-        this.userId = userId;
-        this.firstName = firstName;
+    public CreateUserParameter lastName(String lastName) {
         this.lastName = lastName;
+        return this;
     }
-
-    public long getUserId() {
-        return userId;
+    
+    public CreateUserParameter firstName(String firstName) {
+        this.firstName = firstName;
+        return this;
     }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
 }
