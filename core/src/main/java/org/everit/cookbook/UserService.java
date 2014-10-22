@@ -20,15 +20,15 @@ public interface UserService {
 
     /**
      * Creates a new user.
-     *
-     * @param parameterObject
-     *            TODO
-     *
+     * 
+     * @param newUserParam
+     *            The data of the newly created user.
      * @return The id of the newly created user.
      * @throws NullPointerException
-     *             if any of the parameter is null.
+     *             if the newUserParam is <code>null</code>, or the first or last name specified in the parameter is
+     *             <code>null</code>.
      */
-    long createUser(CreateUserParameter parameterObject);
+    long createUser(CreateUserParameter newUserParam);
 
     /**
      * Queries the data of a user.

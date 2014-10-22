@@ -45,7 +45,6 @@
             </Import-Package>
             <Export-Package>
               org.everit.cookbook,
-              org.everit.cookbook.dto,
               org.everit.cookbook.schema.qdsl
             </Export-Package>
             <Provide-Capability>liquibase.schema;name=org.everit.cookbook;resource=/META-INF/liquibase/org.everit.cookbook.changelog.xml;lqmg.config.resource=/META-INF/liquibase/org.everit.cookbook.lqmg.xml</Provide-Capability>

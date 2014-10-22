@@ -46,17 +46,18 @@ public class UserServiceComponent implements UserService {
     private QuerydslSupport qdsl;
 
     @Override
-    public long createUser(final CreateUserParameter parameterObject) {
-        Objects.requireNonNull(parameterObject.firstName, "firstName must not be null");
-        Objects.requireNonNull(parameterObject.lastName, "lastName must not be null");
+    public long createUser(final CreateUserParameter newUserParam) {
+        Objects.requireNonNull(newUserParam, "User parameter cannot be null");
+        Objects.requireNonNull(newUserParam.firstName, "firstName must not be null");
+        Objects.requireNonNull(newUserParam.lastName, "lastName must not be null");
 
         return qdsl.execute((connection, configuration) -> {
             QUser user = QUser.user;
             SQLInsertClause insert = new SQLInsertClause(connection, configuration, user);
 
             return insert
-                    .set(user.firstName, parameterObject.firstName)
-                    .set(user.lastName, parameterObject.lastName)
+                    .set(user.firstName, newUserParam.firstName)
+                    .set(user.lastName, newUserParam.lastName)
                     .executeWithKey(user.userId);
         });
     }
