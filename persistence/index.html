@@ -328,7 +328,7 @@ INFO: Connection closed.
 
       <hr class="featurette-divider">
       <div class="bs-docs-featurette cookbook" id="using_relational_database">
-        <h2>Part 3: Using relational database instead of HashMap</h2>
+        <h2>Part 3: Changing HashMap store to relational database</h2>
         <ol>
           <li><p>
               Add the following dependencies to the <i>core</i> project:
@@ -358,24 +358,29 @@ INFO: Connection closed.
                   Change the implementation of <i>createUser</i> method in the way that it uses the <i>qdsl</i> member
                   variable with the <i>QUser</i> class to insert a user record into the database:
                 </p> <pre class="prettyprint lang-java">
-return qdsl.execute((connection, configuration) -&gt; {
+return qdsl.execute((connection, configuration) -> {
     QUser user = QUser.user;
     SQLInsertClause insert = new SQLInsertClause(connection, configuration, user);
 
     return insert
-            .set(user.firstName, firstName)
-            .set(user.lastName, lastName)
+            .set(user.firstName, newUserParam.firstName)
+            .set(user.lastName, newUserParam.lastName)
             .executeWithKey(user.userId);
-        });</pre></li>
+});</pre></li>
               <li><p>
                   Change the implementation of <i>getUserById</i> method to use the <i>qdsl</i> member variable:
                 </p> <pre class="prettyprint lang-java">
 return qdsl.execute((connection, configuration) -> {
     QUser user = QUser.user;
     SQLQuery query = new SQLQuery(connection, configuration);
-    return query.from(user)
+
+    QBean&lt;UserDTO&gt; userQBean = new QBean&lt;UserDTO&gt;(UserDTO.class, true, user.userId, user.firstName,
+            user.lastName);
+
+    return query
+            .from(user)
             .where(user.userId.eq(userId))
-            .singleResult(new QBean&lt;UserDTO&gt;(UserDTO.class, user.userId, user.firstName, user.lastName));
+            .singleResult(userQBean);
 });</pre></li>
               <li><p>
                   Add a new <i>@Property</i> annotation to the class with the "<i>querydslSupport.target</i>" name!
@@ -392,8 +397,9 @@ import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.CreateUserParameter;
+import org.everit.cookbook.UserDTO;
 import org.everit.cookbook.UserService;
-import org.everit.cookbook.dto.UserDTO;
 import org.everit.cookbook.schema.qdsl.QUser;
 import org.everit.osgi.querydsl.support.QuerydslSupport;
 
@@ -404,46 +410,52 @@ import com.mysema.query.types.QBean;
 @Component(name = "org.everit.cookbook.UserService", configurationFactory = true, metatype = true,
         policy = ConfigurationPolicy.REQUIRE)
 @Properties({
-        <strong>@Property(name = "querydslSupport.target"),</strong>
+        @Property(name = "querydslSupport.target"),
         @Property(name = "service.description", propertyPrivate = false) })
 @Service
 public class UserServiceComponent implements UserService {
 
-    <strong>@Reference(name = "querydslSupport", bind = "setQdsl")
-    private QuerydslSupport qdsl;</strong>
+    @Reference(name = "querydslSupport", bind = "setQuerydslSupport")
+    private QuerydslSupport qdsl;
 
     @Override
-    public long createUser(String firstName, String lastName) {
-        Objects.requireNonNull(firstName, "firstName must not be null");
-        Objects.requireNonNull(lastName, "lastName must not be null");
+    public long createUser(final CreateUserParameter newUserParam) {
+        Objects.requireNonNull(newUserParam, "User parameter cannot be null");
+        Objects.requireNonNull(newUserParam.firstName, "firstName must not be null");
+        Objects.requireNonNull(newUserParam.lastName, "lastName must not be null");
 
-        <strong>return qdsl.execute((connection, configuration) -&gt; {
+        return qdsl.execute((connection, configuration) -> {
             QUser user = QUser.user;
             SQLInsertClause insert = new SQLInsertClause(connection, configuration, user);
 
             return insert
-                    .set(user.firstName, firstName)
-                    .set(user.lastName, lastName)
+                    .set(user.firstName, newUserParam.firstName)
+                    .set(user.lastName, newUserParam.lastName)
                     .executeWithKey(user.userId);
-        });</strong>
+        });
     }
 
     @Override
-    public UserDTO getUserById(long userId) {
-        <strong>return qdsl.execute((connection, configuration) -> {
+    public UserDTO getUserById(final long userId) {
+        return qdsl.execute((connection, configuration) -> {
             QUser user = QUser.user;
             SQLQuery query = new SQLQuery(connection, configuration);
-            return query.from(user)
+
+            QBean&lt;UserDTO&gt; userQBean = new QBean&lt;UserDTO&gt;(UserDTO.class, true, user.userId, user.firstName,
+                    user.lastName);
+
+            return query
+                    .from(user)
                     .where(user.userId.eq(userId))
-                    .singleResult(new QBean&lt;UserDTO&gt;(UserDTO.class, user.userId, user.firstName, user.lastName));
-        });</strong>
+                    .singleResult(userQBean);
+        });
     }
 
-    <strong>public void setQdsl(QuerydslSupport qdsl) {
+    public void setQuerydslSupport(final QuerydslSupport qdsl) {
         this.qdsl = qdsl;
-    }</strong>
-
-}</pre></li>
+    }
+}
+</pre></li>
           <li><p>
               Add the following content to the <i>metatype.properties</i> file of the <i>core</i> project:
             </p> <pre>
@@ -456,8 +468,8 @@ querydslSupport.target.description=OSGi service filter of the querydslSupport re
       </div>
 
       <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="configuring_embedded_database">
-        <h2>Part 4: Reducing the number of system packages</h2>
+      <div class="bs-docs-featurette cookbook" id="purifying_system_packages">
+        <h2>Part 4: Purifying system packages</h2>
         <p>
           The transaction manager exports the <i>javax.transaction.*</i> classes. In the same time, these packages are
           exported by the system bundle. This would cause serious issues as it might happen that one of the bundles wire
@@ -555,7 +567,7 @@ querydslSupport.target.description=OSGi service filter of the querydslSupport re
 
 
       <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="configuring_embedded_database">
+      <div class="bs-docs-featurette cookbook" id="adding_tm_and_jdbc">
         <h2>Part 5: Adding Transaction Manager and JDBC</h2>
         <ol>
           <li><p>
@@ -579,8 +591,8 @@ querydslSupport.target.description=OSGi service filter of the querydslSupport re
 
 
       <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="configuring_embedded_database">
-        <h2>Part 5: Configuring H2 XADataSource</h2>
+      <div class="bs-docs-featurette cookbook" id="creating_h2_xadatasource">
+        <h2>Part 6: Creating H2 XADataSource</h2>
         <ol>
           <li><p>
               Add <i>H2</i> dependency to the <i>tests</i> project:
@@ -630,8 +642,8 @@ querydslSupport.target.description=OSGi service filter of the querydslSupport re
       </div>
 
       <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="configuring_embedded_database">
-        <h2>Part 6: Creating Managed and Pooled DataSource</h2>
+      <div class="bs-docs-featurette cookbook" id="creating_managed_pooled_datasource">
+        <h2>Part 7: Creating Managed and Pooled DataSource</h2>
         <ol>
           <li><p>
               Add the <i>Everit Commons DBCP</i> component dependency to the <i>tests</i> project:
@@ -660,8 +672,8 @@ querydslSupport.target.description=OSGi service filter of the querydslSupport re
       </div>
 
       <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="configuring_embedded_database">
-        <h2>Part 7: Initializing the database schema</h2>
+      <div class="bs-docs-featurette cookbook" id="initializing_database_schema">
+        <h2>Part 8: Initializing database schema</h2>
         <ol>
           <li><p>
               Add the <i>Everit Liquibase DataSource</i> dependency to the <i>tests</i> project:
@@ -743,8 +755,8 @@ STERED</pre>
 
 
       <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="configuring_embedded_database">
-        <h2>Part 8: Setting up Querydsl components</h2>
+      <div class="bs-docs-featurette cookbook" id="setting_up_querydsl_components">
+        <h2>Part 9: Setting up Querydsl components</h2>
         <ol>
           <li><p>
               Add <i>Everit Querydsl Templates</i> and <i>Everit Querydsl Configuration</i> dependencies to the <i>tests</i>
@@ -807,20 +819,82 @@ STERED</pre>
 
 
       <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="configuring_embedded_database">
-        <h2>Part 9: Changing configuration of User Service Component</h2>
+      <div class="bs-docs-featurette cookbook" id="configuring_user_service_component">
+        <h2>Part 10: Configuring User Service Component</h2>
         <ol>
           <li><p>
-              Open the configuration of the previously created <i>Everit Cookbook User Service</i>  instance and set the following attribute:
+              Open the configuration of the previously created <i>Everit Cookbook User Service</i> instance and set the
+              following attribute:
             </p>
             <ul>
               <li><p>
                   <strong>QuerydslSupport Target:</strong> <i>(service.pid=PID_OF_QUERYDSL_SUPPORT)</i> where the <i>PID_OF_QUERYDSL_SUPPORT</i>
                   is the full Pid of the previously created <i>Everit Querydsl Support</i> instance.
                 </p></li>
-            </ul></li>
+            </ul>
+            <p>The console should show that all tests passed.</p></li>
         </ol>
       </div>
+
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="cleaning_database_in_test">
+        <h2>Part 11: Cleaning user table after test</h2>
+        <p>It is very important that the tests should clean out after themselves otherwise a memory or storage leak
+          could happen.</p>
+        <ol>
+          <li><p>
+              Create a new <i>@Reference</i> variable in the <i>UserServiceTest</i> class with a setter method:
+            </p> <pre class="prettyprint lang-xml">
+@Reference(name = "querydslSupport", bind = "setQuerydslSupport")
+private QuerydslSupport qdsl;
+
+protected void setQuerydslSupport(QuerydslSupport qdsl) {
+    this.qdsl = qdsl;
+}</pre></li>
+          <li><p>
+              Add a new <i>@Property</i> to the test component with the "<i>querydslSupport.target</i>" name!
+            </p></li>
+          <li><p>
+              Create a new private class within <i>UserServiceTest</i> called <i>TestDataCleaner</i> that implements
+              AutoCloseable and deletes the content of the User table in its <i>close</i> method. The source of the
+              inner class should look like the following:
+            </p> <pre class="prettyprint lang-xml">
+private class TestDataCleaner implements AutoCloseable {
+
+    @Override
+    public void close() {
+        qdsl.execute((connection, configuration) -> {
+            new SQLDeleteClause(connection, configuration, QUser.user).execute();
+            return null;
+        });
+    }
+}</pre></li>
+          <li><p>
+              Wrap the body of the <i>testCreateAndGetUser</i> function with a <i>try(TestDataCleaner tdc = new
+                TestDataCleaner())</i> block!
+            </p></li>
+          <li><p>
+              Add the following two lines to the <i>metatype.properties</i> file of the <i>tests</i> project:
+            </p> <pre>
+querydslSupport.target.name=QuerydslSupport Target
+querydslSupport.target.description=OSGi service filter of the querydslSupport reference</pre></li>
+          <li><p>Deploy the tests project!</p></li>
+          <li><p>
+              Change the configuration of the <i>Everit Cookbook User Service Test</i> component to use the same <i>QuerydslSupport</i>
+              service as <i>Everit Cookbook User Service</i> does!
+            </p></li>
+        </ol>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="configuring_user_service_component">
+        <p>
+          Don't forget to <a href="../configuration/index.html#persisting_configuration_permanent">copy the changed
+            configuration</a> back to the source folder!
+        </p>
+      </div>
+
     </div>
 
     <!--        Affix-->
@@ -830,6 +904,17 @@ STERED</pre>
           data-offset-bottom="140">
 
           <li class="active"><a href="#scope">Scope</a></li>
+          <li><a href="#specifying_database_schema">Part 1: Specifying database schema</a></li>
+          <li><a href="#generating_querydsl_metadata">Part 2: Generating Querydsl Metadata</a></li>
+          <li><a href="#using_relational_database">Part 3: Changing HashMap store to relational database</a></li>
+          <li><a href="#purifying_system_packages">Part 4: Purifying system packages</a></li>
+          <li><a href="#adding_tm_and_jdbc">Part 5: Adding Transaction Manager and JDBC</a></li>
+          <li><a href="#creating_h2_xadatasource">Part 6: Creating H2 XADataSource</a></li>
+          <li><a href="#creating_managed_pooled_datasource">Part 7: Creating Managed and Pooled DataSource</a></li>
+          <li><a href="#initializing_database_schema">Part 8: Initializing database schema</a></li>
+          <li><a href="#setting_up_querydsl_components">Part 9: Setting up Querydsl components</a></li>
+          <li><a href="#configuring_user_service_component">Part 10: Configuring User Service Component</a></li>
+          <li><a href="#cleaning_database_in_test">Part 11: Cleaning user table after test</a></li>
         </ul>
       </nav>
     </div>

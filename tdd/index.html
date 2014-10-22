@@ -132,13 +132,13 @@
       </div>
 
       <hr class="featurette-divider">
-      <div class="bs-docs-featurette cookbook" id="create_user_dto">
-        <h2>Part 1: Creating User DTO</h2>
+      <div class="bs-docs-featurette cookbook" id="creating_data_holders">
+        <h2>Part 1: Creating data holders</h2>
         <ol>
           <li>
             <p>
-              Create an <a href="../common/mini-howtos.html#immutable_dto">serializable immutable DTO</a> class named <i>UserDTO</i>
-              in the core project with the package name <i>org.everit.cookbook.dto</i> and the following properties:
+              Create a DTO class named <i>UserDTO</i> in the the package <i>org.everit.cookbook</i> of the <i>core</i>
+              project with the following properties:
             </p>
             <ul>
               <li><p>
@@ -151,32 +151,60 @@
                   <i>String lastName</i>
                 </p></li>
             </ul>
-            <p>The final source should look like the following:</p> <pre class="prettyprint lang-java">
-package org.everit.cookbook.dto;
+            <p>Create methods for each property based on the builder pattern!</p>
+            <p>The source of the class should look like the following:</p> <pre class="prettyprint lang-java">
+package org.everit.cookbook;
 
 import java.io.Serializable;
 
-public final class UserDTO implements Serializable {
+public class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    protected long userId;
+    public String firstName;
 
-    protected String firstName;
+    public String lastName;
 
-    protected String lastName;
-    
-    protected UserDTO() {
+    public long userId;
+
+    public UserDTO() {
     }
 
-    public UserDTO(long userId, String firstName, String lastName) {
-        this.userId = userId;
+    public UserDTO firstName(final String firstName) {
         this.firstName = firstName;
-        this.lastName = lastName;
+        return this;
     }
 
-    public long getUserId() {
-        return userId;
+    public UserDTO lastName(final String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public UserDTO userId(final long userId) {
+        this.userId = userId;
+        return this;
+    }
+}</pre>
+          </li>
+          <li><p>
+              Create an immutable class to hold the user attributes in the <i>org.everit.cookbook</i> package! The class
+              should have a constructor that accepts <i>UserDTO</i> as a parameter.
+            </p>
+            <p>The source of the class should look like the following:</p> <pre class="prettyprint lang-java">
+package org.everit.cookbook;
+
+public class ImmutableUser {
+
+    private final String firstName;
+
+    private final String lastName;
+
+    private final long userId;
+
+    public ImmutableUser(final UserDTO userDTO) {
+        userId = userDTO.userId;
+        firstName = userDTO.firstName;
+        lastName = userDTO.lastName;
     }
 
     public String getFirstName() {
@@ -187,13 +215,32 @@ public final class UserDTO implements Serializable {
         return lastName;
     }
 
-}
-</pre>
-          </li>
+    public long getUserId() {
+        return userId;
+    }
+}</pre></li>
           <li><p>
-              The new package must be exported from the bundle. Add a <i>org.everit.cookbook.dto</i> to the list of
-              exported packages in the pom file of the core project.
-            </p></li>
+              Create a class called <i>CreateUserParameter</i> in the <i>org.everit.cookbook</i> package! The class
+              should contain only the <i>firstName</i> and <i>lastName</i> user attributes as public properties. There
+              should be a method for each attribute that sets the value and returns the class itself. The final source
+              should look like the following:
+            </p> <pre class="prettyprint lang-java">
+package org.everit.cookbook;
+
+public class CreateUserParameter {
+    public String firstName;
+    public String lastName;
+
+    public CreateUserParameter firstName(final String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
+
+    public CreateUserParameter lastName(final String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+}</pre></li>
         </ol>
       </div>
 
@@ -203,7 +250,7 @@ public final class UserDTO implements Serializable {
         <p>Add the following two functions with javadoc to the UserService interface</p>
         <ul>
           <li><p>
-              <i>long createUser(String firstName, String lastName); // Parameters must not be null</i>
+              <i>long createUser(CreateUserParam newUserParam); // Parameters must not be null</i>
             </p></li>
           <li><p>
               <i>UserDTO getUserById(long userId);</i>
@@ -213,29 +260,26 @@ public final class UserDTO implements Serializable {
         <pre class="prettyprint lang-java">
 package org.everit.cookbook;
 
-import org.everit.cookbook.dto.UserDTO;
-
 public interface UserService {
 
     /**
      * Creates a new user.
      * 
-     * @param firstName
-     *            The first name of the user. Must not be null.
-     * @param lastName
-     *            The last name of the user. Must not be null.
+     * @param newUserParam
+     *            The data of the newly created user.
      * @return The id of the newly created user.
      * @throws NullPointerException
-     *             if any of the parameter is null.
+     *             if the newUserParam is &lt;code&gt;null&lt;/code&gt;, or the first or last name specified in the parameter is
+     *             &lt;code&gt;null&lt;/code&gt;.
      */
-    long createUser(String firstName, String lastName);
+    long createUser(CreateUserParameter newUserParam);
 
     /**
      * Queries the data of a user.
      * 
      * @param userId
      *            The id of the user.
-     * @return The data of the user or <code>null</code> if there is no user with the specified id.
+     * @return The data of the user or &lt;code&gt;null&lt;/code&gt; if there is no user with the specified id.
      */
     UserDTO getUserById(long userId);
 }
@@ -298,8 +342,9 @@ import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.CreateUserParameter;
+import org.everit.cookbook.UserDTO;
 import org.everit.cookbook.UserService;
-import org.everit.cookbook.dto.UserDTO;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -320,13 +365,13 @@ public class UserServiceTest {
 
     @Test
     public void testCreateAndGetUser() {
-        long userId = userService.createUser("John", "Doe");
+        long userId = userService.createUser(new CreateUserParameter().firstName("John").lastName("Doe"));
         UserDTO user = userService.getUserById(userId);
 
         Assert.assertNotNull(user);
-        Assert.assertEquals(userId, user.getUserId());
-        Assert.assertEquals("John", user.getFirstName());
-        Assert.assertEquals("Doe", user.getLastName());
+        Assert.assertEquals(userId, user.userId);
+        Assert.assertEquals("John", user.firstName);
+        Assert.assertEquals("Doe", user.lastName);
     }
 }
 </pre>
@@ -347,14 +392,16 @@ package org.everit.cookbook.internal;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
+
+import org.everit.cookbook.CreateUserParameter;
+import org.everit.cookbook.UserDTO;
 import org.everit.cookbook.UserService;
-import org.everit.cookbook.dto.UserDTO;
 
 @Component
 @Service
 public class UserServiceComponent implements UserService {
 
-    public long createUser(String firstName, String lastName) {
+    public long createUser(CreateUserParameter newUserParam) {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -408,12 +455,12 @@ lable.java:12)</pre>
             <p>Failing of the test is normal as there has been no production code implemented in the current
               iteration yet.</p></li>
           <li><p>
-              Implement the <i>createUser(String firstName, String lastName)</i> and the <i>getUserById(long userId)</i>
+              Implement the <i>createUser(CreateUserParameter newUserParam)</i> and the <i>getUserById(long userId)</i>
               functions of <i>UserComponent</i> class in the way that
             </p>
             <ul>
               <li><p>
-                  the data is stored in a <i>ConcurrentHashMap&lt;Long, UserDTO&gt;</i>
+                  the data is stored in a <i>ConcurrentHashMap&lt;Long, ImmutableUser&gt;</i>
                 </p></li>
               <li><p>
                   the user id is generated by calling the <i>incrementAndGet()</i> function of an <i>AtomicLong</i>
@@ -431,8 +478,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.CreateUserParameter;
+import org.everit.cookbook.ImmutableUser;
+import org.everit.cookbook.UserDTO;
 import org.everit.cookbook.UserService;
-import org.everit.cookbook.dto.UserDTO;
 
 @Component
 @Service
@@ -440,17 +489,25 @@ public class UserServiceComponent implements UserService {
 
     private final AtomicLong lastGeneratedUserId = new AtomicLong();
 
-    private final Map&lt;Long, UserDTO&gt; storage = new ConcurrentHashMap&lt;Long, UserDTO&gt;();
+    private final Map&lt;Long, UserDTO&gt; storage = new ConcurrentHashMap&lt;Long, ImmutableUser&gt;();
     
     public long createUser(String firstName, String lastName) {
         long userId = lastGeneratedUserId.get();
-        UserDTO userData = new UserDTO(userId, firstName, lastName);
-        storage.put(userId, userData);
+        UserDTO userDTO = new UserDTO().userId(userId).firstName(newUserParam.firstName)
+                .lastName(newUserParam.lastName);
+
+        ImmutableUser immutableUser = new ImmutableUser(userDTO);
+        storage.put(userId, immutableUser);
         return userId;
     }
 
     public UserDTO getUserById(long userId) {
-        return storage.get(userId);
+        ImmutableUser immutableUser = storage.get(userId);
+        if (immutableUser == null) {
+            return null;
+        }
+
+        return new UserDTO(immutableUser);
     }
 
 }
@@ -487,12 +544,47 @@ FINEST|2404/0|felixtest|14-09-04 11:09:08|</pre></li>
             alt="Coverage view after first test" /></li>
         </ol>
 
-        <h3 id="firstname_null">
-          TDD iteration 2: <i>firstName</i> cannot be null
+        <h3 id="createuserparam_null">
+          TDD iteration 2: <i>newUserParam</i> cannot be null
         </h3>
         <p>
-          The <i>createUser(firstName, lastName)</i> function should throw a <i>NullPointerException</i> if the value of
-          the <i>firstName</i> parameter is <i>null</i>.
+          The <i>createUser(newUserParam)</i> function should throw a <i>NullPointerException</i> if the value of the <i>newUserParam</i>
+          parameter is <i>null</i>.
+        </p>
+        <ol>
+          <li><p>
+              Create a new method in the <i>UserServiceTest</i> component with the name <i>testNewUserParamNull</i>!
+            </p></li>
+          <li><p>
+              Annotate the method with <i>@Test(expected = NullPointerException.class)!</i>
+            </p></li>
+          <li><p>
+              Call the <i>createUser(...)</i> method of the injected <i>UserService</i> in the way that the newUserParam
+              is <i>null</i>!
+            </p>
+            <p>At this point the method should look similar to the following:</p> <pre class="prettyprint lang-java">
+@Test(expected = NullPointerException.class)
+public void testNewUserParamNull() {
+    userService.createUser(null);
+}</pre>
+            <p>In case the test project was deployed, the test would fail. The logic must be implemented on the
+              production side as well.</p></li>
+          <li><p>
+              Add the following line to the beginning of <i>createUser(...)</i> function of <i>UserServiceComponent
+                class</i>:
+            </p> <pre class="prettyprint lang-java">Objects.requireNonNull(newUserParam, "User parameter cannot be null");</pre></li>
+          <li><p>
+              <a href="../common/mini-howtos.html#deploy_to_osgi_container">Deploy</a> the core and the tests project to
+              the OSGi container. All tests should be ok.
+            </p></li>
+        </ol>
+
+        <h3 id="firstname_null">
+          TDD iteration 3: <i>firstName</i> cannot be null
+        </h3>
+        <p>
+          The <i>createUser(newUserParam)</i> function should throw a <i>NullPointerException</i> if the value of <i>firstName</i>
+          is <i>null</i>.
         </p>
         <ol>
           <li><p>
@@ -508,14 +600,14 @@ FINEST|2404/0|felixtest|14-09-04 11:09:08|</pre></li>
             <p>At this point the method should look similar to the following:</p> <pre class="prettyprint lang-java">
 @Test(expected = NullPointerException.class)
 public void testCreateUserFirstNameNull() {
-    userService.createUser(null, "Doe");
+    userService.createUser(new CreateUserParameter().lastName("Doe"));
 }</pre>
             <p>In case the test project was deployed, the test would fail. The logic must be implemented on the
               production side as well.</p></li>
           <li><p>
               Add the following line to the beginning of <i>createUser(...)</i> function of <i>UserServiceComponent
                 class</i>:
-            </p> <pre class="prettyprint lang-java">Objects.requireNonNull(firstName, "firstName must not be null");</pre></li>
+            </p> <pre class="prettyprint lang-java">Objects.requireNonNull(newUserParam.firstName, "firstName must not be null");</pre></li>
           <li><p>
               <a href="../common/mini-howtos.html#deploy_to_osgi_container">Deploy</a> the core and the tests project to
               the OSGi container. All tests should be ok.
@@ -523,11 +615,11 @@ public void testCreateUserFirstNameNull() {
         </ol>
 
         <h3 id="lastname_null">
-          TDD iteration 3: <i>lastName</i> cannot be null
+          TDD iteration 4: <i>lastName</i> cannot be null
         </h3>
         <p>
-          The <i>createUser(firstName, lastName)</i> function should throw a <i>NullPointerException</i> if the value of
-          the <i>lastName</i> parameter is <i>null</i>.
+          The <i>createUser(newUserParam)</i> function should throw a <i>NullPointerException</i> if the value of <i>lastName</i>
+          is <i>null</i>.
         </p>
         <ol>
           <li><p>
@@ -543,14 +635,14 @@ public void testCreateUserFirstNameNull() {
             <p>At this point the method should look similar to the following:</p> <pre class="prettyprint lang-java">
 @Test(expected = NullPointerException.class)
 public void testCreateUserLastNameNull() {
-    userService.createUser("John", null);
+    userService.createUser(new CreateUserParameter().firstName("John"));
 }</pre>
             <p>In case the test project was deployed, the test would fail. The logic must be implemented on the
               production side as well.</p></li>
           <li><p>
               Add the following line to the beginning of <i>createUser(...)</i> function of <i>UserServiceComponent
                 class</i>:
-            </p> <pre class="prettyprint lang-java">Objects.requireNonNull(lastName, "lastName must not be null");</pre></li>
+            </p> <pre class="prettyprint lang-java">Objects.requireNonNull(newUserParam.lastName, "lastName must not be null");</pre></li>
           <li><p>
               <a href="../common/mini-howtos.html#deploy_to_osgi_container">Deploy</a> the core and the tests project to
               the OSGi container! All tests should be ok.
@@ -561,7 +653,16 @@ public void testCreateUserLastNameNull() {
         <p>
           There are three tests now. In case <i>"mvn clean install"</i> would have been started from the command line,
           the process would fail. To avoid that, increase the value of <b><i>EOSGi-TestNum</i></b> setting in the <i>pom</i>
-          file of the <i>tests</i> project to <b>3</b>.
+          file of the <i>tests</i> project to <b>4</b>.
+        </p>
+      </div>
+
+
+      <hr class="featurette-divider" />
+      <div class="bs-docs-featurette cookbook" id="implement_createandget">
+        <p>
+          In the end, run <i>mvn license:format</i> in the root folder of the <i>core</i> project to add the license
+          headers.
         </p>
       </div>
     </div>
@@ -573,15 +674,17 @@ public void testCreateUserLastNameNull() {
           data-offset-bottom="140">
           <li class="active"><a href="#content_of_tutorial">Scope</a></li>
           <li><a href="#open_jacoco_coverage_view">Part 0: Open JaCoCo Coverage view</a></li>
-          <li><a href="#create_user_dto">Part 1: Creating User DTO</a></li>
+          <li><a href="#creating_data_holders">Part 1: Creating data holders</a></li>
           <li><a href="#define_userservice_functions">Part 2: Functions of UserService</a></li>
           <li><a href="#implement_createandget">Part 3: Implementing <i>createAndGet</i> functionality
           </a>
             <ul class="nav nav-pills nav-stacked">
               <li><a href="#implementing_core_logic">TDD iteration 1: Implementing core logic</a></li>
-              <li><a href="#firstname_null">TDD iteration 2: <i>firstName</i> cannot be null
+              <li><a href="#createuserparam_null">TDD iteration 2: <i>newUserParam</i> cannot be null
               </a></li>
-              <li><a href="#lastname_null">TDD iteration 3: <i>lastName</i> cannot be null
+              <li><a href="#firstname_null">TDD iteration 3: <i>firstName</i> cannot be null
+              </a></li>
+              <li><a href="#lastname_null">TDD iteration 4: <i>lastName</i> cannot be null
               </a></li>
               <li><a href="#change_testnum_in_pom">Changing the number of tests in the pom file </a></li>
             </ul></li>
