@@ -20,7 +20,7 @@ public interface UserService {
 
     /**
      * Creates a new user.
-     * 
+     *
      * @param newUserParam
      *            The data of the newly created user.
      * @return The id of the newly created user.
