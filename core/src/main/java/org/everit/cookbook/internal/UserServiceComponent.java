@@ -26,8 +26,10 @@ import org.apache.felix.scr.annotations.ConfigurationPolicy;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.CreateUserParameter;
+import org.everit.cookbook.ImmutableUser;
+import org.everit.cookbook.UserDTO;
 import org.everit.cookbook.UserService;
-import org.everit.cookbook.dto.UserDTO;
 
 @Component(name = "org.everit.cookbook.UserService", configurationFactory = true, metatype = true,
         policy = ConfigurationPolicy.REQUIRE)
@@ -35,24 +37,33 @@ import org.everit.cookbook.dto.UserDTO;
 @Service
 public class UserServiceComponent implements UserService {
 
-    private final Map<Long, UserDTO> storage = new ConcurrentHashMap<Long, UserDTO>();
+    private final Map<Long, ImmutableUser> storage = new ConcurrentHashMap<Long, ImmutableUser>();
 
     private final AtomicLong lastGeneratedUserId = new AtomicLong();
 
     @Override
-    public long createUser(String firstName, String lastName) {
-        Objects.requireNonNull(firstName, "firstName must not be null");
-        Objects.requireNonNull(lastName, "lastName must not be null");
+    public long createUser(CreateUserParameter newUserParam) {
+        Objects.requireNonNull(newUserParam, "User parameter cannot be null");
+        Objects.requireNonNull(newUserParam.firstName, "firstName must not be null");
+        Objects.requireNonNull(newUserParam.lastName, "lastName must not be null");
 
         long userId = lastGeneratedUserId.get();
-        UserDTO userData = new UserDTO(userId, firstName, lastName);
-        storage.put(userId, userData);
+        UserDTO userDTO = new UserDTO().userId(userId).firstName(newUserParam.firstName)
+                .lastName(newUserParam.lastName);
+
+        ImmutableUser immutableUser = new ImmutableUser(userDTO);
+        storage.put(userId, immutableUser);
         return userId;
     }
 
     @Override
     public UserDTO getUserById(long userId) {
-        return storage.get(userId);
+        ImmutableUser immutableUser = storage.get(userId);
+        if (immutableUser == null) {
+            return null;
+        }
+
+        return new UserDTO(immutableUser);
     }
 
 }

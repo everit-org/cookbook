@@ -16,26 +16,17 @@
  */
 package org.everit.cookbook;
 
-public interface UserService {
+public class CreateUserParameter {
+    public String firstName;
+    public String lastName;
 
-    /**
-     * Creates a new user.
-     * 
-     * @param newUserParam
-     *            The data of the newly created user.
-     * @return The id of the newly created user.
-     * @throws NullPointerException
-     *             if the newUserParam is <code>null</code>, or the first or last name specified in the parameter is
-     *             <code>null</code>.
-     */
-    long createUser(CreateUserParameter newUserParam);
+    public CreateUserParameter firstName(final String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
 
-    /**
-     * Queries the data of a user.
-     * 
-     * @param userId
-     *            The id of the user.
-     * @return The data of the user or <code>null</code> if there is no user with the specified id.
-     */
-    UserDTO getUserById(long userId);
+    public CreateUserParameter lastName(final String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
 }

@@ -16,26 +16,29 @@
  */
 package org.everit.cookbook;
 
-public interface UserService {
+public class ImmutableUser {
 
-    /**
-     * Creates a new user.
-     * 
-     * @param newUserParam
-     *            The data of the newly created user.
-     * @return The id of the newly created user.
-     * @throws NullPointerException
-     *             if the newUserParam is <code>null</code>, or the first or last name specified in the parameter is
-     *             <code>null</code>.
-     */
-    long createUser(CreateUserParameter newUserParam);
+    private final String firstName;
 
-    /**
-     * Queries the data of a user.
-     * 
-     * @param userId
-     *            The id of the user.
-     * @return The data of the user or <code>null</code> if there is no user with the specified id.
-     */
-    UserDTO getUserById(long userId);
+    private final String lastName;
+
+    private final long userId;
+
+    public ImmutableUser(final UserDTO userDTO) {
+        userId = userDTO.userId;
+        firstName = userDTO.firstName;
+        lastName = userDTO.lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
 }

@@ -6,8 +6,9 @@ import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.CreateUserParameter;
+import org.everit.cookbook.UserDTO;
 import org.everit.cookbook.UserService;
-import org.everit.cookbook.dto.UserDTO;
 import org.everit.osgi.dev.testrunner.TestDuringDevelopment;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,22 +33,27 @@ public class UserServiceTest {
 
     @Test
     public void testCreateAndGetUser() {
-        long userId = userService.createUser("John", "Doe");
+        long userId = userService.createUser(new CreateUserParameter().firstName("John").lastName("Doe"));
         UserDTO user = userService.getUserById(userId);
 
         Assert.assertNotNull(user);
-        Assert.assertEquals(userId, user.getUserId());
-        Assert.assertEquals("John", user.getFirstName());
-        Assert.assertEquals("Doe", user.getLastName());
+        Assert.assertEquals(userId, user.userId);
+        Assert.assertEquals("John", user.firstName);
+        Assert.assertEquals("Doe", user.lastName);
     }
-
+    
+    @Test(expected = NullPointerException.class)
+    public void testNewUserParamNull() {
+        userService.createUser(null);
+    }
+    
     @Test(expected = NullPointerException.class)
     public void testCreateUserFirstNameNull() {
-        userService.createUser(null, "Doe");
+        userService.createUser(new CreateUserParameter().lastName("Doe"));
     }
-
+    
     @Test(expected = NullPointerException.class)
     public void testCreateUserLastNameNull() {
-        userService.createUser("John", null);
+        userService.createUser(new CreateUserParameter().firstName("John"));
     }
 }
