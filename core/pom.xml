@@ -44,8 +44,7 @@
               *
             </Import-Package>
             <Export-Package>
-              org.everit.cookbook,
-              org.everit.cookbook.dto
+              org.everit.cookbook
             </Export-Package>
           </instructions>
         </configuration>
