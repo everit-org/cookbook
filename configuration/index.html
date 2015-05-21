@@ -201,7 +201,20 @@
     &lt;jetty.home.bundle&gt;org.eclipse.jetty.osgi.boot&lt;/jetty.home.bundle&gt;
   &lt;/systemProperties&gt;</strong>
 &lt;/environment&gt;
-</pre></li>
+</pre>
+<i>Troubleshooting: in some unlucky cases the code formatter of your IDE may put the <code>if</code> keyword and the condition to separate lines, which is
+an invalid groovy statement. It will result in
+<ul>
+	<li>a groovy error at the very beginning of server bootup like <code> expecting '(', found '&lt;newline&gt;'</code> (it is easy to overlook due to the number of following log entries)</li>
+	<li>a property parsing exception during jetty initalization like <code>IllegalArgumentException: Could not parse value of 'org.everit.osgi.jetty.boot.http.port.secure' property value: ?unresolved?</code></li>
+</ul>
+If you encounter this problem then it is better to manually split the groovy script into multiple lines:
+<pre>&lt;jetty.port&gt;$${
+  if (System.getenv("EOSGI_STOP_AFTER_TESTS").equals("true")) "0"; else "4848";
+}&lt;/jetty.port&gt;</pre>
+</i>
+
+</li>
           <li><p>The OSGi container must be restarted as the system properties were changed:</p>
             <ul>
               <li><p>
