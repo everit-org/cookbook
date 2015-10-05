@@ -20,7 +20,10 @@
 <html>
 
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8" http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description"
+  content="Build OSGi based modular applications with relational database store. The solution is based on Querydsl and Liquibase.">
 <title>Everit Cookbook - Persistence</title>
 <link rel="icon" type="image/ico" href="../fonts/favicon.ico">
 
@@ -71,23 +74,853 @@
   </div>
   <div class="container">
     <div class="col-md-10">
-      <div class="bs-docs-featurette cookbook" id="content_of_tutorial">
+      <div class="bs-docs-featurette cookbook" id="scope">
         <h2>Scope</h2>
-        <p>In this chapter we will modify the core implementation to store the user data in a relational database.</p>
+        <p>
+          The goal of the chapter is to change the implementation of UserService to use a relational database instead of
+          an in-memory <a href="http://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html">HashMap</a>.
+        </p>
+        <p>
+          Before starting the the chapter, please visit the <a
+            href="http://everitorg.wordpress.com/2014/06/18/modularized-persistence/">Modularized persistence</a> blog
+          post, where you can find more information about the concept!
+        </p>
         <p>
           If you skipped that <a href="../tdd/index.html">last chapter</a>, please <a
             href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">check out</a> the <i>03 -
-            configuration</i> branch in eclipse and import the content as a maven project!
+            configuration</i> branch in eclipse and import the content as a maven project! Also compile the full project by
+          executing the "<i>mvn install</i>" command and <a href="../common/mini-howtos.html#start_osgi_container">start
+            the development OSGi container</a>!
+        </p>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="specifying_database_schema">
+        <h2>Part 1: Specifying database schema</h2>
+
+        <ol>
+          <li><p>
+              Create a new file with <i>org.everit.cookbook.changelog.xml</i> name in the <i>core</i> project in the <i>src/main/resources/META-INF/liquibase</i>
+              folder!
+            </p></li>
+          <li><p>Add the following content to the XML file:</p> <pre class="prettyprint lang-xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+  objectQuotingStrategy="QUOTE_ALL_OBJECTS" logicalFilePath="org.everit.cookbook"&gt;
+
+  &lt;changeSet id="1.0.0_10" author="everit"&gt;
+    &lt;createTable tableName="cookbook_user"&gt;
+      &lt;column name="user_id" autoIncrement="true" type="bigint"&gt;
+        &lt;constraints nullable="false" /&gt;
+      &lt;/column&gt;
+      &lt;column name="first_name" type="varchar(255)"&gt;
+        &lt;constraints nullable="false" /&gt;
+      &lt;/column&gt;
+      &lt;column name="last_name" type="varchar(255)"&gt;
+        &lt;constraints nullable="false" /&gt;
+      &lt;/column&gt;
+    &lt;/createTable&gt;
+  &lt;/changeSet&gt;
+
+  &lt;changeSet id="1.0.0_20" author="everit"&gt;
+    &lt;addPrimaryKey tableName="cookbook_user" columnNames="user_id" /&gt;
+  &lt;/changeSet&gt;
+
+  &lt;changeSet id="1.0.0_30" author="everit"&gt;
+    &lt;createIndex tableName="cookbook_user" indexName="idx_cookbook_user_fn"&gt;
+      &lt;column name="first_name" /&gt;
+    &lt;/createIndex&gt;
+  &lt;/changeSet&gt;
+
+  &lt;changeSet id="1.0.0_40" author="everit"&gt;
+    &lt;createIndex tableName="cookbook_user" indexName="idx_cookbook_user_ln"&gt;
+      &lt;column name="last_name" /&gt;
+    &lt;/createIndex&gt;
+  &lt;/changeSet&gt;
+&lt;/databaseChangeLog&gt;
+</pre>
+            <p>Please note, that the id of the changeSet reflects to the version of the module! Every atomic
+              modification is separated into a different changeset. The reason of the separation is that not all of the
+              database engines support transactional DDL execution. In case of an error, the failed changesets can be
+              executed separately after a bugfix has been applied.</p>
+            <p>The logical file path is always the name of the module. By having a unique logicalFilePath attribute
+              value, different modules will not conflict if the same changeSet ids are used.</p></li>
+          <li><p>
+              Add the following capability to the instructions of <i>maven-bundle-plugin</i> conifuguration in the <i>pom.xml</i>
+              file of the <i>core</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;Provide-Capability&gt;liquibase.schema;name=org.everit.cookbook;resource=/META-INF/liquibase/org.everit.cookbook.changelog.xml&lt;/Provide-Capability&gt;</pre>
+          </li>
+        </ol>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="generating_querydsl_metadata">
+        <h2>Part 2: Generating Querydsl Metadata</h2>
+        <ol>
+          <li><p>
+              Add <i>querydsl-sql</i> as a dependency to the <i>pom.xml</i> of the <i>core</i> project as the generated
+              classes will need it:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+  &lt;groupId&gt;com.mysema.querydsl&lt;/groupId&gt;
+  &lt;artifactId&gt;querydsl-sql&lt;/artifactId&gt;
+  &lt;version&gt;3.5.0&lt;/version&gt;
+&lt;/dependency&gt;</pre></li>
+          <li><p>
+              Add the following plugins to the <i>pom.xml</i> of the <i>core</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;plugin&gt;
+  &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+  &lt;artifactId&gt;build-helper-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;1.9&lt;/version&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;phase&gt;generate-sources&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;add-source&lt;/goal&gt;
+      &lt;/goals&gt;
+      &lt;configuration&gt;
+        &lt;sources&gt;
+          &lt;source&gt;src/main/generated/java/&lt;/source&gt;
+        &lt;/sources&gt;
+      &lt;/configuration&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;
+
+&lt;plugin&gt;
+  &lt;groupId&gt;org.everit.osgi.dev&lt;/groupId&gt;
+  &lt;artifactId&gt;lqmg-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;3.0.1&lt;/version&gt;
+  &lt;configuration&gt;
+    &lt;defaultSchema&gt;org.everit.cookbook&lt;/defaultSchema&gt;
+    &lt;capability&gt;org.everit.cookbook&lt;/capability&gt;
+    &lt;packages&gt;org.everit.cookbook.schema.qdsl&lt;/packages&gt;
+  &lt;/configuration&gt;
+&lt;/plugin&gt;</pre></li>
+          <li><p>
+              Add a new file with <i>org.everit.cookbook.lqmg.xml</i> name to the same folder where <i>org.everit.cookbook.changelog.xml</i>
+              is with the following content:
+            </p> <pre class="prettyprint lang-xml">
+ &lt;lqmg xmlns="http://everit.org/lqmg" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://everit.org/lqmg http://www.everit.org/xml/ns/lqmg/lqmg-3.0.0.xsd" defaultPackage="org.everit.cookbook.schema.qdsl"&gt;
+
+  &lt;namingRules&gt;
+    &lt;classNameRule&gt;
+      &lt;entity&gt;cookbook_user&lt;/entity&gt;
+      &lt;class&gt;User&lt;/class&gt;
+      &lt;propertyMappings&gt;
+        &lt;primaryKey&gt;
+          &lt;name&gt;pk_cookbook_user&lt;/name&gt;
+          &lt;property&gt;userPk&lt;/property&gt;
+        &lt;/primaryKey&gt;
+      &lt;/propertyMappings&gt;
+    &lt;/classNameRule&gt;
+  &lt;/namingRules&gt;
+&lt;/lqmg&gt;</pre></li>
+          <li><p>
+              Change the capability that was provided in <i>Part 1</i> to contain the lqmg file:
+            </p> <pre class="prettyprint lang-xml">
+&lt;Provide-Capability&gt;liquibase.schema;name=org.everit.cookbook;resource=/META-INF/liquibase/org.everit.cookbook.changelog.xml<strong>;lqmg.config.resource=/META-INF/liquibase/org.everit.cookbook.lqmg.xml</strong>&lt;/Provide-Capability&gt;</pre>
+          </li>
+          <li><p>
+              Run "<i>mvn package lqmg:generate</i>" command in the root folder of the <i>core</i> project! In the end
+              of the console should show something similar:
+            </p> <pre class="terminal-emulator" style="height: 25em;">
+[INFO] Start lqmg-maven-plugin.
+[INFO] Generation target folder: c:\Users\balazs_zsoldos\git\cookbook\core\src\main\generated\java
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/org/apache/felix/org.apache.felix.scr.annotations/1
+.9.8/org.apache.felix.scr.annotations-1.9.8.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/mysema/querydsl/querydsl-sql/3.5.0/querydsl-sql
+-3.5.0.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/mysema/querydsl/querydsl-core/3.5.0/querydsl-co
+re-3.5.0.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/google/guava/guava/18.0/guava-18.0.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/google/code/findbugs/jsr305/1.3.9/jsr305-1.3.9.
+jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/mysema/commons/mysema-commons-lang/0.2.4/mysema
+-commons-lang-0.2.4.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/joda-time/joda-time/1.6/joda-time-1.6.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/javax/validation/validation-api/1.1.0.Final/validat
+ion-api-1.1.0.Final.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/org/apache/servicemix/bundles/org.apache.servicemix
+.bundles.javax-inject/1_2/org.apache.servicemix.bundles.javax-inject-1_2.jar
+[INFO] Adding artifact: file:/C:/Users/balazs_zsoldos/.m2/repository/com/infradna/tool/bridge-method-annotation/1.13/bri
+dge-method-annotation-1.13.jar
+[INFO] Adding artifact (current project): file:/c:/Users/balazs_zsoldos/git/cookbook/core/target/org.everit.cookbook.cor
+e-1.0.0-SNAPSHOT.jar
+Oct 21, 2014 1:38:03 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Load driver.
+Oct 21, 2014 1:38:03 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Loaded driver.
+Oct 21, 2014 1:38:03 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Creating connection.
+Oct 21, 2014 1:38:03 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Created connection.
+Oct 21, 2014 1:38:03 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Get database.
+Oct 21, 2014 1:38:04 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Start LiquiBase and update.
+INFO 10/21/14 1:38 PM:liquibase: Successfully acquired change log lock
+INFO 10/21/14 1:38 PM:liquibase: Creating database history table with name: "PUBLIC"."DATABASECHANGELOG"
+INFO 10/21/14 1:38 PM:liquibase: Reading from "PUBLIC"."DATABASECHANGELOG"
+INFO 10/21/14 1:38 PM:liquibase: Reading from "PUBLIC"."DATABASECHANGELOG"
+INFO 10/21/14 1:38 PM:liquibase: Reading from "PUBLIC"."DATABASECHANGELOG"
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: Reading from "PUBLIC"."DATABASECHANGELOG"
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: Table cookbook_user created
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: ChangeSet org.everit.cookbook::1.0.0_10::everit
+ran successfully in 18ms
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: Primary key added to cookbook_user (user_id)
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: ChangeSet org.everit.cookbook::1.0.0_20::everit
+ran successfully in 3ms
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: Index idx_cookbook_user_fn created
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: ChangeSet org.everit.cookbook::1.0.0_30::everit
+ran successfully in 12ms
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: Index idx_cookbook_user_ln created
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: ChangeSet org.everit.cookbook::1.0.0_40::everit
+ran successfully in 2ms
+INFO 10/21/14 1:38 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: Reading from PUBLIC.DATABASECHANGELOG
+INFO 10/21/14 1:38 PM:liquibase: Successfully released change log lock
+Oct 21, 2014 1:38:06 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Finish LiquiBase and update.
+Oct 21, 2014 1:38:06 PM org.everit.osgi.dev.lqmg.LQMG exportMetaData
+INFO: Start meta data export.
+[INFO] No configuration for table 'DATABASECHANGELOG' in schema 'PUBLIC'. Ignoring from metadata class generation
+[INFO] No configuration for table 'DATABASECHANGELOGLOCK' in schema 'PUBLIC'. Ignoring from metadata class generation
+[INFO] Exported cookbook_user successfully
+Oct 21, 2014 1:38:06 PM org.everit.osgi.dev.lqmg.LQMG exportMetaData
+INFO: Finish meta data export.
+Oct 21, 2014 1:38:06 PM org.everit.osgi.dev.lqmg.LQMG tryCodeGeneration
+INFO: Connection closed.
+[INFO] Finished the metamodell generation at path c:\Users\balazs_zsoldos\git\cookbook\core\src\main\generated\java
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 8.949 s
+[INFO] Finished at: 2014-10-21T13:38:06+01:00
+[INFO] Final Memory: 27M/110M
+[INFO] ------------------------------------------------------------------------</pre></li>
+          <li><p>
+              Select the <i>core</i> project in the <i>Project Explorer</i> and push <i>ALT + F5</i> key combination! On
+              the pop-up window, click on the <i>OK</i> button!
+            </p>
+            <p>
+              The "<i>src/main/generated/java</i>" source folder should appear at the project. If the source folder is
+              not added, the M2E extension of the <i>build-helper-maven-plugin</i> is not installed in Eclipse. For more
+              information, see the <a href="../ide/index.html#install_m2e_connectors">Installing m2e connectors</a> step
+              in the <a href="../ide/index.html">Development tools</a> chapter of the Cookbook.
+            </p></li>
+          <li><p>
+              Add the <i>org.everit.cookbook.schema.qdsl</i> package to the list of exported packages in the <i>pom.xml</i>
+              of the <i>core</i> project!
+            </p></li>
+        </ol>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="using_relational_database">
+        <h2>Part 3: Changing HashMap store to relational database</h2>
+        <ol>
+          <li><p>
+              Add the following dependencies to the <i>core</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.everit.osgi&lt;/groupId&gt;
+    &lt;artifactId&gt;org.everit.osgi.querydsl.support&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+</pre></li>
+          <li><p>
+              Open the <i>UserServiceComponent</i> class and
+            </p>
+            <ul>
+              <li><p>
+                  Remove the <i>storage</i> and <i>lastGeneratedUserId</i> member variables!
+                </p></li>
+              <li><p>
+                  Create a new member variable with the name "<i>qdsl</i>" and the type "<i>QuerydslSupport</i>"!
+                </p></li>
+              <li><p>Generate a setter for the new variable!</p></li>
+              <li><p>
+                  Add the <i>@Reference</i> annotation to the new variable and define the bind method to be the setter,
+                  the name to be "<i>querydslSupport</i>"!
+                </p></li>
+              <li><p>
+                  Change the implementation of <i>createUser</i> method in the way that it uses the <i>qdsl</i> member
+                  variable with the <i>QUser</i> class to insert a user record into the database:
+                </p> <pre class="prettyprint lang-java">
+return qdsl.execute((connection, configuration) -> {
+    QUser user = QUser.user;
+    SQLInsertClause insert = new SQLInsertClause(connection, configuration, user);
+
+    return insert
+            .set(user.firstName, newUserParam.firstName)
+            .set(user.lastName, newUserParam.lastName)
+            .executeWithKey(user.userId);
+});</pre></li>
+              <li><p>
+                  Change the implementation of <i>getUserById</i> method to use the <i>qdsl</i> member variable:
+                </p> <pre class="prettyprint lang-java">
+return qdsl.execute((connection, configuration) -> {
+    QUser user = QUser.user;
+    SQLQuery query = new SQLQuery(connection, configuration);
+
+    QBean&lt;UserDTO&gt; userQBean = new QBean&lt;UserDTO&gt;(UserDTO.class, true, user.userId, user.firstName,
+            user.lastName);
+
+    return query
+            .from(user)
+            .where(user.userId.eq(userId))
+            .singleResult(userQBean);
+});</pre></li>
+              <li><p>
+                  Add a new <i>@Property</i> annotation to the class with the "<i>querydslSupport.target</i>" name!
+                </p></li>
+            </ul>
+            <p>The code of the class should look like the following in the end:</p> <pre class="prettyprint lang-java">
+package org.everit.cookbook.internal;
+
+import java.util.Objects;
+
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.ConfigurationPolicy;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.everit.cookbook.CreateUserParameter;
+import org.everit.cookbook.UserDTO;
+import org.everit.cookbook.UserService;
+import org.everit.cookbook.schema.qdsl.QUser;
+import org.everit.osgi.querydsl.support.QuerydslSupport;
+
+import com.mysema.query.sql.SQLQuery;
+import com.mysema.query.sql.dml.SQLInsertClause;
+import com.mysema.query.types.QBean;
+
+@Component(name = "org.everit.cookbook.UserService", configurationFactory = true, metatype = true,
+        policy = ConfigurationPolicy.REQUIRE)
+@Properties({
+        @Property(name = "querydslSupport.target"),
+        @Property(name = "service.description", propertyPrivate = false) })
+@Service
+public class UserServiceComponent implements UserService {
+
+    @Reference(name = "querydslSupport", bind = "setQuerydslSupport")
+    private QuerydslSupport qdsl;
+
+    @Override
+    public long createUser(final CreateUserParameter newUserParam) {
+        Objects.requireNonNull(newUserParam, "User parameter cannot be null");
+        Objects.requireNonNull(newUserParam.firstName, "firstName must not be null");
+        Objects.requireNonNull(newUserParam.lastName, "lastName must not be null");
+
+        return qdsl.execute((connection, configuration) -> {
+            QUser user = QUser.user;
+            SQLInsertClause insert = new SQLInsertClause(connection, configuration, user);
+
+            return insert
+                    .set(user.firstName, newUserParam.firstName)
+                    .set(user.lastName, newUserParam.lastName)
+                    .executeWithKey(user.userId);
+        });
+    }
+
+    @Override
+    public UserDTO getUserById(final long userId) {
+        return qdsl.execute((connection, configuration) -> {
+            QUser user = QUser.user;
+            SQLQuery query = new SQLQuery(connection, configuration);
+
+            QBean&lt;UserDTO&gt; userQBean = new QBean&lt;UserDTO&gt;(UserDTO.class, true, user.userId, user.firstName,
+                    user.lastName);
+
+            return query
+                    .from(user)
+                    .where(user.userId.eq(userId))
+                    .singleResult(userQBean);
+        });
+    }
+
+    public void setQuerydslSupport(final QuerydslSupport qdsl) {
+        this.qdsl = qdsl;
+    }
+}
+</pre></li>
+          <li><p>
+              Add the following content to the <i>metatype.properties</i> file of the <i>core</i> project:
+            </p> <pre>
+querydslSupport.target.name=QuerydslSupport Target
+querydslSupport.target.description=OSGi service filter of the querydslSupport reference</pre></li>
+          <li><p>
+              Execute "<i>mvn license:format install</i>" command in the root folder of the core project!
+            </p></li>
+        </ol>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="purifying_system_packages">
+        <h2>Part 4: Purifying system packages</h2>
+        <p>
+          The transaction manager exports the <i>javax.transaction.*</i> classes. In the same time, these packages are
+          exported by the system bundle. This would cause serious issues as it might happen that one of the bundles wire
+          to the JDK based packages, the other one wires to the one that is provided by <i>Aries TM</i>. The <i>javax.transaction.*</i>
+          packages have to be removed.
         </p>
         <p>
-          Before doing this chapter of the tutorial, please visit the <a
-            href="http://everitorg.wordpress.com/2014/06/18/modularized-persistence/">Modularized persistence</a> blog
-          post, where you can find more information about the concept of this solution.
+          In case <i>javax.transaction</i> was removed from the system packages, the next issue would be that some
+          classes of <i>javax.sql</i> uses <i>javax.transaction.xa.XAResource</i>. To have a clean OSGi container, the <i>JDBC
+            API</i> must also be provided by a bundle instead of the system packages.
+        </p>
+        <p>As a result of the exclusions, it seems that it is easier to define the packages that we truly need from
+          the JDK. We import everything we can from bundles.</p>
+        <ol>
+          <li><p>
+              Add the following system property to the configuration of <i>felixtest</i> environment:
+            </p> <pre>
+&lt;org.osgi.framework.system.packages&gt;
+  org.osgi.framework;version=1.7.0,
+  org.osgi.framework.hooks.bundle;version=1.1.0,
+  org.osgi.framework.hooks.resolver;version=1.0.0,
+  org.osgi.framework.hooks.service;version=1.1.0,
+  org.osgi.framework.hooks.weaving;version=1.0.0,
+  org.osgi.framework.launch;version=1.1.0,
+  org.osgi.framework.namespace;version=1.0.0,
+  org.osgi.framework.startlevel;version=1.0.0,
+  org.osgi.framework.wiring;version=1.1.0,
+  org.osgi.resource;version=1.0.0,
+  org.osgi.service.packageadmin;version=1.2.0,
+  org.osgi.service.startlevel;version=1.1.0,
+  org.osgi.service.url;version=1.0.0,
+  org.osgi.util.tracker;version=1.5.1,
+  javax.swing,
+  javax.swing.border,
+  javax.imageio,
+  javax.naming,
+  javax.naming.spi,
+  javax.net,
+  javax.net.ssl,
+  javax.management,
+  javax.management.modelmbean,
+  javax.management.remote,
+  javax.security.auth,
+  javax.security.cert,
+  org.ietf.jgss,
+  javax.crypto,
+  javax.crypto.spec,
+  javax.naming.ldap,
+  javax.security.auth.callback,
+  javax.security.auth.login,
+  javax.security.auth.x500
+&lt;/org.osgi.framework.system.packages&gt;</pre>
+            <p>
+              In case of <i>Equinox</i>, the <i>org.osgi.*</i> packages could be left out.
+            </p></li>
+          <li><p>
+              Add <i>XMLCommons</i> as a dependency:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.everit.osgi.bundles&lt;/groupId&gt;
+    &lt;artifactId&gt;org.everit.osgi.bundles.org.apache.xmlcommons.full&lt;/artifactId&gt;
+    &lt;version&gt;1.4.1-20140713&lt;/version&gt;
+&lt;/dependency&gt;
+</pre></li>
+          <li><p>
+              Add <i>javax.annotation</i> as a dependency:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+  &lt;groupId&gt;org.ow2.spec.ee&lt;/groupId&gt;
+  &lt;artifactId&gt;ow2-annotation-1.1-spec&lt;/artifactId&gt;
+  &lt;version&gt;1.0.13&lt;/version&gt;
+&lt;/dependency&gt;
+</pre></li>
+          <li><p>
+              Add <i>JDBC API</i> as a dependency to the project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+  &lt;groupId&gt;org.everit.osgi.bundles&lt;/groupId&gt;
+  &lt;artifactId&gt;org.everit.osgi.bundles.javax.sql&lt;/artifactId&gt;
+  &lt;version&gt;4.1.0&lt;/version&gt;
+&lt;/dependency&gt;
+</pre></li>
+          <li><p>Due to the reason that a system property has been changed, the OSGi container has to be
+              restarted after a deployment:</p>
+            <ul>
+              <li><p>Stop the container!</p></li>
+              <li><p>
+                  Run "<i>mvn eosgi:dist</i>" in the root folder of the <i>tests</i> project!
+                </p></li>
+              <li><p>Start the container</p></li>
+            </ul></li>
+
+        </ol>
+      </div>
+
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="adding_tm_and_jdbc">
+        <h2>Part 5: Adding Transaction Manager and JDBC</h2>
+        <ol>
+          <li><p>
+              Add <i>Aries Transaction manager</i> and its dependencies to the <i>tests</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;!-- Transaction manager --&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.aries.transaction&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.aries.transaction.manager&lt;/artifactId&gt;
+  &lt;version&gt;1.1.1&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.aries&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.aries.util&lt;/artifactId&gt;
+  &lt;version&gt;1.1.0&lt;/version&gt;
+&lt;/dependency&gt;</pre></li>
+        </ol>
+      </div>
+
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="creating_h2_xadatasource">
+        <h2>Part 6: Creating H2 XADataSource</h2>
+        <ol>
+          <li><p>
+              Add <i>H2</i> dependency to the <i>tests</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+  &lt;groupId&gt;com.h2database&lt;/groupId&gt;
+  &lt;artifactId&gt;h2&lt;/artifactId&gt;
+  &lt;version&gt;1.4.182&lt;/version&gt;
+&lt;/dependency&gt;</pre></li>
+          <li><p>
+              Add <i>OSGi JDBC spec</i> dependency to the <i>tests</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+  &lt;groupId&gt;org.ow2.spec.osgi&lt;/groupId&gt;
+  &lt;artifactId&gt;ow2-jdbc-service-1.0-spec&lt;/artifactId&gt;
+  &lt;version&gt;1.0.13&lt;/version&gt;
+&lt;/dependency&gt;
+</pre></li>
+          <li><p>
+              Add <i>Everit DataSourceFactory Component</i> dependency to the <i>tests</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+  &lt;groupId&gt;org.everit.osgi&lt;/groupId&gt;
+  &lt;artifactId&gt;org.everit.osgi.jdbc.dsf&lt;/artifactId&gt;
+  &lt;version&gt;2.0.0&lt;/version&gt;
+&lt;/dependency&gt;</pre></li>
+          <li><p>
+              Execute "<i>mvn eosgi:dist -Deosgi.servicePort=PORT</i>" command where <i>PORT</i> is replaced with the
+              number that is shown on the deployer window!
+            </p></li>
+          <li><p>
+              Open the configuration screen of the OSGi container at <a
+                href="http://localhost:4848/system/console/configMgr">http://localhost:4848/system/console/configMgr</a>!
+            </p></li>
+          <li><p>
+              Create a new configuration for the <i>Everit XADataSource</i> component with the following attributes:
+            </p>
+            <ul>
+              <li><p>
+                  <strong>DataSourceFactory OSGi service filter:</strong> <i>(osgi.jdbc.driver.class=org.h2.Driver)</i>
+                </p></li>
+              <li><p>
+                  <strong>Jdbc URL:</strong> <i>jdbc:h2:mem:test</i>
+                </p></li>
+            </ul></li>
+        </ol>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="creating_managed_pooled_datasource">
+        <h2>Part 7: Creating Managed and Pooled DataSource</h2>
+        <ol>
+          <li><p>
+              Add the <i>Everit Commons DBCP</i> component dependency to the <i>tests</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+  &lt;groupId&gt;org.everit.osgi&lt;/groupId&gt;
+  &lt;artifactId&gt;org.everit.osgi.jdbc.commons.dbcp&lt;/artifactId&gt;
+  &lt;version&gt;2.0.1&lt;/version&gt;
+&lt;/dependency&gt;</pre></li>
+          <li><p>
+              Execute "<i>mvn eosgi:dist -Deosgi.servicePort=PORT</i>" command where <i>PORT</i> is replaced with the
+              number that is shown on the deployer window!
+            </p></li>
+          <li><p>
+              Create a new configuration for the <i>Everit Commons DBCP ManagedDataSource</i> component with the
+              following attributes:
+            </p>
+            <ul>
+              <li><p>
+                  <strong>XADataSource service filter:</strong> <i>(service.pid=PID_OF_XA_DATASOURCE)</i> where the <i>PID_OF_XA_DATASOURCE</i>
+                  is the full Pid of the previously created <i>Everit XADataSource</i> instance.
+                </p></li>
+
+            </ul></li>
+        </ol>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="initializing_database_schema">
+        <h2>Part 8: Initializing database schema</h2>
+        <ol>
+          <li><p>
+              Add the <i>Everit Liquibase DataSource</i> dependency to the <i>tests</i> project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+  &lt;groupId&gt;org.everit.osgi&lt;/groupId&gt;
+  &lt;artifactId&gt;org.everit.osgi.liquibase.datasource&lt;/artifactId&gt;
+  &lt;version&gt;1.0.1&lt;/version&gt;
+&lt;/dependency&gt;
+</pre></li>
+          <li><p>
+              Execute "<i>mvn eosgi:dist -Deosgi.servicePort=PORT</i>" command where <i>PORT</i> is replaced with the
+              number that is shown on the deployer window!
+            </p></li>
+          <li><p>
+              Create a new configuration for the <i>DataSource (Liquibase) (Everit)</i> component with the following
+              attributes:
+            </p>
+            <ul>
+              <li><p>
+                  <strong>Schema expression:</strong> <i>org.everit.cookbook</i>
+                </p></li>
+              <li><p>
+                  <strong>Embedded DataSource:</strong> <i>(service.pid=PID_OF_MANAGED_DATASOURCE)</i> where the <i>PID_OF_MANAGED_DATASOURCE</i>
+                  is the full Pid of the previously created <i>Everit Commons DBCP ManagedDataSource</i> instance.
+                </p></li>
+            </ul></li>
+        </ol>
+        <p>In case the database schema creation is successful, the console output should look like the following:</p>
+        <pre class="terminal-emulator">
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: Creating database history table with name: PU
+BLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: Reading from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: Reading from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: Reading from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: Successfully acquired change log lock
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: Reading from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: Reading from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: Reading from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: Readin
+g from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: Table
+cookbook_user created
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: Change
+Set org.everit.cookbook::1.0.0_10::everit ran successfully in 5ms
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_10::everit: Readin
+g from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: Readin
+g from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: Primar
+y key added to cookbook_user (user_id)
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: Change
+Set org.everit.cookbook::1.0.0_20::everit ran successfully in 1ms
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_20::everit: Readin
+g from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: Readin
+g from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: Index
+idx_cookbook_user_fn created
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: Change
+Set org.everit.cookbook::1.0.0_30::everit ran successfully in 4ms
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_30::everit: Readin
+g from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: Readin
+g from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: Index
+idx_cookbook_user_ln created
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: Change
+Set org.everit.cookbook::1.0.0_40::everit ran successfully in 1ms
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: org.everit.cookbook: 1.0.0_40::everit: Readin
+g from PUBLIC.DATABASECHANGELOG
+FINEST|1500/0|felixtest|14-10-21 17:47:18|INFO 10/21/14 5:47 PM:liquibase: Successfully released change log lock
+FINEST|1500/0|felixtest|14-10-21 17:47:18|[Thread-8] INFO org.everit.osgi.liquibase.datasource.1.0.1 - Successfully migr
+ated database from schema [org.everit.cookbook.core [90] - /META-INF/liquibase/org.everit.cookbook.changelog.xml], regis
+tering DataSource
+FINEST|1500/0|felixtest|14-10-21 17:47:18|[Thread-8] INFO org.everit.osgi.liquibase.datasource.1.0.1 - ServiceEvent REGI
+STERED</pre>
+      </div>
+
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="setting_up_querydsl_components">
+        <h2>Part 9: Setting up Querydsl components</h2>
+        <ol>
+          <li><p>
+              Add <i>Everit Querydsl Templates</i> and <i>Everit Querydsl Configuration</i> dependencies to the <i>tests</i>
+              project:
+            </p> <pre class="prettyprint lang-xml">
+&lt;dependency&gt;
+    &lt;groupId&gt;org.everit.osgi&lt;/groupId&gt;
+    &lt;artifactId&gt;org.everit.osgi.querydsl.templates&lt;/artifactId&gt;
+    &lt;version&gt;1.0.1&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.everit.osgi&lt;/groupId&gt;
+    &lt;artifactId&gt;org.everit.osgi.querydsl.configuration&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;</pre></li>
+          <li><p>
+              Execute "<i>mvn eosgi:dist -Deosgi.servicePort=PORT</i>" command where <i>PORT</i> is replaced with the
+              number that is shown on the deployer window!
+            </p></li>
+          <li><p>
+              Create a new configuration for the <i>QueryDSL SQLTemplates (Auto) (Everit)</i> component with the
+              following attributes:
+            </p>
+            <ul>
+              <li><p>
+                  <strong>DataSource service filter:</strong> <i>(service.pid=PID_OF_LIQUIBASE_DATASOURCE)</i> where the
+                  <i>PID_OF_LIQUIBASE_DATASOURCE</i> is the full Pid of the previously created <i>DataSource
+                    (Liquibase) (Everit)</i> instance.
+                </p></li>
+              <li><p>
+                  <strong>Quote:</strong> <i>enabled</i>
+                </p></li>
+            </ul></li>
+          <li><p>
+              Create a new configuration for the <i>Everit Querydsl Configuration</i> component with the following
+              attributes:
+            </p>
+            <ul>
+              <li><p>
+                  <strong>sqlTemplates.target.name:</strong> <i>(service.pid=PID_OF_SQLTEMPLATES)</i> where the <i>PID_OF_SQLTEMPLATES</i>
+                  is the full Pid of the previously created <i>QueryDSL SQLTemplates (Auto) (Everit)</i> instance.
+                </p></li>
+            </ul></li>
+          <li><p>
+              Create a new configuration for the <i>Everit Querydsl Support</i> component with the following attributes:
+            </p>
+            <ul>
+              <li><p>
+                  <strong>dataSource.target.name:</strong> <i>(service.pid=PID_OF_LIQUIBASE_DATASOURCE)</i> where the <i>PID_OF_LIQUIBASE_DATASOURCE</i>
+                  is the full Pid of the previously created <i>DataSource (Liquibase) (Everit)</i> instance.
+                </p></li>
+              <li><p>
+                  <strong>configuration.target.name:</strong> <i>(service.pid=PID_OF_QDSL_CONFIGURATION)</i> where the <i>PID_OF_QDSL_CONFIGURATION</i>
+                  is the full Pid of the previously created <i>Everit Querydsl Configuration</i> instance.
+                </p></li>
+            </ul></li>
+        </ol>
+      </div>
+
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="configuring_user_service_component">
+        <h2>Part 10: Configuring User Service Component</h2>
+        <ol>
+          <li><p>
+              Open the configuration of the previously created <i>Everit Cookbook User Service</i> instance and set the
+              following attribute:
+            </p>
+            <ul>
+              <li><p>
+                  <strong>QuerydslSupport Target:</strong> <i>(service.pid=PID_OF_QUERYDSL_SUPPORT)</i> where the <i>PID_OF_QUERYDSL_SUPPORT</i>
+                  is the full Pid of the previously created <i>Everit Querydsl Support</i> instance.
+                </p></li>
+            </ul>
+            <p>The console should show that all tests passed.</p></li>
+        </ol>
+      </div>
+
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="cleaning_database_in_test">
+        <h2>Part 11: Cleaning user table after test</h2>
+        <p>It is very important that the tests should clean out after themselves otherwise a memory or storage leak
+          could happen.</p>
+        <ol>
+          <li><p>
+              Create a new <i>@Reference</i> variable in the <i>UserServiceTest</i> class with a setter method:
+            </p> <pre class="prettyprint lang-xml">
+@Reference(name = "querydslSupport", bind = "setQuerydslSupport")
+private QuerydslSupport qdsl;
+
+protected void setQuerydslSupport(QuerydslSupport qdsl) {
+    this.qdsl = qdsl;
+}</pre></li>
+          <li><p>
+              Add a new <i>@Property</i> to the test component with the "<i>querydslSupport.target</i>" name!
+            </p></li>
+          <li><p>
+              Create a new private class within <i>UserServiceTest</i> called <i>TestDataCleaner</i> that implements
+              AutoCloseable and deletes the content of the User table in its <i>close</i> method. The source of the
+              inner class should look like the following:
+            </p> <pre class="prettyprint lang-xml">
+private class TestDataCleaner implements AutoCloseable {
+
+    @Override
+    public void close() {
+        qdsl.execute((connection, configuration) -> {
+            new SQLDeleteClause(connection, configuration, QUser.user).execute();
+            return null;
+        });
+    }
+}</pre></li>
+          <li><p>
+              Wrap the body of the <i>testCreateAndGetUser</i> function with a <i>try(TestDataCleaner tdc = new
+                TestDataCleaner())</i> block!
+            </p></li>
+          <li><p>
+              Add the following two lines to the <i>metatype.properties</i> file of the <i>tests</i> project:
+            </p> <pre>
+querydslSupport.target.name=QuerydslSupport Target
+querydslSupport.target.description=OSGi service filter of the querydslSupport reference</pre></li>
+          <li><p>Deploy the tests project!</p></li>
+          <li><p>
+              Change the configuration of the <i>Everit Cookbook User Service Test</i> component to use the same <i>QuerydslSupport</i>
+              service as <i>Everit Cookbook User Service</i> does!
+            </p></li>
+        </ol>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="configuring_user_service_component">
+        <p>
+          Don't forget to <a href="../configuration/index.html#persisting_configuration_permanent">copy the changed
+            configuration</a> back to the source folder!
         </p>
       </div>
 
     </div>
+
+    <!--        Affix-->
+    <div class="col-md-2">
+      <nav id="affix-nav">
+        <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350"
+          data-offset-bottom="140">
+
+          <li class="active"><a href="#scope">Scope</a></li>
+          <li><a href="#specifying_database_schema">Part 1: Specifying database schema</a></li>
+          <li><a href="#generating_querydsl_metadata">Part 2: Generating Querydsl Metadata</a></li>
+          <li><a href="#using_relational_database">Part 3: Changing HashMap store to relational database</a></li>
+          <li><a href="#purifying_system_packages">Part 4: Purifying system packages</a></li>
+          <li><a href="#adding_tm_and_jdbc">Part 5: Adding Transaction Manager and JDBC</a></li>
+          <li><a href="#creating_h2_xadatasource">Part 6: Creating H2 XADataSource</a></li>
+          <li><a href="#creating_managed_pooled_datasource">Part 7: Creating Managed and Pooled DataSource</a></li>
+          <li><a href="#initializing_database_schema">Part 8: Initializing database schema</a></li>
+          <li><a href="#setting_up_querydsl_components">Part 9: Setting up Querydsl components</a></li>
+          <li><a href="#configuring_user_service_component">Part 10: Configuring User Service Component</a></li>
+          <li><a href="#cleaning_database_in_test">Part 11: Cleaning user table after test</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
+
 
   <div></div>
   <footer class="bs-docs-footer" role="contentinfo">
@@ -97,7 +930,7 @@
           <li class="follow-btn "><a href="https://twitter.com/EveritOrg" class="twitter-follow-button"
             data-show-count="true">Follow @EveritOrg</a></li>
           <li class="tweet-btn"><a href="https://twitter.com/share" class="twitter-share-button"
-            data-url="http://www.everit.org/">Tweet</a></li>
+            data-related="EveritOrg">Tweet</a></li>
         </ul>
       </div>
     </div>

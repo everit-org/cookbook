@@ -1,0 +1,492 @@
+<!DOCTYPE HTML>
+<!-- Copyright (c) 2011, Everit Kft.
+
+    All rights reserved.
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 3 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+    MA 02110-1301  USA -->
+<html>
+
+<head>
+<meta charset="utf-8" http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description"
+  content="This chapter of the Everit Cookbook shows how to configure the freshly OSGi based components and how to store them in the source folder in the way that they will be re-used during a new build.">
+<title>Everit Cookbook - Configuration</title>
+<link rel="icon" type="image/ico" href="../fonts/favicon.ico">
+
+<!--    <link rel="stylesheet" type="text/css" href="../common/css/base.css">-->
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/docs.min.css" rel="stylesheet">
+<link href="../css/everit.css" rel="stylesheet">
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push([ '_setAccount', 'UA-15041869-4' ]);
+	_gaq.push([ '_setDomainName', 'everit.org' ]);
+	_gaq.push([ '_trackPageview' ]);
+</script>
+</head>
+
+<body class="bs-docs-home" data-spy="scroll" data-target="#affix-nav">
+  <a class="sr-only" href="#content">Skip to main content</a>
+  <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+          <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+            class="icon-bar"></span>
+        </button>
+        <a href="../index.html" class="navbar-brand">Index</a>
+      </div>
+      <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+        <ul class="nav navbar-nav">
+          <li><a href="https://github.com/everit-org" target="_blank">Sources</a></li>
+          <li><a href="http://www.everit.org/" target="_blank">Community</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="http://www.everit.biz" target="_blank">Enterprise</a></li>
+          <li><a href="http://everitorg.wordpress.com/" target="_blank">Blog</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="bs-docs-masthead everit-header" id="content" role="main">
+    <div class="container">
+      <span class="bs-docs-booticon bs-docs-booticon-lg bs-docs-booticon-outline"> <img class="logo"
+        src="../fonts/sbz_e.svg" alt="E">
+      </span>
+      <p class="lead">Configuration</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="col-md-10">
+      <div class="bs-docs-featurette cookbook" id="scope">
+        <h2>Scope</h2>
+        <p>
+          The goal of this chapter is to start instrumentig our components based on <a
+            href="http://felix.apache.org/documentation/subprojects/apache-felix-config-admin.html">Config Admin</a>. At
+          this time, only the method of creating, updating and storing configuration will be introduced.
+        </p>
+        <p>
+          The business logic and the integration tests were developed in the <a href="../tdd/index.html">last
+            chapter</a>. If you skipped that part, please <a
+            href="../common/mini-howtos.html#checking_out_from_github_in_eclipse">check out</a> the <i>02 - tdd</i>
+          branch in eclipse and import the content as maven projects.
+        </p>
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="adding_jetty_with_webconsole">
+        <h2>Part 0: Adding Jetty and Webconsole</h2>
+        <p>There are many ways to add a Servlet Containers to an OSGi environment. In this tutorial, Jetty will be
+          used with its own OSGi support. By doing that, the newest features of Jetty can be used. (Websocket, SPDY,
+          ...).</p>
+        <ol>
+          <li><p>
+              Add the following dependencies to the <i>pom.xml</i> of the <i>tests</i> project!
+            </p> <pre class="prettyprint lang-xml">
+&lt;!-- Logging --&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+  &lt;artifactId&gt;slf4j-simple&lt;/artifactId&gt;
+  &lt;version&gt;1.7.7&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.log&lt;/artifactId&gt;
+  &lt;version&gt;1.0.1&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.everit.osgi&lt;/groupId&gt;
+  &lt;artifactId&gt;org.everit.osgi.loglistener.slf4j&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;!-- EventAdmin --&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.eventadmin&lt;/artifactId&gt;
+  &lt;version&gt;1.4.2&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;!-- Metatype --&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.metatype&lt;/artifactId&gt;
+  &lt;version&gt;1.0.10&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;!-- Configuration Admin --&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.configadmin&lt;/artifactId&gt;
+  &lt;version&gt;1.8.0&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;!-- Jetty --&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.eclipse.jetty.osgi&lt;/groupId&gt;
+  &lt;artifactId&gt;jetty-osgi-boot&lt;/artifactId&gt;
+  &lt;version&gt;9.2.3.v20140905&lt;/version&gt;
+  &lt;exclusions&gt;
+    &lt;exclusion&gt;
+      &lt;artifactId&gt;org.eclipse.osgi.services&lt;/artifactId&gt;
+      &lt;groupId&gt;org.eclipse.osgi&lt;/groupId&gt;
+    &lt;/exclusion&gt;
+    &lt;exclusion&gt;
+      &lt;artifactId&gt;org.eclipse.osgi&lt;/artifactId&gt;
+      &lt;groupId&gt;org.eclipse.osgi&lt;/groupId&gt;
+    &lt;/exclusion&gt;
+    &lt;exclusion&gt;
+      &lt;artifactId&gt;jetty-annotations&lt;/artifactId&gt;
+      &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+    &lt;/exclusion&gt;
+  &lt;/exclusions&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.eclipse.jetty.osgi&lt;/groupId&gt;
+  &lt;artifactId&gt;jetty-httpservice&lt;/artifactId&gt;
+  &lt;version&gt;9.2.3.v20140905&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;!-- Webconsole --&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.felix&lt;/groupId&gt;
+  &lt;artifactId&gt;org.apache.felix.webconsole&lt;/artifactId&gt;
+  &lt;version&gt;4.2.2&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;commons-fileupload&lt;/groupId&gt;
+  &lt;artifactId&gt;commons-fileupload&lt;/artifactId&gt;
+  &lt;version&gt;1.3.1&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.everit.osgi.bundles&lt;/groupId&gt;
+  &lt;artifactId&gt;org.everit.osgi.bundles.org.json&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0-v20140107&lt;/version&gt;
+&lt;/dependency&gt;
+</pre></li>
+          <li><p>
+              Add the following snippet to the configuration of <i>eosgi-maven-plugin</i> in the <i>pom.xml</i> of the <i>tests</i>
+              project!
+            </p> <pre class="prettyprint lang-xml">
+&lt;environment&gt;
+  &lt;id&gt;felixtest&lt;/id&gt;
+  &lt;framework&gt;felix&lt;/framework&gt;
+  <strong>&lt;systemProperties&gt;
+    &lt;jetty.port&gt;$${ if (System.getenv("EOSGI_STOP_AFTER_TESTS").equals("true")) "0"; else "4848"; }&lt;/jetty.port&gt;
+    &lt;jetty.home.bundle&gt;org.eclipse.jetty.osgi.boot&lt;/jetty.home.bundle&gt;
+  &lt;/systemProperties&gt;</strong>
+&lt;/environment&gt;
+</pre>
+<i>Troubleshooting: in some unlucky cases the code formatter of your IDE may put the <code>if</code> keyword and the condition to separate lines, which is
+an invalid groovy statement. It will result in
+<ul>
+	<li>a groovy error at the very beginning of server bootup like <code> expecting '(', found '&lt;newline&gt;'</code> (it is easy to overlook due to the number of following log entries)</li>
+	<li>a property parsing exception during jetty initalization like <code>IllegalArgumentException: Could not parse value of 'org.everit.osgi.jetty.boot.http.port.secure' property value: ?unresolved?</code></li>
+</ul>
+If you encounter this problem then it is better to manually split the groovy script into multiple lines:
+<pre>&lt;jetty.port&gt;$${
+  if (System.getenv("EOSGI_STOP_AFTER_TESTS").equals("true")) "0"; else "4848";
+}&lt;/jetty.port&gt;</pre>
+</i>
+
+</li>
+          <li><p>The OSGi container must be restarted as the system properties were changed:</p>
+            <ul>
+              <li><p>
+                  Stop the server by pushing <i>CTRL+C</i> on the console!
+                </p></li>
+              <li><p>
+                  Run "<i>mvn eosgi:dist</i>" command in the root folder of the <i>tests</i> project!
+                </p></li>
+              <li><p>
+                  <a href="../mini-howtos.html#start_osgi_container">Start the server</a> again!
+                </p></li>
+            </ul></li>
+          <li><p>
+              Open the following url in a new browser window: <i><a href="http://localhost:4848/system/console">http://localhost:4848/system/console</a></i>!
+            </p></li>
+          <li><p>
+              A pop-up window will appear that asks for credentials. Enter <i>admin</i> as the user name and <i>admin</i>
+              as the password. You should see the website below:
+            </p> <img class="img-responsive img-thumbnail" src="felix_webconsole.png" alt="Felix Webconsole" /></li>
+        </ol>
+        <p>During the part many dependencies were added. Those dependencies are not only necessary because of Jetty,
+          but they will also be used by the technologies introduced in the following chapters of this tutorial.</p>
+        <p>Jetty listens on a random port if integration tests are started by maven and it listens on the port 4848
+          if the OSGi container is started within a console. This port is used only for the management console so it
+          should be accessible only within the trusted network (localhost, LAN or VPN). For custom web applications a
+          different port will be opened later.</p>
+
+
+      </div>
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="making_userservicecomponent_configurable">
+        <h2>
+          Part 1: Making <i>UserServiceComponent</i> configurable
+        </h2>
+        <ol>
+          <li>
+            <p>
+              Open the <i>UserServiceComponent</i> class and change the annotations of the class in the following way:
+            </p> <pre class="prettyprint lang-java">
+@Component<strong>(name = "org.everit.cookbook.UserService", configurationFactory = true, metatype = true
+        policy = ConfigurationPolicy.REQUIRE)</strong>
+<strong>@Properties({ @Property(name = "service.description", propertyPrivate = false) })</strong>
+@Service</pre>
+          </li>
+          <li>
+            <p>
+              Create <i>src/main/resources</i> source folder in the <i>core</i> project!
+            </p> <img class="img-responsive img-thumbnail" src="new_source_folder.png" alt="New source folder" /> <img
+            class="img-responsive img-thumbnail" src="src_main_resources.png" alt="Enter folder name" />
+          </li>
+          <li><p>
+              Create a new file in the <i>OSGI-INF/metatype</i> sub-directory <i>src/main/resources</i> source folder
+              with the <i>metatype.properties</i> name!
+            </p> <img class="img-responsive img-thumbnail" src="new_file_other.png"
+            alt="Metatype properties file creation 1" /> <img class="img-responsive img-thumbnail" src="new_file.png"
+            alt="Metatype properties file creation 2" /> <img class="img-responsive img-thumbnail"
+            src="new_file_metatype_properties.png" alt="Metatype properties file creation 3" /></li>
+          <li><p>Add the following content to the newly created properties file:</p> <pre>
+org.everit.cookbook.UserService.name=Everit Cookbook User Service
+org.everit.cookbook.UserService.description=Managing user data
+
+service.description.name=Service Description
+service.description.description=Descriptive name of the service
+</pre></li>
+          <li><p>
+              Update the <i>core</i> project (right click on the project, Maven / Update project...)!
+            </p></li>
+          <li><p>
+              <a href="../common/mini-howtos.html#deploy_to_osgi_container">Deploy</a> the <i>core</i> project to the
+              OSGi container!
+            </p></li>
+        </ol>
+      </div>
+
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="making_testcomponent_configurable">
+        <h2>
+          Part 2: Making <i>Test Component</i> configurable
+        </h2>
+        <ol>
+          <li>
+            <p>
+              Open the <i>UserServiceTest</i> class and change the annotations of the class in the following way:
+            </p> <pre class="prettyprint lang-java">
+@Component<strong>(configurationFactory = true, metatype = true, policy = ConfigurationPolicy.REQUIRE)</strong>
+@Properties({
+        <strong>@Property(name = "userService.target"),
+        @Property(name = "service.description", propertyPrivate = false),</strong>
+        @Property(name = "eosgi.testEngine", value = "junit4"),
+        @Property(name = "eosgi.testId", value = "UserServiceTest")
+})
+@Service(UserServiceTest.class)</pre>
+          </li>
+          <li>
+            <p>
+              Create <i>src/main/resources</i> source folder in the <i>tests</i> project!
+            </p>
+          </li>
+          <li><p>
+              Create a new file in the <i>OSGI-INF/metatype</i> sub-directory <i>src/main/resources</i> source folder
+              with the <i>metatype.properties</i> name!
+            </p></li>
+          <li><p>Add the following content to the newly created properties file:</p> <pre>
+org.everit.cookbook.tests.UserServiceTest.name=Everit Cookbook User Service Test
+org.everit.cookbook.tests.UserServiceTest.description=Testing User Service
+
+userService.target.name=User Service Target
+userService.target.description=OSGi service filter of the User Service reference
+eosgi.testId.name=Test Id
+eosgi.testId.description=Unique id of User Service Test
+eosgi.testEngine.name=Test Engine
+eosgi.testEngine.description=Engine name of the tests (should not be changed)
+
+service.description.name=Service Description
+service.description.description=Descriptive name of the service
+</pre></li>
+          <li><p>
+              Update the <i>tests</i> project (right click on the project, Maven / Update project...)!
+            </p></li>
+          <li><p>
+              <a href="../common/mini-howtos.html#deploy_to_osgi_container">Deploy</a> the <i>tests</i> project to the
+              OSGi container!
+            </p></li>
+        </ol>
+      </div>
+
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="configure_components">
+        <h2>Part 3: Configuring the components</h2>
+        <p>Both components were changed in the way that they need at least one configuration entry to be
+          instantiated.</p>
+        <ol>
+          <li><p>
+              Open the <i>Configuration</i> page of the <i>WebConsole</i> in a browser with the following url: <a
+                href="http://localhost:4848/system/console/configMgr">http://localhost:4848/system/console/configMgr</a>
+            </p></li>
+          <li><p>
+              Select the <i>Everit Cookbook User Service</i> from the list of available configurations!
+            </p> <img class="img-responsive img-thumbnail" src="select_user_service_config.png"
+            alt="Select User Service Component" /></li>
+          <li><p>
+              On the popup window, enter some descriptive text for the <i>Service Description</i> attribute and save the
+              new configuration!
+            </p> <img class="img-responsive img-thumbnail" src="user_service_config.png" alt="User Service configuration" /></li>
+          <li><p>Open the newly created configuration again and copy the GUID of the configuration to the
+              clipboard!</p> <img class="img-responsive img-thumbnail" src="copy_userservice_pid_to_clipboard.png"
+            alt="Copy UserService PID to Clipboard" /></li>
+          <li><p>
+              Select the <i>Everit Cookbook User Service Test</i> from the list of available configurations!
+            </p> <img class="img-responsive img-thumbnail" src="select_user_service_test_config.png"
+            alt="Select User Service Test" /></li>
+          <li><p>
+              Specify the <i>User Service Target</i> attribute in the way that it points to the previously created
+              instance! To do that, enter an OSGi service filter that contains the <i>service.pid</i> of the previous
+              configuration (it is on the clipboard)! Fill the <i>Service Description"</i> with some descriptive text
+              and save the configuration!
+            </p> <img class="img-responsive img-thumbnail" src="user_service_test_config.png"
+            alt="User Service Test configuration" /></li>
+        </ol>
+        <p>In the end of this part, all tests should run automatically. You can check it in the console.</p>
+      </div>
+
+
+      <hr class="featurette-divider">
+      <div class="bs-docs-featurette cookbook" id="persisting_configuration_permanent">
+        <h2>Part 4: Persisting the configuration permanently</h2>
+        <p>Although the configuration is persisted into the data folder of the configadmin bundle, it will be lost
+          after the target folder is deleted. The configuration should be stored in the source folder of the project.</p>
+        <ol>
+          <li><p>
+              Open the <i>pom.xml</i> of the <i>tests</i> project and add the following system property to <i>felixTest</i>
+              environment:
+            </p> <pre class="prettyprint lang-xml">
+&lt;felix.cm.dir&gt;${wrapper_home}/../conf/configadmin&lt;/felix.cm.dir&gt;</pre></li>
+          <li><p>
+              Create the <i>src/dist/conf/configadmin</i> folder structure in the <i>tests</i> project!
+            </p> <img class="img-responsive img-thumbnail" src="new_folder_menu.png" alt="Select New Folder Menu Item" /> <img
+            class="img-responsive img-thumbnail" src="create_src_main_dist_config_configadmin.png"
+            alt="Create src/main/dist/conf/configadmin directory" /></li>
+          <li><p>
+              Open the <i>bundles</i> window of WebConsole with the following url: <a
+                href="http://localhost:4848/system/console/bundles">http://localhost:4848/system/console/bundles</a>
+            </p></li>
+          <li><p>
+              Find the line of the <i>Configuration Admin Bundle</i> and note the <i>Id</i> of it! On the sample screen
+              it is <i>30</i>.
+            </p> <img class="img-responsive img-thumbnail" src="configadmin_bundle_on_webconsole.png"
+            alt="Find ConfigAdmin Bundle On WebConsole" /></li>
+          <li><p>
+              Go to the <i>target/eosgi-dist/felixtest/felix-cache/bundle<b>XX</b>/data/config
+              </i> directory of the <i>tests</i> project and copy its content to the <i>src/dist/conf/configadmin</i>
+              directory! Please note that <i>XX</i> should be replaced with the id of the Configuration Admin bundle!
+            </p> <img class="img-responsive img-thumbnail" src="copy_configadmin_file_explorer.png"
+            alt="Copy Configuration Admin to source folder" /></li>
+          <li><p>
+              Run "<i>mvn eosgi:dist</i>" in the root of the <i>tests</i> project!
+            </p></li>
+          <li><p>As a system property has been changed, the OSGi container must be restarted.</p></li>
+        </ol>
+        <p>
+          When the configuration is changed on the Webconsole, the <i>src/dist/conf/configadmin</i> directory must be
+          always overridden from <i>target/eosgi-dist/felixtest/conf/configadmin</i> in the future. By doing that, the
+          configuration will be part of the source and it will survive a full compilation. Please note, that this was
+          the last time we had to restart the server for a long time.
+        </p>
+      </div>
+
+
+      <hr class="featurette-divider" />
+      <div class="bs-docs-featurette cookbook" id="implement_createandget">
+        <p>
+          In the end, run <i>mvn license:format</i> in the root folder of the <i>core</i> project to add the license
+          headers.
+        </p>
+      </div>
+    </div>
+
+    <!--        Affix-->
+    <div class="col-md-2">
+      <nav id="affix-nav">
+        <ul class="nav nav-pills nav-stacked everit-affix" data-spy="affix" data-offset-top="350"
+          data-offset-bottom="140">
+
+          <li class="active"><a href="#scope">Scope</a></li>
+          <li><a href="#adding_jetty_with_webconsole">Part 0: Adding Jetty with Webconsole</a>
+          <li><a href="#making_userservicecomponent_configurable">Part 1: Making UserServiceComponent
+              Configurable</a></li>
+          <li><a href="#making_testcomponent_configurable">Part 2: Making Test Component Configurable</a></li>
+          <li><a href="#configure_components">Part 3: Configuring the components</a></li>
+          <li><a href="#persisting_configuration_permanent">Part 4: Persisting the configuration permanently</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <div></div>
+  <footer class="bs-docs-footer" role="contentinfo">
+    <div class="container">
+      <div class="bs-docs-social">
+        <ul class="bs-docs-social-buttons">
+          <li class="follow-btn "><a href="https://twitter.com/EveritOrg" class="twitter-follow-button"
+            data-show-count="true">Follow @EveritOrg</a></li>
+          <li class="tweet-btn"><a href="https://twitter.com/share" class="twitter-share-button"
+            data-url="http://www.everit.org/">Tweet</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript
+================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/everit.js "></script>
+  <script src="../js/prettify/run_prettify.js"></script>
+  <script type="text/javascript">
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl'
+						: 'http://www')
+						+ '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+</body>
+
+</html>
