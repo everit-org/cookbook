@@ -1,6 +1,6 @@
-#Everit knowledgebase
+# Everit knowledgebase
 
-##Introduction
+## Introduction
 
 The goal of the cookbook is to have a central place where all documentation
 of Everit is accessible with samples.
